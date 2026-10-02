@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>RFT — одна растущая сеть · v1.3</title>
+<title>RFT — одна растущая сеть · v1.4</title>
 <style>
 :root{
   --bg:#07090d;--fg:#f4f6fb;--muted:#97a1b1;--faint:#616c7d;
@@ -172,7 +172,7 @@ transition:opacity .48s ease,visibility .48s ease}
 <div id="hud">
   <div id="journey"><span class="jdot"></span><span class="jdot"></span><span class="jdot"></span><span class="jdot"></span><span class="jdot"></span></div>
   <div>← назад · → дальше</div>
-  <div>RFT · v1.3</div>
+  <div>RFT · v1.4</div>
 </div>
 <div id="tools"><button class="tool" id="fs">⛶</button></div>
 
@@ -534,19 +534,6 @@ function lifeOnly(stage=0){
   }
 }
 
-function lifeMeaningLayer(stage=0){
-  lifeOnly(2);
-
-  if(stage>=1){
-    showNode('selfeval','«Я ПЛОХОЙ ПСИХОЛОГ»',50,67,'human focus');
-    showEdge('thoughtSelf','thought','selfeval','значит','meaning',18,true,false,true);
-  }
-  if(stage>=2){
-    showNode('behavior','НАЧИНАЮ ОБЪЯСНЯТЬ И ЗАПОЛНЯТЬ ПАУЗУ',80,70,'human focus');
-    showEdge('urgeBehavior','urge','behavior','ведёт к','meaning',14,true,false,true);
-  }
-}
-
 function languagePayoffNetwork(){
   showNode('noma','NOMA',28,28,'focus');
   showNode('silence','КЛИЕНТ ЗАМОЛЧАЛ',28,56,'human depthNear');
@@ -577,7 +564,6 @@ function bonusContextNetwork(){
   showNode('silence','Клиент замолчал',33,58,'mini human depthNear');
   showNode('thought','«Я сказал что-то не то»',50,56,'mini human depthNear');
   showNode('urge','«Надо срочно исправить»',67,58,'mini human depthNear');
-  showNode('selfeval','«Я плохой психолог»',50,72,'mini human depthMid');
   showNode('behavior','Начинаю заполнять паузу',67,73,'mini human depthMid');
 
   showEdge('nt','noma','tev','','given',16,false,true,true);
@@ -592,7 +578,6 @@ function bonusContextNetwork(){
   showEdge('circleUrge','circle','urge','','meaning',0,false,true,true);
   showEdge('silenceThought','silence','thought','','derived',12,false,true,true);
   showEdge('thoughtUrge','thought','urge','','derived',-12,false,true,true);
-  showEdge('thoughtSelf','thought','selfeval','','meaning',10,false,true,true);
   showEdge('urgeBehavior','urge','behavior','','meaning',10,false,true,true);
   showEdge('luriBehavior','luri','behavior','','meaning',42,false,true,true);
 
@@ -635,7 +620,6 @@ function bonusContextNetwork(){
   showEdge('authorCore','author','luri','','meaning',16,false,false,false);
   showEdge('nameCore','name','silence','','meaning',-12,false,false,false);
   showEdge('learningCore','learning','urge','','meaning',14,false,false,false);
-  showEdge('workCore','work','selfeval','','meaning',16,false,false,false);
   showEdge('psychCore','psychology','behavior','','meaning',-14,false,false,false);
 
   // Threads continue beyond the viewport and re-enter elsewhere.
@@ -651,17 +635,16 @@ function bonusContextNetwork(){
   showEdge('rightBottomLearning','outRightBottom','learning','','meaning',12,false,false,false);
   showEdge('rightBottomPsych','outRightBottom','psychology','','meaning',-10,false,false,false);
   showEdge('bottomLWork','outBottomL','work','','meaning',12,false,false,false);
-  showEdge('bottomLSelf','outBottomL','selfeval','','meaning',-12,false,false,false);
   showEdge('bottomRPsych','outBottomR','psychology','','meaning',-12,false,false,false);
   showEdge('bottomRBehavior','outBottomR','behavior','','meaning',12,false,false,false);
 
   [
     'weekdayTime','timeAuthor','presenterWeek','presenterName','nameWork',
     'workPsych','psychLearning','learningAuthor',
-    'presenterCore','weekdayCore','authorCore','nameCore','learningCore','workCore','psychCore',
+    'presenterCore','weekdayCore','authorCore','nameCore','learningCore','psychCore',
     'topLWeek','topLTime','topRAuthor','leftTopPresenter','leftTopWeek',
     'leftBottomName','leftBottomWork','rightTopAuthor','rightTopLearning',
-    'rightBottomLearning','rightBottomPsych','bottomLWork','bottomLSelf',
+    'rightBottomLearning','rightBottomPsych','bottomLWork',
     'bottomRPsych','bottomRBehavior'
   ].forEach(id=>{
     const el=document.getElementById('edge-'+id);
@@ -689,7 +672,7 @@ function render(frame){
   }
 
   document.getElementById('intro').classList.add('hide');
-  beat=Math.max(0,Math.min(17,frame.beat));
+  beat=Math.max(0,Math.min(16,frame.beat));
   clearInteraction();
   resetTints();
   reveal.classList.remove('on');
@@ -920,18 +903,10 @@ function render(frame){
     setJourney(5);
     lifeOnly(2);
     reflection.textContent='Сейчас NOMA, TEV, LURI и символы можно убрать. Отношения уже работают внутри самого жизненного эпизода.';
-    cont('Посмотреть, как появляется личный смысл',next);
+    cont('Посмотреть, как события влияют на действие',next);
   }
 
   if(beat===13){
-    setJourney(5);
-    lifeMeaningLayer(1);
-    reflection.textContent='Мысль «я сказал что-то не то» может войти в новое отношение: «значит, я плохой психолог». Это уже новый слой сети.';
-    cont('Посмотреть, как сеть влияет на действие',next);
-    later(()=>pulse('thoughtSelf'),240);
-  }
-
-  if(beat===14){
     setJourney(5);finalMode=true;
     world.style.setProperty('--rx','0deg');
     world.style.setProperty('--ry','0deg');
@@ -947,7 +922,6 @@ function render(frame){
     showNode('silence','КЛИЕНТ ЗАМОЛЧАЛ',18,56,'human depthNear');
     showNode('thought','«Я СКАЗАЛ ЧТО-ТО НЕ ТО»',48,53,'human depthNear');
     showNode('urge','«НАДО СРОЧНО ИСПРАВИТЬ»',78,56,'human depthNear');
-    showNode('selfeval','«Я ПЛОХОЙ ПСИХОЛОГ»',47,74,'human depthMid');
     showNode('behavior','НАЧИНАЮ ОБЪЯСНЯТЬ И ЗАПОЛНЯТЬ ПАУЗУ',82,76,'human depthMid');
 
     showEdge('nt','noma','tev','','given',16,false,false,true);
@@ -965,19 +939,18 @@ function render(frame){
     showEdge('silenceThought','silence','thought','','derived',16,false,false,true);
     showEdge('thoughtUrge','thought','urge','','derived',-16,false,false,true);
     showEdge('silenceUrge','silence','urge','','derived',-44,false,false,true);
-    showEdge('thoughtSelf','thought','selfeval','','meaning',16,false,false,true);
     showEdge('urgeBehavior','urge','behavior','','meaning',14,true,false,true);
     showEdge('luriBehavior','luri','behavior','так называем это действие','meaning',-28,true,false,true);
 
     tintNode('noma','#4b141a','#e05563','#ffd7db');
     tintNode('diamond','#4a183f','#d067bf','#ffd5f7');
 
-    reflection.textContent='Теперь LURI — уже не просто бессмысленное слово. В этой сети им можно обозначить поведенческий ход: начать объяснять и заполнять паузу, когда хочется срочно всё исправить. Нажми на любой узел — и посмотри, как откликается сеть.';
+    reflection.textContent='События в сети начинают направлять действие: клиент замолчал → «я сказал что-то не то» → «надо срочно исправить» → начинаю объяснять и заполнять паузу. LURI теперь можно использовать как обозначение этого поведенческого хода.';
     enableNetworkRipple();
     cont('Посмотреть, что теперь значат NOMA и LURI',next);
   }
 
-  if(beat===15){
+  if(beat===14){
     finalMode=false;
     world.classList.remove('final3d');
     world.style.filter='none';
@@ -988,7 +961,7 @@ function render(frame){
     cont('Узнать, как называется этот процесс',next);
   }
 
-  if(beat===16){
+  if(beat===15){
     finalMode=false;
     world.classList.remove('final3d');
     world.style.filter='blur(7px) brightness(.35)';
@@ -996,7 +969,7 @@ function render(frame){
     reveal.classList.add('on');
   }
 
-  if(beat===17){
+  if(beat===16){
     finalMode=false;
     world.classList.remove('final3d');
     world.style.filter='none';
@@ -1025,7 +998,7 @@ function next(){
     nudgeLocked();
     return;
   }
-  if(currentFrame.beat>=17)return;
+  if(currentFrame.beat>=16)return;
   pushFrame(baseFrame(currentFrame.beat+1));
 }
 function prev(){
