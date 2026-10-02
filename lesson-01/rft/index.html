@@ -271,7 +271,7 @@ function render(n){
   }
   if(beat===2){
     setJourney(2);say('','Добавим только одну вещь.','');
-    ensureNode('noma','NOMA',24,52,'');ensureNode('tev','TEV',50,52,'focus');ensureNode('luri','LURI',76,52,'');
+    ensureNode('noma','NOMA',28,45,'');ensureNode('tev','TEV',50,65,'focus');ensureNode('luri','LURI',72,45,'');
     edge('nt','noma','tev','старше',false,false);edge('tl','tev','luri','старше',false,false);removeEdge('rev');
     question.textContent='Кто старше: NOMA или LURI?';
     buttons([{label:'NOMA',ok:true},{label:'LURI',ok:false}],function(it,b){
@@ -284,7 +284,7 @@ function render(n){
   }
   if(beat===3){
     setJourney(3);say('','Теперь посмотри на то, что получилось.','Две заданные связи породили сеть отношений, которые ты можешь вывести.');
-    ensureNode('noma','NOMA',24,52,'');ensureNode('tev','TEV',50,52,'');ensureNode('luri','LURI',76,52,'');
+    ensureNode('noma','NOMA',28,45,'');ensureNode('tev','TEV',50,65,'');ensureNode('luri','LURI',72,45,'');
     edge('nt','noma','tev','старше',false,false);edge('tl','tev','luri','старше',false,false);edge('nl','noma','luri','выведено',true,false);
     setTimeout(function(){pulseEdge('noma','tev');setTimeout(function(){pulseEdge('tev','luri')},280);setTimeout(function(){pulseEdge('noma','luri')},620)},400);
     reflection.textContent='Ты не просто сохранил факты. Ты достроил отношения.';
