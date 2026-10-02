@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>RFT — одна растущая сеть · v0.4c</title>
+<title>RFT — одна растущая сеть · v0.4d</title>
 <style>
 :root{
   --bg:#07090d;--fg:#f4f6fb;--muted:#97a1b1;--faint:#616c7d;
@@ -160,7 +160,7 @@ transition:opacity .48s ease,visibility .48s ease}
 <div id="hud">
   <div id="journey"><span class="jdot"></span><span class="jdot"></span><span class="jdot"></span><span class="jdot"></span><span class="jdot"></span></div>
   <div>← назад · → дальше</div>
-  <div>RFT · v0.4c</div>
+  <div>RFT · v0.4d</div>
 </div>
 <div id="tools"><button class="tool" id="fs">⛶</button></div>
 
@@ -169,7 +169,7 @@ transition:opacity .48s ease,visibility .48s ease}
     <div class="kicker">Небольшой эксперимент</div>
     <div class="introTitle">Одна сеть.<br>Шаг за шагом.</div>
     <div class="introText">Ничего не нужно учить заранее. Просто следи за тем, как одна бессмысленная вещь постепенно приобретает отношения и функции.</div>
-    <button id="start">Начать</button>
+    <button id="start">Попробовать</button>
   </div>
 </div>
 
@@ -179,7 +179,7 @@ transition:opacity .48s ease,visibility .48s ease}
     <div class="rft">RFT</div>
     <div class="long">Теория реляционных фреймов</div>
     <div class="meaning">Люди способны устанавливать отношения между событиями, выводить новые отношения и через эти сети изменять психологические функции событий.</div>
-    <button class="continue" id="afterReveal">Вернуться к NOMA</button>
+    <button class="continue" id="afterReveal">Сравнить с тем, с чего всё началось</button>
   </div>
 </div>
 </div>
@@ -414,7 +414,7 @@ function render(n){
     showNode('tev','TEV',66,41,'');
     showEdge('nt','noma','tev','старше','given',62,false,false,true);
     reflection.textContent='Сплошная линия — то, что было дано напрямую.';
-    cont('Понятно',next);
+    cont('Попробовать самому',next);
   }
 
   if(beat===1){
@@ -430,7 +430,7 @@ function render(n){
       showEdge('tn','tev','noma','младше','derived',62,true,false,true);
       pulse('tn');
       reflection.textContent='Эту вторую связь никто не сообщал напрямую. Ты её вывел.';
-      cont('Дальше',next);
+      cont('Добавить третье слово',next);
     });
   }
 
@@ -450,7 +450,7 @@ function render(n){
       showEdge('nl','noma','luri','старше','derived',-78,true,false,true);
       pulse('nl');
       reflection.textContent='Ты замкнул треугольник отношением, которого не было среди исходных данных.';
-      cont('Посмотреть на сеть',next);
+      cont('Увидеть, что получилось',next);
     });
   }
 
@@ -460,7 +460,7 @@ function render(n){
     coreTriangle();
     setTimeout(()=>{pulse('nt');setTimeout(()=>pulse('tl'),250);setTimeout(()=>pulse('nl'),560)},300);
     reflection.textContent='Важно: это уже не список фактов. Это маленькая реляционная сеть.';
-    cont('Добавить новый слой',next);
+    cont('Связать слова с символами',next);
   }
 
   if(beat===4){
@@ -470,7 +470,7 @@ function render(n){
     showNode('diamond','◆',28,61,'symbol focus');
     showEdge('nomaDiamond','noma','diamond','=','coord',0,true,false,false);
     reflection.textContent='Мы ничего не удаляем. К существующей сети просто добавилось ещё одно отношение.';
-    cont('Дальше',next);
+    cont('Связать TEV с символом',next);
   }
 
   if(beat===5){
@@ -481,7 +481,7 @@ function render(n){
     showNode('triangle','▲',50,67,'symbol focus');
     showEdge('nomaDiamond','noma','diamond','=','coord',0,false,false,false);
     showEdge('tevTriangle','tev','triangle','=','coord',0,true,false,false);
-    cont('Дальше',next);
+    cont('Связать LURI с символом',next);
   }
 
   if(beat===6){
@@ -491,7 +491,7 @@ function render(n){
     symbols();
     document.getElementById('node-circle').classList.add('focus');
     reflection.textContent='Теперь у одной сети два слоя: слова и символы.';
-    cont('Проверить, что сеть действительно работает',next);
+    cont('Проверить себя по символам',next);
   }
 
   if(beat===7){
@@ -510,7 +510,7 @@ function render(n){
       showEdge('nl','noma','luri','старше','derived',-78,true,true,true);
       pulse('nomaDiamond');setTimeout(()=>pulse('nl'),260);
       reflection.textContent='Ты смог ответить о ◆ благодаря отношениям, которые были построены вокруг NOMA.';
-      cont('А теперь — функция',next);
+      cont('Узнать, что ещё передаётся по связи',next);
     });
   }
 
@@ -530,7 +530,7 @@ function render(n){
         tintNode('noma','#4b141a','#e05563','#ffd7db');
         completed[8]=true;
         reflection.textContent='Теперь ты узнал цвет NOMA: она стала красной. Правило было простым: три нажатия → появляется цвет.';
-        cont('Попробовать с ◆',next);
+        cont('Попробовать узнать цвет ◆',next);
       }
     };
   }
@@ -556,7 +556,7 @@ function render(n){
         tintNode('diamond','#4a183f','#d067bf','#ffd5f7');
         completed[9]=true;
         reflection.textContent='Ты сам применил к ◆ способ, которому тебя учили только для NOMA. Никто не говорил «нажми ◆ три раза»: этот шаг был достроен через связь NOMA = ◆.';
-        cont('Связать сеть с человеческим событием',next);
+        cont('Посмотреть, как это работает с реальным событием',next);
       }
     };
   }
@@ -564,14 +564,14 @@ function render(n){
     setJourney(4);
     showHumanCore(0);
     reflection.textContent='Тот же ◆ теперь связан с человеческим событием — собеседованием. Больше ничего пока не добавляем.';
-    cont('Продолжить',next);
+    cont('Посмотреть, чем ещё может стать это событие',next);
   }
 
   if(beat===11){
     setJourney(5);
     showHumanCore(1);
     reflection.textContent='Теперь вокруг одного события появились только две новые ветви: оценка и ошибка.';
-    cont('Продолжить',next);
+    cont('Посмотреть, что может следовать из ошибки',next);
   }
 
   if(beat===12){
@@ -579,7 +579,7 @@ function render(n){
     showHumanCore(2);
     setTimeout(()=>pulse('mn'),260);
     reflection.textContent='Из «ошибка» может быть выведено личное значение: «я недостаточно хороший специалист».';
-    cont('Продолжить',next);
+    cont('Посмотреть следующий вывод',next);
   }
 
   if(beat===13){
@@ -587,14 +587,14 @@ function render(n){
     showHumanCore(3);
     setTimeout(()=>pulse('ne'),260);
     reflection.textContent='А из этого значения может появиться следующий вывод: «меня разоблачат».';
-    cont('Собрать всю сеть',next);
+    cont('Увидеть всю сеть целиком',next);
   }
 
   if(beat===14){
     setJourney(5);say('','В начале здесь были четыре буквы.','Теперь посмотрим, что стало доступно вокруг них.');finalMode=true;world.classList.add('final3d');
     showNode('noma','NOMA',47,38,'focus depthNear');showNode('tev','TEV',20,22,'depthMid');showNode('luri','LURI',23,49,'depthFar');showNode('diamond','◆',64,23,'symbol depthMid');showNode('triangle','▲',69,45,'symbol depthFar');showNode('circle','●',63,64,'symbol depthMid');showNode('interview','СОБЕСЕДОВАНИЕ',43,67,'human depthNear');showNode('evaluation','оценка',19,65,'human depthFar');showNode('mistake','ошибка',83,18,'human depthMid');showNode('notgood','«я недостаточно хороший специалист»',83,40,'human depthFar');showNode('exposed','«меня разоблачат»',82,65,'human depthMid');tintNode('noma','#4b141a','#e05563','#ffd7db');tintNode('diamond','#4a183f','#d067bf','#ffd5f7');
     showEdge('nt','noma','tev','','given',18,false,false,true);showEdge('tn','tev','noma','','derived',18,false,false,true);showEdge('tl','tev','luri','','given',-12,false,false,true);showEdge('nl','noma','luri','','derived',-55,false,false,true);showEdge('nomaDiamond','noma','diamond','','coord',-10,false,false,false);showEdge('tevTriangle','tev','triangle','','coord',18,false,false,false);showEdge('luriCircle','luri','circle','','coord',-18,false,false,false);showEdge('diamondInterview','diamond','interview','','meaning',22,false,false,true);showEdge('ie','interview','evaluation','','meaning',12,false,false,true);showEdge('im','interview','mistake','','meaning',-22,false,false,true);showEdge('mn','mistake','notgood','','derived',22,false,false,true);showEdge('ne','notgood','exposed','','derived',-12,false,false,true);
-    reflection.textContent='Четыре буквы остались теми же. Но теперь NOMA связана с направлениями, символами, действиями и человеческими смыслами — поэтому она уже может участвовать в совсем других реакциях.';cont('У этого процесса есть имя',next);
+    reflection.textContent='Четыре буквы остались теми же. Но теперь NOMA связана с направлениями, символами, действиями и человеческими смыслами — поэтому она уже может участвовать в совсем других реакциях.';cont('Узнать, как называется этот процесс',next);
   }
   if(beat===15){
     finalMode=false;
