@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>RFT — одна растущая сеть · v1.1</title>
+<title>RFT — одна растущая сеть · v1.1.1</title>
 <style>
 :root{
   --bg:#07090d;--fg:#f4f6fb;--muted:#97a1b1;--faint:#616c7d;
@@ -172,7 +172,7 @@ transition:opacity .48s ease,visibility .48s ease}
 <div id="hud">
   <div id="journey"><span class="jdot"></span><span class="jdot"></span><span class="jdot"></span><span class="jdot"></span><span class="jdot"></span></div>
   <div>← назад · → дальше</div>
-  <div>RFT · v1.1</div>
+  <div>RFT · v1.1.1</div>
 </div>
 <div id="tools"><button class="tool" id="fs">⛶</button></div>
 
@@ -252,11 +252,14 @@ function cleanupTransient(){
     el.onclick=null;
   });
 }
-function pushFrame(frame){
+function recordFrame(frame){
   frameHistory=frameHistory.slice(0,frameIndex+1);
   frameHistory.push(cloneFrame(frame));
   frameIndex=frameHistory.length-1;
   currentFrame=cloneFrame(frameHistory[frameIndex]);
+}
+function pushFrame(frame){
+  recordFrame(frame);
   render(currentFrame);
 }
 function replaceCurrentFrame(frame){
@@ -303,6 +306,7 @@ function showNode(id,text,x,y,cls='',onClick=null){
     el=document.createElement('div');el.id='node-'+id;nodesWrap.appendChild(el);
   }
   el.textContent=text;
+  el.style.pointerEvents='';
   el.style.left=x+'%';el.style.top=y+'%';
   el.className='node visible '+cls+(onClick?' clickable':'');
   el.onclick=onClick||null;
@@ -798,9 +802,17 @@ function render(frame){
       cont('Попробовать узнать цвет ◆',next);
     }else{
       noma.classList.add('clickable');
+      noma.style.pointerEvents='auto';
       noma.onclick=()=>{
+        const currentProgress=currentFrame.beat===8?(currentFrame.progress||0):0;
+        const nextProgress=Math.min(3,currentProgress+1);
+        recordFrame({beat:8,progress:nextProgress});
+        [...practiceDots.children].forEach((d,i)=>d.classList.toggle('on',i<nextProgress));
         bumpNode('noma');
-        pushFrame({beat:8,progress:progress+1});
+
+        if(nextProgress>=3){
+          render(currentFrame);
+        }
       };
     }
   }
@@ -827,10 +839,18 @@ function render(frame){
       cont('Посмотреть, как это работает с реальным событием',next);
     }else{
       diamond.classList.add('clickable');
+      diamond.style.pointerEvents='auto';
       diamond.onclick=()=>{
+        const currentProgress=currentFrame.beat===9?(currentFrame.progress||0):0;
+        const nextProgress=Math.min(3,currentProgress+1);
+        recordFrame({beat:9,progress:nextProgress});
+        [...practiceDots.children].forEach((d,i)=>d.classList.toggle('on',i<nextProgress));
         bumpNode('diamond');
         pulse('nomaDiamond');
-        pushFrame({beat:9,progress:progress+1});
+
+        if(nextProgress>=3){
+          render(currentFrame);
+        }
       };
     }
   }
