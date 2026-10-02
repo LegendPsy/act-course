@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ACT — Урок 1</title>
+<style>
+:root{
+  --bg:#080b10;--panel:#0f141c;--panel2:#121923;--line:#263140;
+  --text:#f3f5f8;--muted:#8d98a8;--soft:#bac3cf;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:
+radial-gradient(circle at 50% 0%,rgba(91,112,146,.12),transparent 38%),
+linear-gradient(180deg,#0a0e14,#07090d 72%);color:var(--text);
+font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif}
+body{min-height:100vh;padding:clamp(24px,4vw,58px)}
+.wrap{width:min(1500px,100%);margin:0 auto}
+header{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:clamp(30px,5vw,68px)}
+.kicker{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+h1{font-size:clamp(34px,5vw,70px);line-height:.94;margin:0;letter-spacing:-.045em}
+.subtitle{max-width:560px;color:var(--muted);font-size:clamp(14px,1.35vw,18px);line-height:1.45;text-align:right}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.block{border:1px solid var(--line);background:linear-gradient(180deg,rgba(18,25,35,.86),rgba(12,17,24,.88));border-radius:24px;padding:18px;min-height:480px}
+.blockHead{padding:8px 8px 22px}
+.num{font-size:12px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase}
+.block h2{font-size:clamp(25px,2.5vw,40px);margin:5px 0 0;letter-spacing:-.035em}
+.cards{display:grid;gap:12px}
+.card{position:relative;display:block;text-decoration:none;color:inherit;border:1px solid #283342;background:rgba(8,12,18,.68);border-radius:18px;padding:22px 54px 22px 20px;min-height:108px;transition:transform .18s,border-color .18s,background .18s,box-shadow .18s}
+.card:hover{transform:translateY(-2px);border-color:#59677a;background:#121923;box-shadow:0 16px 40px rgba(0,0,0,.28)}
+.card:active{transform:translateY(0)}
+.cardNo{font-size:12px;color:var(--muted);letter-spacing:.12em;margin-bottom:8px}
+.cardTitle{font-size:clamp(18px,1.55vw,24px);font-weight:720;letter-spacing:-.02em}
+.arrow{position:absolute;right:20px;top:50%;transform:translateY(-50%);width:30px;height:30px;border:1px solid #334052;border-radius:50%;display:grid;place-items:center;color:#cbd2dc}
+.live{border-color:#3d5168;background:linear-gradient(135deg,rgba(30,45,61,.78),rgba(10,15,22,.8))}
+.live:after{content:"";position:absolute;left:20px;bottom:14px;width:6px;height:6px;border-radius:50%;background:#b9c7d8;box-shadow:0 0 12px #b9c7d8}
+@media(max-width:920px){header{align-items:flex-start;flex-direction:column}.subtitle{text-align:left}.grid{grid-template-columns:1fr}.block{min-height:0}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div>
+    <div class="kicker">ACT · базовый курс · урок 1</div>
+    <h1>Карта урока</h1>
+  </div>
+  <div class="subtitle">Быстрый переход к любой части урока. Каждый раздел живёт отдельно и может разрабатываться независимо.</div>
+</header>
+
+<main class="grid">
+  <section class="block">
+    <div class="blockHead"><div class="num">Блок 01</div><h2>RFT</h2></div>
+    <div class="cards">
+      <a class="card live" href="./rft/"><div class="cardNo">01</div><div class="cardTitle">Что такое RFT</div><div class="arrow">→</div></a>
+      <a class="card live" href="./frames/"><div class="cardNo">02</div><div class="cardTitle">Схема RFT</div><div class="arrow">→</div></a>
+      <a class="card" href="./rft-examples/"><div class="cardNo">03</div><div class="cardTitle">Примеры</div><div class="arrow">→</div></a>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="blockHead"><div class="num">Блок 02</div><h2>Философия</h2></div>
+    <div class="cards">
+      <a class="card" href="./philosophy/"><div class="cardNo">04</div><div class="cardTitle">Философия</div><div class="arrow">→</div></a>
+      <a class="card" href="./suffering/"><div class="cardNo">05</div><div class="cardTitle">Страдание</div><div class="arrow">→</div></a>
+      <a class="card" href="./life/"><div class="cardNo">06</div><div class="cardTitle">Жизнь</div><div class="arrow">→</div></a>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="blockHead"><div class="num">Блок 03</div><h2>Гексафлекс</h2></div>
+    <div class="cards">
+      <a class="card" href="./hexaflex/"><div class="cardNo">07</div><div class="cardTitle">Гексафлекс</div><div class="arrow">→</div></a>
+      <a class="card" href="./prism/"><div class="cardNo">08</div><div class="cardTitle">Призма</div><div class="arrow">→</div></a>
+      <a class="card" href="./hexaflex-examples/"><div class="cardNo">09</div><div class="cardTitle">Примеры</div><div class="arrow">→</div></a>
+    </div>
+  </section>
+</main>
+</div>
+</body>
+</html>
