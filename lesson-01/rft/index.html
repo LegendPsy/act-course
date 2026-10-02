@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>RFT — одна растущая сеть · v1.1.1</title>
+<title>RFT — одна растущая сеть · v1.2</title>
 <style>
 :root{
   --bg:#07090d;--fg:#f4f6fb;--muted:#97a1b1;--faint:#616c7d;
@@ -172,7 +172,7 @@ transition:opacity .48s ease,visibility .48s ease}
 <div id="hud">
   <div id="journey"><span class="jdot"></span><span class="jdot"></span><span class="jdot"></span><span class="jdot"></span><span class="jdot"></span></div>
   <div>← назад · → дальше</div>
-  <div>RFT · v1.1.1</div>
+  <div>RFT · v1.2</div>
 </div>
 <div id="tools"><button class="tool" id="fs">⛶</button></div>
 
@@ -232,7 +232,7 @@ function baseFrame(beat){
   return {beat};
 }
 function later(fn,ms){
-  const id=window.later(()=>{
+  const id=window.setTimeout(()=>{
     activeTimeouts.delete(id);
     fn();
   },ms);
@@ -317,8 +317,8 @@ function hideUnwantedNodes(){
   [...nodesWrap.children].forEach(el=>{
     const id=el.id.replace('node-','');
     if(!wantedNodes.has(id)){
-      el.classList.remove('visible');
       el.onclick=null;
+      el.remove();
       delete nodeState[id];
     }
   });
@@ -479,6 +479,14 @@ function symbols(opts={}){
   showEdge('tevTriangle','tev','triangle','=','coord',0,false,dim,false);
   showEdge('luriCircle','luri','circle','=','coord',0,false,dim,false);
 }
+function symbolTemporalRelations(opts={}){
+  const dim=!!opts.dim;
+  const hot=!!opts.hot;
+  const withLabels=opts.labels!==false;
+  showEdge('diamondTriangle','diamond','triangle',withLabels?'раньше':'','derived',24,hot,dim,true);
+  showEdge('triangleCircle','triangle','circle',withLabels?'раньше':'','derived',-24,hot,dim,true);
+  showEdge('diamondCircle','diamond','circle',withLabels?'раньше':'','derived',-52,hot,dim,true);
+}
 function lifeMappedNetwork(opts={}){
   const dimWords=opts.dimWords!==false;
   const dimSymbols=opts.dimSymbols!==false;
@@ -498,6 +506,7 @@ function lifeMappedNetwork(opts={}){
   showEdge('nomaDiamond','noma','diamond','=', 'coord',0,false,true,false);
   showEdge('tevTriangle','tev','triangle','=', 'coord',0,false,true,false);
   showEdge('luriCircle','luri','circle','=', 'coord',0,false,true,false);
+  symbolTemporalRelations({dim:true,labels:false});
 
   tintNode('noma','#4b141a','#e05563','#ffd7db');
   tintNode('diamond','#4a183f','#d067bf','#ffd5f7');
@@ -560,6 +569,7 @@ function bonusContextNetwork(){
   showEdge('nomaDiamond','noma','diamond','','coord',0,false,true,false);
   showEdge('tevTriangle','tev','triangle','','coord',0,false,true,false);
   showEdge('luriCircle','luri','circle','','coord',0,false,true,false);
+  symbolTemporalRelations({dim:true,labels:false});
   showEdge('diamondSilence','diamond','silence','','meaning',0,false,true,true);
   showEdge('triangleThought','triangle','thought','','meaning',0,false,true,true);
   showEdge('circleUrge','circle','urge','','meaning',0,false,true,true);
@@ -656,6 +666,7 @@ function render(frame){
     world.style.filter='none';
     finalMode=false;
     document.getElementById('intro').classList.remove('hide');
+    syncFinish();
     return;
   }
 
@@ -725,9 +736,9 @@ function render(frame){
     setJourney(2);
     say('','Вот она.','Сплошные отношения были даны. Пунктирные — появились как вывод.');
     coreTriangle();
-    later(()=>{pulse('nt');later(()=>pulse('tl'),250);later(()=>pulse('nl'),560)},300);
     reflection.textContent='Теперь ты можешь реагировать не только на две заданные связи, но и на отношения, которые из них следуют.';
     cont('Связать слова с символами',next);
+    later(()=>{pulse('nt');later(()=>pulse('tl'),250);later(()=>pulse('nl'),560)},300);
   }
 
   if(beat===4){
@@ -766,7 +777,7 @@ function render(frame){
     say('','Слова слегка уйдут в фон.','Отношения при этом никуда не исчезают.');
     coreTriangle({dim:true});
     symbols();
-    question.textContent='Какой символ связан с тем, что происходит раньше всех?';
+    question.textContent='Какой символ происходит раньше других символов?';
 
     if(frame.phase==='answered'){
       document.getElementById('node-noma').classList.remove('dim');
@@ -774,7 +785,8 @@ function render(frame){
       showEdge('nomaDiamond','noma','diamond','=','coord',0,true,false,false);
       showEdge('nt','noma','tev','раньше','given',36,true,true,true);
       showEdge('nl','noma','luri','раньше','derived',-78,true,true,true);
-      reflection.textContent='Ты смог ответить о ◆ благодаря отношениям, которые были построены вокруг NOMA.';
+      symbolTemporalRelations({hot:true});
+      reflection.textContent='Теперь ты вывел отношения уже между самими символами: ◆ раньше ▲, ▲ раньше ●, а значит ◆ раньше ●. Этого мы напрямую не задавали.';
       cont('Узнать, что ещё передаётся по связи',next);
     }else{
       buttons([{label:'◆',ok:true},{label:'▲',ok:false},{label:'●',ok:false}],(it,b)=>{
@@ -790,6 +802,7 @@ function render(frame){
     say('Шаг 4','Узнаем цвет NOMA.','Чтобы узнать цвет NOMA, нажми на неё три раза.');
     coreTriangle({nomaCls:'focus'});
     symbols({dim:true});
+    symbolTemporalRelations({dim:true});
     question.textContent='Чтобы узнать цвет NOMA, нажми три раза';
     practiceDots.innerHTML='<span class="practiceDot"></span><span class="practiceDot"></span><span class="practiceDot"></span>';
     [...practiceDots.children].forEach((d,i)=>d.classList.toggle('on',i<progress));
@@ -807,12 +820,12 @@ function render(frame){
         const currentProgress=currentFrame.beat===8?(currentFrame.progress||0):0;
         const nextProgress=Math.min(3,currentProgress+1);
         recordFrame({beat:8,progress:nextProgress});
-        [...practiceDots.children].forEach((d,i)=>d.classList.toggle('on',i<nextProgress));
-        bumpNode('noma');
-
         if(nextProgress>=3){
           render(currentFrame);
+          return;
         }
+        [...practiceDots.children].forEach((d,i)=>d.classList.toggle('on',i<nextProgress));
+        bumpNode('noma');
       };
     }
   }
@@ -822,6 +835,7 @@ function render(frame){
     say('','Теперь попробуй узнать цвет ◆.','Никто не говорил тебе, что именно надо делать. Просто посмотри, что ты сделаешь сам.');
     coreTriangle({dim:true});
     symbols({dim:true});
+    symbolTemporalRelations({dim:true});
     clearTint('diamond');
     tintNode('noma','#4b141a','#e05563','#ffd7db');
     document.getElementById('node-noma').classList.remove('dim');
@@ -844,13 +858,13 @@ function render(frame){
         const currentProgress=currentFrame.beat===9?(currentFrame.progress||0):0;
         const nextProgress=Math.min(3,currentProgress+1);
         recordFrame({beat:9,progress:nextProgress});
+        if(nextProgress>=3){
+          render(currentFrame);
+          return;
+        }
         [...practiceDots.children].forEach((d,i)=>d.classList.toggle('on',i<nextProgress));
         bumpNode('diamond');
         pulse('nomaDiamond');
-
-        if(nextProgress>=3){
-          render(currentFrame);
-        }
       };
     }
   }
@@ -894,9 +908,9 @@ function render(frame){
   if(beat===13){
     setJourney(5);
     lifeMeaningLayer(1);
-    later(()=>pulse('thoughtSelf'),240);
     reflection.textContent='Мысль «я сказал что-то не то» может войти в новое отношение: «значит, я плохой психолог». Это уже новый слой сети.';
     cont('Посмотреть, как сеть влияет на действие',next);
+    later(()=>pulse('thoughtSelf'),240);
   }
 
   if(beat===14){
@@ -924,6 +938,7 @@ function render(frame){
     showEdge('nomaDiamond','noma','diamond','','coord',0,false,false,false);
     showEdge('tevTriangle','tev','triangle','','coord',0,false,false,false);
     showEdge('luriCircle','luri','circle','','coord',0,false,false,false);
+    symbolTemporalRelations({labels:false});
 
     showEdge('diamondSilence','diamond','silence','','meaning',0,false,false,true);
     showEdge('triangleThought','triangle','thought','','meaning',0,false,false,true);
