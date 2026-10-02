@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>RFT — одна растущая сеть · v0.3</title>
+<title>RFT — одна растущая сеть · v0.4</title>
 <style>
 :root{
-  --bg:#07090d;--fg:#f4f6fb;--muted:#939dac;--faint:#596273;
-  --panel:rgba(13,17,24,.86);--border:#303846;--line:#738096;--derived:#d7dce6;
+  --bg:#07090d;--fg:#f4f6fb;--muted:#97a1b1;--faint:#616c7d;
+  --panel:rgba(12,16,22,.88);--panel2:rgba(10,13,18,.75);--border:#303846;--line:#7a879b;--derived:#e2e6ee;
 }
 *{box-sizing:border-box}
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--fg);
@@ -15,53 +15,56 @@ font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Sego
 button{font:inherit}
 body{user-select:none}
 #app{position:relative;width:100%;height:100%;overflow:hidden;background:
-radial-gradient(circle at 50% 48%,rgba(64,76,96,.11),transparent 37%),
+radial-gradient(circle at 50% 44%,rgba(64,76,96,.10),transparent 36%),
 radial-gradient(circle at 50% 50%,#0b0e14 0%,#07090d 68%,#05070a 100%)}
 #grain{position:absolute;inset:0;opacity:.11;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.18'/%3E%3C/svg%3E")}
-#world{position:absolute;inset:0;transform-style:preserve-3d;transition:transform 1.3s cubic-bezier(.2,.75,.2,1),filter .9s ease}
-#world.final3d{transform:perspective(1200px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) scale(.985)}
+#world{position:absolute;left:0;right:0;top:0;bottom:24vh;transform-style:preserve-3d;transition:transform 1.3s cubic-bezier(.2,.75,.2,1),filter .9s ease}
+#world.final3d{transform:perspective(1200px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) scale(.95)}
+#world.final3d .edgeLabel{opacity:0 !important}
 #edges{position:absolute;inset:0;width:100%;height:100%;z-index:1;overflow:visible;pointer-events:none}
-.edge{fill:none;stroke-linecap:round;stroke-width:2.2;opacity:.92;transition:opacity .55s ease,stroke .55s ease,stroke-width .55s ease}
-.edge.given{stroke:#78859a}
+.edge{fill:none;stroke-linecap:round;stroke-width:2.2;opacity:.95;transition:opacity .55s ease,stroke .55s ease,stroke-width .55s ease}
+.edge.given{stroke:var(--line)}
 .edge.derived{stroke:var(--derived);stroke-dasharray:8 9}
-.edge.coord{stroke:#667185;stroke-width:1.7}
-.edge.meaning{stroke:#8f9bad;stroke-width:1.8}
-.edge.dim{opacity:.27}
-.edge.hot{stroke:#f3f5fa;stroke-width:3.2}
+.edge.coord{stroke:#748095;stroke-width:1.7}
+.edge.meaning{stroke:#97a2b5;stroke-width:1.8}
+.edge.dim{opacity:.36}
+.edge.hot{stroke:#f5f7fb;stroke-width:3.1}
 .edgePulse{fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round;stroke-dasharray:12 900;animation:pulse 1.25s ease-out forwards}
 @keyframes pulse{from{stroke-dashoffset:0;opacity:1}to{stroke-dashoffset:-520;opacity:0}}
-.edgeLabel{position:absolute;z-index:3;transform:translate(-50%,-50%);padding:4px 8px;border-radius:999px;
-font-size:11px;letter-spacing:.035em;color:#aab3c2;background:rgba(7,9,13,.9);
-border:1px solid rgba(112,123,142,.24);white-space:nowrap;transition:opacity .45s ease,left .9s ease,top .9s ease}
-.edgeLabel.dim{opacity:.22}
-.node{position:absolute;z-index:5;transform:translate(-50%,-50%) scale(.88);opacity:0;
-min-width:74px;min-height:66px;padding:16px 21px;border-radius:999px;border:1px solid #323a48;
-background:rgba(14,18,25,.92);display:flex;align-items:center;justify-content:center;text-align:center;
+.edgeLabel{position:absolute;z-index:3;transform:translate(-50%,-50%);padding:5px 10px;border-radius:999px;
+font-size:12px;letter-spacing:.035em;color:#b8c0ce;background:rgba(7,9,13,.92);
+border:1px solid rgba(112,123,142,.28);white-space:nowrap;transition:opacity .45s ease,left .9s ease,top .9s ease}
+.edgeLabel.dim{opacity:.38}
+.node{position:absolute;z-index:5;transform:translate(-50%,-50%) scale(.9);opacity:0;
+min-width:76px;min-height:66px;padding:16px 21px;border-radius:999px;border:1px solid #364050;
+background:rgba(14,18,25,.94);display:flex;align-items:center;justify-content:center;text-align:center;
 white-space:nowrap;font-weight:730;font-size:clamp(20px,2.7vw,40px);letter-spacing:-.026em;
 box-shadow:0 16px 58px rgba(0,0,0,.35);
 transition:left 1.05s cubic-bezier(.2,.75,.2,1),top 1.05s cubic-bezier(.2,.75,.2,1),
-opacity .55s ease,transform .7s ease,border-color .6s ease,box-shadow .6s ease,filter .6s ease}
+opacity .55s ease,transform .7s ease,border-color .6s ease,box-shadow .6s ease,filter .6s ease,color .6s ease}
 .node.visible{opacity:1;transform:translate(-50%,-50%) scale(1)}
-.node.dim{opacity:.22}
-.node.focus{border-color:#8c97aa;box-shadow:0 0 0 1px rgba(255,255,255,.04),0 0 58px rgba(194,202,217,.13)}
-.node.symbol{font-size:clamp(27px,4vw,58px);min-width:68px;min-height:68px}
-.node.human{font-size:clamp(14px,1.55vw,23px);font-weight:640;min-width:80px;min-height:54px;padding:13px 18px}
+.node.dim{opacity:.48;color:#b9c1ce;border-color:#2c3440}
+.node.focus{border-color:#95a0b3;box-shadow:0 0 0 1px rgba(255,255,255,.04),0 0 58px rgba(194,202,217,.13)}
+.node.symbol{font-size:clamp(26px,4vw,56px);min-width:66px;min-height:66px}
+.node.human{font-size:clamp(14px,1.55vw,22px);font-weight:640;min-width:82px;min-height:54px;padding:13px 18px;white-space:normal;max-width:230px;line-height:1.18}
 .node.clickable{cursor:pointer}
-.node.clickable:hover{border-color:#929db0;box-shadow:0 0 0 1px rgba(255,255,255,.05),0 0 50px rgba(194,202,217,.13)}
+.node.clickable:hover{border-color:#98a4b7;box-shadow:0 0 0 1px rgba(255,255,255,.05),0 0 50px rgba(194,202,217,.13)}
 .node.depthNear.visible{transform:translate(-50%,-50%) scale(1.13);filter:none;opacity:1}
-.node.depthMid.visible{transform:translate(-50%,-50%) scale(.94);filter:none;opacity:.82}
-.node.depthFar.visible{transform:translate(-50%,-50%) scale(.78);filter:blur(.35px);opacity:.56}
+.node.depthMid.visible{transform:translate(-50%,-50%) scale(.94);filter:none;opacity:.84}
+.node.depthFar.visible{transform:translate(-50%,-50%) scale(.78);filter:blur(.35px);opacity:.58}
 
-#narrative{position:absolute;z-index:20;left:50%;top:5.4vh;transform:translateX(-50%);width:min(980px,88vw);text-align:center;pointer-events:none}
+#narrative{position:absolute;z-index:20;left:50%;top:4.6vh;transform:translateX(-50%);width:min(980px,88vw);text-align:center;pointer-events:none}
 #eyebrow{min-height:16px;font-size:11px;letter-spacing:.19em;text-transform:uppercase;color:#6d7788}
 #headline{margin-top:9px;font-size:clamp(24px,3.6vw,50px);line-height:1.07;letter-spacing:-.038em;font-weight:690}
 #subline{margin:12px auto 0;max-width:790px;color:var(--muted);font-size:clamp(14px,1.45vw,19px);line-height:1.48}
 .swap{animation:swap .45s ease}
 @keyframes swap{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
 
-#interaction{position:absolute;z-index:30;left:50%;bottom:7.4vh;transform:translateX(-50%);width:min(930px,92vw);
-display:flex;flex-direction:column;align-items:center;gap:13px}
-#question{font-size:clamp(17px,1.9vw,27px);line-height:1.25;text-align:center}
+#interaction{position:absolute;z-index:30;left:0;right:0;bottom:0;height:24vh;min-height:185px;
+display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:12px;padding:16px 18px 32px;
+background:linear-gradient(180deg,rgba(7,9,13,0) 0%, rgba(7,9,13,.62) 10%, rgba(8,11,16,.88) 28%, rgba(8,11,16,.96) 100%);
+border-top:1px solid rgba(67,77,93,.28);backdrop-filter:blur(4px)}
+#question{font-size:clamp(18px,2vw,29px);line-height:1.25;text-align:center;min-height:28px;max-width:950px}
 #answers{display:flex;gap:11px;justify-content:center;flex-wrap:wrap}
 .answer,.continue{border:1px solid var(--border);background:var(--panel);color:#eef1f7;border-radius:999px;
 padding:13px 22px;min-width:145px;cursor:pointer;transition:.18s ease}
@@ -69,12 +72,12 @@ padding:13px 22px;min-width:145px;cursor:pointer;transition:.18s ease}
 .answer.chosen,.continue{background:#edf0f6;color:#090b0f;border-color:#edf0f6}
 .answer.wrong{animation:shake .3s ease}
 @keyframes shake{25%{transform:translateX(-5px)}50%{transform:translateX(5px)}75%{transform:translateX(-3px)}}
-#reflection{max-width:780px;color:#a7b0bf;text-align:center;font-size:clamp(13px,1.3vw,17px);line-height:1.45;min-height:24px}
+#reflection{max-width:820px;color:#a7b0bf;text-align:center;font-size:clamp(13px,1.3vw,17px);line-height:1.45;min-height:22px}
 #practiceDots{display:flex;gap:8px;height:10px}
 .practiceDot{width:7px;height:7px;border-radius:50%;background:#303744}
 .practiceDot.on{background:#d9dee8;box-shadow:0 0 16px rgba(217,222,232,.22)}
 
-#hud{position:absolute;z-index:40;left:20px;right:20px;bottom:16px;display:flex;justify-content:space-between;align-items:center;
+#hud{position:absolute;z-index:40;left:20px;right:20px;bottom:6px;display:flex;justify-content:space-between;align-items:center;
 font-size:11px;color:#606a7b;pointer-events:none}
 #journey{display:flex;gap:8px}
 .jdot{width:6px;height:6px;border-radius:50%;background:#2b3240;transition:.4s ease}
@@ -83,7 +86,7 @@ font-size:11px;color:#606a7b;pointer-events:none}
 .tool{border:1px solid #252d38;background:rgba(11,14,20,.72);color:#8d97a8;border-radius:11px;padding:8px 10px;cursor:pointer}
 
 #intro,#reveal{position:absolute;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;text-align:center;background:#07090d;
-transition:opacity .85s ease,visibility .85s ease}
+transition:opacity .48s ease,visibility .48s ease}
 #intro.hide,#reveal.hide{opacity:0;visibility:hidden}
 #reveal{opacity:0;visibility:hidden;z-index:80}
 #reveal.on{opacity:1;visibility:visible}
@@ -97,19 +100,20 @@ transition:opacity .85s ease,visibility .85s ease}
 .meaning{margin:17px auto 0;max-width:790px;color:#909aaa;font-size:clamp(14px,1.45vw,19px);line-height:1.55}
 .revealInner .continue{margin-top:28px}
 
-.legend{position:absolute;z-index:15;left:20px;top:18px;display:flex;gap:13px;align-items:center;color:#697386;font-size:11px;opacity:.85}
+.legend{position:absolute;z-index:15;left:20px;top:18px;display:flex;gap:13px;align-items:center;color:#697386;font-size:11px;opacity:.9}
 .legendItem{display:flex;align-items:center;gap:6px}
 .legendLine{width:28px;height:0;border-top:2px solid #78859a}
 .legendLine.dashed{border-top-color:#d7dce6;border-top-style:dashed}
 
 @media(max-width:780px){
-#narrative{top:5.8vh;width:92vw}
-#interaction{bottom:9vh}
+#world{bottom:28vh}
+#narrative{top:5vh;width:92vw}
+#interaction{height:28vh;min-height:220px;padding:16px 14px 12px}
 .node{min-width:58px;min-height:54px;padding:12px 14px}
-.node.human{font-size:12px}
-.edgeLabel{font-size:9px}
+.node.human{font-size:12px;max-width:160px}
+.edgeLabel{font-size:10px}
 .legend{display:none}
-#hud{left:12px;right:12px;bottom:10px}
+#hud{left:12px;right:12px;bottom:4px}
 }
 </style>
 </head>
@@ -154,7 +158,7 @@ transition:opacity .85s ease,visibility .85s ease}
 <div id="hud">
   <div id="journey"><span class="jdot"></span><span class="jdot"></span><span class="jdot"></span><span class="jdot"></span><span class="jdot"></span></div>
   <div>← назад · → дальше</div>
-  <div>RFT · v0.3</div>
+  <div>RFT · v0.4</div>
 </div>
 <div id="tools"><button class="tool" id="fs">⛶</button></div>
 
@@ -198,6 +202,8 @@ let beat=0;
 let practiceCount=0;
 let symbolResponse=null;
 let finalMode=false;
+const completed={};
+const lockedBeats=new Set([1,2,7,8,9]);
 
 const nodeState={};
 const edgeState={};
@@ -215,6 +221,11 @@ function clearInteraction(){
 }
 function setJourney(n){journey.forEach((d,i)=>d.classList.toggle('on',i<n))}
 function wrong(btn){btn.classList.remove('wrong');void btn.offsetWidth;btn.classList.add('wrong')}
+function tintNode(id,bg,border,color){const el=document.getElementById('node-'+id);if(!el)return;el.style.background=bg;el.style.borderColor=border;el.style.color=color;}
+function clearTint(id){const el=document.getElementById('node-'+id);if(!el)return;el.style.background='';el.style.borderColor='';el.style.color='';}
+function resetTints(){['noma','diamond'].forEach(clearTint)}
+function bumpNode(id){const el=document.getElementById('node-'+id);if(!el)return;el.animate([{transform:'translate(-50%,-50%) scale(1)'},{transform:'translate(-50%,-50%) scale(1.08)'},{transform:'translate(-50%,-50%) scale(1)'}],{duration:220,easing:'ease-out'});}
+function nudgeLocked(){question.animate([{opacity:1},{opacity:.35},{opacity:1}],{duration:380});}
 function cont(label,fn){
   answers.innerHTML='';
   const b=document.createElement('button');b.className='continue';b.textContent=label||'Дальше';b.onclick=fn||next;answers.appendChild(b);
@@ -255,7 +266,7 @@ function pathPoint(a,b,curve,t){
   const x1=a.x*w/100,y1=a.y*h/100,x2=b.x*w/100,y2=b.y*h/100;
   const dx=x2-x1,dy=y2-y1,len=Math.max(1,Math.hypot(dx,dy));
   const nx=-dy/len,ny=dx/len;
-  const trim=48;
+  const trim=44;
   const sx=x1+(dx/len)*trim,sy=y1+(dy/len)*trim;
   const ex=x2-(dx/len)*trim,ey=y2-(dy/len)*trim;
   const mx=(sx+ex)/2,my=(sy+ey)/2;
@@ -312,41 +323,41 @@ function syncFinish(){
 }
 function coreTriangle(opts={}){
   const dim=!!opts.dim;
-  showNode('noma','NOMA',30,36,(opts.nomaCls||'')+(dim?' dim':''));
-  showNode('tev','TEV',50,54,(opts.tevCls||'')+(dim?' dim':''));
-  showNode('luri','LURI',70,36,(opts.luriCls||'')+(dim?' dim':''));
-  showEdge('nt','noma','tev','старше','given',24,false,dim,true);
-  showEdge('tn','tev','noma','младше','derived',24,false,dim,true);
-  showEdge('tl','tev','luri','старше','given',-24,false,dim,true);
-  showEdge('nl','noma','luri','старше','derived',-72,false,dim,true);
+  showNode('noma','NOMA',28,31,(opts.nomaCls||'')+(dim?' dim':''));
+  showNode('tev','TEV',50,47,(opts.tevCls||'')+(dim?' dim':''));
+  showNode('luri','LURI',72,31,(opts.luriCls||'')+(dim?' dim':''));
+  showEdge('nt','noma','tev','старше','given',36,false,dim,true);
+  showEdge('tn','tev','noma','младше','derived',34,false,dim,true);
+  showEdge('tl','tev','luri','старше','given',-36,false,dim,true);
+  showEdge('nl','noma','luri','старше','derived',-78,false,dim,true);
 }
 function symbols(opts={}){
   const dim=!!opts.dim;
-  showNode('diamond','◆',30,68,'symbol'+(dim?' dim':''));
-  showNode('triangle','▲',50,76,'symbol'+(dim?' dim':''));
-  showNode('circle','●',70,68,'symbol'+(dim?' dim':''));
+  showNode('diamond','◆',28,61,'symbol'+(dim?' dim':''));
+  showNode('triangle','▲',50,67,'symbol'+(dim?' dim':''));
+  showNode('circle','●',72,61,'symbol'+(dim?' dim':''));
   showEdge('nomaDiamond','noma','diamond','=','coord',0,false,dim,false);
   showEdge('tevTriangle','tev','triangle','=','coord',0,false,dim,false);
   showEdge('luriCircle','luri','circle','=','coord',0,false,dim,false);
 }
 function semanticBranch(stage=4,dim=false){
-  showNode('interview','СОБЕСЕДОВАНИЕ',82,47,'human'+(dim?' dim':''));
-  showEdge('diamondInterview','diamond','interview','обозначает','meaning',-34,false,dim,true);
+  showNode('interview','СОБЕСЕДОВАНИЕ',82,44,'human'+(dim?' dim':''));
+  showEdge('diamondInterview','diamond','interview','обозначает','meaning',70,false,dim,true);
   if(stage>=1){
-    showNode('evaluation','оценка',88,27,'human'+(dim?' dim':''));
+    showNode('evaluation','оценка',84,25,'human'+(dim?' dim':''));
     showEdge('ie','interview','evaluation','может быть','meaning',24,false,dim,true);
   }
   if(stage>=2){
-    showNode('mistake','ошибка',91,61,'human'+(dim?' dim':''));
-    showEdge('im','interview','mistake','возможна','meaning',-20,false,dim,true);
+    showNode('mistake','ошибка',92,56,'human'+(dim?' dim':''));
+    showEdge('im','interview','mistake','возможна','meaning',-12,false,dim,true);
   }
   if(stage>=3){
-    showNode('notgood','«я недостаточно хороший специалист»',72,82,'human'+(dim?' dim':''));
-    showEdge('mn','mistake','notgood','значит','derived',32,false,dim,true);
+    showNode('notgood','«я недостаточно хороший специалист»',72,73,'human'+(dim?' dim':''));
+    showEdge('mn','mistake','notgood','значит','derived',24,false,dim,true);
   }
   if(stage>=4){
-    showNode('exposed','«меня разоблачат»',91,82,'human'+(dim?' dim':''));
-    showEdge('ne','notgood','exposed','тогда','derived',-18,false,dim,true);
+    showNode('exposed','«меня разоблачат»',91,77,'human'+(dim?' dim':''));
+    showEdge('ne','notgood','exposed','тогда','derived',-12,false,dim,true);
   }
 }
 function render(n){
@@ -354,6 +365,7 @@ function render(n){
   wantedEdges=new Set();
   beat=Math.max(0,Math.min(15,n));
   clearInteraction();
+  resetTints();
   reveal.classList.remove('on');
   world.classList.remove('final3d');
   world.style.filter='none';
@@ -362,9 +374,9 @@ function render(n){
   if(beat===0){
     setJourney(0);
     say('Шаг 1','Пока только одна связь.','NOMA старше TEV.');
-    showNode('noma','NOMA',34,51,'focus');
-    showNode('tev','TEV',66,51,'');
-    showEdge('nt','noma','tev','старше','given',58,false,false,true);
+    showNode('noma','NOMA',34,41,'focus');
+    showNode('tev','TEV',66,41,'');
+    showEdge('nt','noma','tev','старше','given',62,false,false,true);
     reflection.textContent='Сплошная линия — то, что было дано напрямую.';
     cont('Понятно',next);
   }
@@ -372,14 +384,14 @@ function render(n){
   if(beat===1){
     setJourney(1);
     say('','Теперь ответь сам.','');
-    showNode('noma','NOMA',34,51,'');
-    showNode('tev','TEV',66,51,'');
-    showEdge('nt','noma','tev','старше','given',58,false,false,true);
+    showNode('noma','NOMA',34,41,'');
+    showNode('tev','TEV',66,41,'');
+    showEdge('nt','noma','tev','старше','given',62,false,false,true);
     question.textContent='Кто младше?';
     buttons([{label:'NOMA',ok:false},{label:'TEV',ok:true}],(it,b)=>{
       if(!it.ok){wrong(b);return}
-      b.classList.add('chosen');
-      showEdge('tn','tev','noma','младше','derived',58,true,false,true);
+      b.classList.add('chosen');completed[1]=true;
+      showEdge('tn','tev','noma','младше','derived',62,true,false,true);
       pulse('tn');
       reflection.textContent='Эту вторую связь никто не сообщал напрямую. Ты её вывел.';
       cont('Дальше',next);
@@ -389,17 +401,17 @@ function render(n){
   if(beat===2){
     setJourney(2);
     say('Шаг 2','Добавим LURI.','Сеть растёт, но предыдущие отношения никуда не исчезают.');
-    showNode('noma','NOMA',30,36,'');
-    showNode('tev','TEV',50,54,'focus');
-    showNode('luri','LURI',70,36,'');
-    showEdge('nt','noma','tev','старше','given',24,false,false,true);
-    showEdge('tn','tev','noma','младше','derived',24,false,false,true);
-    showEdge('tl','tev','luri','старше','given',-24,false,false,true);
+    showNode('noma','NOMA',28,31,'');
+    showNode('tev','TEV',50,47,'focus');
+    showNode('luri','LURI',72,31,'');
+    showEdge('nt','noma','tev','старше','given',36,false,false,true);
+    showEdge('tn','tev','noma','младше','derived',34,false,false,true);
+    showEdge('tl','tev','luri','старше','given',-36,false,false,true);
     question.textContent='Кто старше: NOMA или LURI?';
     buttons([{label:'NOMA',ok:true},{label:'LURI',ok:false}],(it,b)=>{
       if(!it.ok){wrong(b);return}
-      b.classList.add('chosen');
-      showEdge('nl','noma','luri','старше','derived',-72,true,false,true);
+      b.classList.add('chosen');completed[2]=true;
+      showEdge('nl','noma','luri','старше','derived',-78,true,false,true);
       pulse('nl');
       reflection.textContent='Ты замкнул треугольник отношением, которого не было среди исходных данных.';
       cont('Посмотреть на сеть',next);
@@ -419,7 +431,7 @@ function render(n){
     setJourney(3);
     say('Шаг 3','NOMA получит второй ярлык.','В этой игре ◆ и NOMA обозначают одно и то же.');
     coreTriangle();
-    showNode('diamond','◆',30,68,'symbol focus');
+    showNode('diamond','◆',28,61,'symbol focus');
     showEdge('nomaDiamond','noma','diamond','=','coord',0,true,false,false);
     reflection.textContent='Мы ничего не удаляем. К существующей сети просто добавилось ещё одно отношение.';
     cont('Дальше',next);
@@ -429,8 +441,8 @@ function render(n){
     setJourney(3);
     say('','Теперь TEV.','▲ и TEV — одно и то же в рамках этой игры.');
     coreTriangle();
-    showNode('diamond','◆',30,68,'symbol');
-    showNode('triangle','▲',50,76,'symbol focus');
+    showNode('diamond','◆',28,61,'symbol');
+    showNode('triangle','▲',50,67,'symbol focus');
     showEdge('nomaDiamond','noma','diamond','=','coord',0,false,false,false);
     showEdge('tevTriangle','tev','triangle','=','coord',0,true,false,false);
     cont('Дальше',next);
@@ -454,12 +466,12 @@ function render(n){
     question.textContent='Какой символ связан с самым старшим из трёх?';
     buttons([{label:'◆',ok:true},{label:'▲',ok:false},{label:'●',ok:false}],(it,b)=>{
       if(!it.ok){wrong(b);return}
-      b.classList.add('chosen');
+      b.classList.add('chosen');completed[7]=true;
       document.getElementById('node-noma').classList.remove('dim');
       document.getElementById('node-diamond').classList.add('focus');
       showEdge('nomaDiamond','noma','diamond','=','coord',0,true,false,false);
-      showEdge('nt','noma','tev','старше','given',24,true,true,true);
-      showEdge('nl','noma','luri','старше','derived',-72,true,true,true);
+      showEdge('nt','noma','tev','старше','given',36,true,true,true);
+      showEdge('nl','noma','luri','старше','derived',-78,true,true,true);
       pulse('nomaDiamond');setTimeout(()=>pulse('nl'),260);
       reflection.textContent='Ты смог ответить о ◆ благодаря отношениям, которые были построены вокруг NOMA.';
       cont('А теперь — функция',next);
@@ -467,62 +479,59 @@ function render(n){
   }
 
   if(beat===8){
-    setJourney(4);
-    say('Шаг 4','Научим NOMA одному действию.','Когда нажимаешь NOMA, сеть отвечает коротким импульсом.');
-    coreTriangle({nomaCls:'focus clickable'});
-    symbols({dim:true});
-    question.textContent='Нажми на NOMA три раза';
+    practiceCount=0;
+    setJourney(4);say('Шаг 4','Узнаем цвет NOMA.','Чтобы узнать цвет NOMA, нажми на неё три раза.');coreTriangle({nomaCls:'focus clickable'});symbols({dim:true});
+    question.textContent='Чтобы узнать цвет NOMA, нажми три раза';
     practiceDots.innerHTML='<span class="practiceDot"></span><span class="practiceDot"></span><span class="practiceDot"></span>';
-    const noma=document.getElementById('node-noma');
-    noma.classList.add('clickable');
+    clearTint('noma');
+    const noma=document.getElementById('node-noma');noma.classList.add('clickable');
     noma.onclick=()=>{
       practiceCount=Math.min(3,practiceCount+1);
       [...practiceDots.children].forEach((d,i)=>d.classList.toggle('on',i<practiceCount));
-      pulse('nt');
+      bumpNode('noma');
       if(practiceCount>=3){
         noma.onclick=null;noma.classList.remove('clickable');
-        reflection.textContent='Хорошо. Действие «нажать» теперь было несколько раз связано именно с NOMA.';
-        cont('Продолжить',next);
+        tintNode('noma','#4b141a','#e05563','#ffd7db');
+        completed[8]=true;
+        reflection.textContent='Теперь ты узнал цвет NOMA: она стала красной. Правило было простым: три нажатия → появляется цвет.';
+        cont('Попробовать с ◆',next);
       }
     };
   }
-
   if(beat===9){
-    setJourney(4);
-    say('','Теперь ничего нового не учим.','Просто посмотрим, что ты сделаешь с тем, что уже есть в сети.');
-    coreTriangle({dim:true});
-    symbols({dim:true});
+    practiceCount=0;
+    setJourney(4);say('','Теперь попробуй узнать цвет ◆.','Никто не говорил тебе, что именно надо делать. Просто посмотри, что ты сделаешь сам.');
+    coreTriangle({dim:true});symbols({dim:true});
+    clearTint('diamond');
+    tintNode('noma','#4b141a','#e05563','#ffd7db');
+    document.getElementById('node-noma').classList.remove('dim');
     document.getElementById('node-diamond').classList.remove('dim');
-    document.getElementById('node-diamond').classList.add('focus');
-    question.textContent='Что сделать с ◆?';
-    buttons([{label:'Нажать ◆',action:'click'},{label:'Ничего',action:'nothing'}],(it,b)=>{
-      symbolResponse=it.action;b.classList.add('chosen');
-      if(it.action==='click'){
-        document.getElementById('node-noma').classList.remove('dim');
-        showEdge('nomaDiamond','noma','diamond','=','coord',0,true,false,false);
-        pulse('nomaDiamond');
-        reflection.textContent='Нажимать тебя учили на NOMA, а не на ◆. Но связанная функция смогла перейти через отношение «это то же самое».';
-      }else{
-        reflection.textContent='Это тоже допустимо. Реляционная сеть не механически заставляет реакцию; она меняет возможные функции события в данном контексте.';
+    document.getElementById('node-diamond').classList.add('focus','clickable');
+    showEdge('nomaDiamond','noma','diamond','=','coord',0,true,false,false);
+    question.textContent='Попробуй узнать цвет ◆';
+    practiceDots.innerHTML='<span class="practiceDot"></span><span class="practiceDot"></span><span class="practiceDot"></span>';
+    const diamond=document.getElementById('node-diamond');
+    diamond.onclick=()=>{
+      practiceCount=Math.min(3,practiceCount+1);
+      [...practiceDots.children].forEach((d,i)=>d.classList.toggle('on',i<practiceCount));
+      bumpNode('diamond');pulse('nomaDiamond');
+      if(practiceCount>=3){
+        diamond.onclick=null;diamond.classList.remove('clickable');
+        tintNode('diamond','#4a183f','#d067bf','#ffd5f7');
+        completed[9]=true;
+        reflection.textContent='Ты сам применил к ◆ способ, которому тебя учили только для NOMA. Никто не говорил «нажми ◆ три раза»: этот шаг был достроен через связь NOMA = ◆.';
+        cont('Связать сеть с человеческим событием',next);
       }
-      cont('Связать сеть с человеческим событием',next);
-    });
+    };
   }
-
   if(beat===10){
-    setJourney(4);
-    say('Шаг 5','Теперь сеть входит в человеческий мир.','Пусть ◆ в этой игре обозначает предстоящее собеседование.');
-    coreTriangle({dim:true});symbols();
-    showNode('interview','СОБЕСЕДОВАНИЕ',82,47,'human focus');
-    showEdge('diamondInterview','diamond','interview','обозначает','meaning',-34,true,false,true);
-    reflection.textContent='Собеседование не заменило прежнюю сеть. Оно встроилось в неё.';
-    cont('Добавить смысл',next);
+    setJourney(4);say('Шаг 5','Теперь сеть входит в человеческий мир.','Пусть ◆ в этой игре обозначает предстоящее собеседование.');coreTriangle({dim:true});symbols();tintNode('noma','#4b141a','#e05563','#ffd7db');tintNode('diamond','#4a183f','#d067bf','#ffd5f7');showNode('interview','СОБЕСЕДОВАНИЕ',82,44,'human focus');showEdge('diamondInterview','diamond','interview','обозначает','meaning',70,true,false,true);reflection.textContent='Собеседование не заменило прежнюю сеть. Оно встроилось в неё.';cont('Добавить смысл',next);
   }
 
   if(beat===11){
     setJourney(5);
     say('','Одно событие начинает обрастать значениями.','Не всё сразу. Один узел за другим.');
-    coreTriangle({dim:true});symbols({dim:true});semanticBranch(1,false);
+    coreTriangle({dim:true});symbols({dim:true});tintNode('noma','#4b141a','#e05563','#ffd7db');tintNode('diamond','#4a183f','#d067bf','#ffd5f7');semanticBranch(1,false);
     document.getElementById('node-interview').classList.add('focus');
     reflection.textContent='Собеседование может быть связано с оценкой.';
     cont('Ещё один узел',next);
@@ -531,7 +540,7 @@ function render(n){
   if(beat===12){
     setJourney(5);
     say('','Ещё одна связь.','На собеседовании возможна ошибка.');
-    coreTriangle({dim:true});symbols({dim:true});semanticBranch(2,false);
+    coreTriangle({dim:true});symbols({dim:true});tintNode('noma','#4b141a','#e05563','#ffd7db');tintNode('diamond','#4a183f','#d067bf','#ffd5f7');semanticBranch(2,false);
     document.getElementById('node-mistake').classList.add('focus');
     cont('Что может быть выведено дальше?',next);
   }
@@ -539,47 +548,19 @@ function render(n){
   if(beat===13){
     setJourney(5);
     say('','Теперь появляются уже не просто события.','Появляются выводимые значения.');
-    coreTriangle({dim:true});symbols({dim:true});semanticBranch(4,false);
-    showEdge('mn','mistake','notgood','значит','derived',32,true,false,true);
+    coreTriangle({dim:true});symbols({dim:true});tintNode('noma','#4b141a','#e05563','#ffd7db');tintNode('diamond','#4a183f','#d067bf','#ffd5f7');semanticBranch(4,false);
+    showEdge('mn','mistake','notgood','значит','derived',24,true,false,true);
     setTimeout(()=>pulse('mn'),260);
     reflection.textContent='«Ошибка» может войти в отношение с «я недостаточно хороший специалист», а затем — с «меня разоблачат».';
     cont('Вернуться к самому началу',next);
   }
 
   if(beat===14){
-    setJourney(5);
-    say('','В начале здесь были четыре буквы.','Теперь посмотрим, что стало доступно вокруг них.');
-    finalMode=true;world.classList.add('final3d');
-
-    showNode('noma','NOMA',50,48,'focus depthNear');
-    showNode('tev','TEV',29,34,'depthMid');
-    showNode('luri','LURI',24,61,'depthFar');
-    showNode('diamond','◆',66,29,'symbol depthMid');
-    showNode('triangle','▲',73,55,'symbol depthFar');
-    showNode('circle','●',63,74,'symbol depthMid');
-    showNode('interview','СОБЕСЕДОВАНИЕ',42,78,'human depthNear');
-    showNode('evaluation','оценка',19,78,'human depthFar');
-    showNode('mistake','ошибка',81,21,'human depthMid');
-    showNode('notgood','«я недостаточно хороший специалист»',85,43,'human depthFar');
-    showNode('exposed','«меня разоблачат»',84,73,'human depthMid');
-
-    showEdge('nt','noma','tev','старше','given',18,false,false,true);
-    showEdge('tn','tev','noma','младше','derived',18,false,false,true);
-    showEdge('tl','tev','luri','старше','given',-12,false,false,true);
-    showEdge('nl','noma','luri','старше','derived',-55,false,false,true);
-    showEdge('nomaDiamond','noma','diamond','=','coord',-10,false,false,false);
-    showEdge('tevTriangle','tev','triangle','=','coord',22,false,false,false);
-    showEdge('luriCircle','luri','circle','=','coord',-26,false,false,false);
-    showEdge('diamondInterview','diamond','interview','обозначает','meaning',28,false,false,true);
-    showEdge('ie','interview','evaluation','может быть','meaning',15,false,false,true);
-    showEdge('im','interview','mistake','возможна','meaning',-30,false,false,true);
-    showEdge('mn','mistake','notgood','значит','derived',22,false,false,true);
-    showEdge('ne','notgood','exposed','тогда','derived',-18,false,false,true);
-
-    reflection.textContent='NOMA не изменилась. Изменился мир отношений, который стал доступен вокруг неё.';
-    cont('У этого процесса есть имя',next);
+    setJourney(5);say('','В начале здесь были четыре буквы.','Теперь посмотрим, что стало доступно вокруг них.');finalMode=true;world.classList.add('final3d');
+    showNode('noma','NOMA',47,38,'focus depthNear');showNode('tev','TEV',20,22,'depthMid');showNode('luri','LURI',23,49,'depthFar');showNode('diamond','◆',64,23,'symbol depthMid');showNode('triangle','▲',69,45,'symbol depthFar');showNode('circle','●',63,64,'symbol depthMid');showNode('interview','СОБЕСЕДОВАНИЕ',43,67,'human depthNear');showNode('evaluation','оценка',19,65,'human depthFar');showNode('mistake','ошибка',83,18,'human depthMid');showNode('notgood','«я недостаточно хороший специалист»',83,40,'human depthFar');showNode('exposed','«меня разоблачат»',82,65,'human depthMid');tintNode('noma','#4b141a','#e05563','#ffd7db');tintNode('diamond','#4a183f','#d067bf','#ffd5f7');
+    showEdge('nt','noma','tev','','given',18,false,false,true);showEdge('tn','tev','noma','','derived',18,false,false,true);showEdge('tl','tev','luri','','given',-12,false,false,true);showEdge('nl','noma','luri','','derived',-55,false,false,true);showEdge('nomaDiamond','noma','diamond','','coord',-10,false,false,false);showEdge('tevTriangle','tev','triangle','','coord',18,false,false,false);showEdge('luriCircle','luri','circle','','coord',-18,false,false,false);showEdge('diamondInterview','diamond','interview','','meaning',22,false,false,true);showEdge('ie','interview','evaluation','','meaning',12,false,false,true);showEdge('im','interview','mistake','','meaning',-22,false,false,true);showEdge('mn','mistake','notgood','','derived',22,false,false,true);showEdge('ne','notgood','exposed','','derived',-12,false,false,true);
+    reflection.textContent='Четыре буквы остались теми же. Но теперь NOMA связана с направлениями, символами, действиями и человеческими смыслами — поэтому она уже может участвовать в совсем других реакциях.';cont('У этого процесса есть имя',next);
   }
-
   if(beat===15){
     finalMode=false;
     world.classList.remove('final3d');
@@ -591,7 +572,7 @@ function render(n){
   syncFinish();
 }
 
-function next(){if(beat<15)render(beat+1)}
+function next(){if(beat>=15)return;if(lockedBeats.has(beat)&&!completed[beat]){nudgeLocked();return}render(beat+1)}
 function prev(){
   if(beat>0){
     practiceCount=0;
