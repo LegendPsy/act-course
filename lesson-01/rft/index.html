@@ -350,6 +350,8 @@ function semanticBranch(stage=4,dim=false){
   }
 }
 function render(n){
+  wantedNodes=new Set();
+  wantedEdges=new Set();
   beat=Math.max(0,Math.min(15,n));
   clearInteraction();
   reveal.classList.remove('on');
