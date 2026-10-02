@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>RFT — одна растущая сеть · v0.6</title>
+<title>RFT — одна растущая сеть · v0.7</title>
 <style>
 :root{
   --bg:#07090d;--fg:#f4f6fb;--muted:#97a1b1;--faint:#616c7d;
@@ -59,6 +59,9 @@ opacity .55s ease,transform .7s ease,border-color .6s ease,box-shadow .6s ease,f
 .node.context{min-width:90px;min-height:44px;padding:11px 15px;font-size:clamp(12px,1.2vw,17px);font-weight:650;background:rgba(15,20,28,.92)}
 .node.context.primary{border-color:#8b97aa;box-shadow:0 0 48px rgba(190,199,214,.10)}
 .edge.contextLink{stroke:#69778c;stroke-width:1.5;opacity:.62}
+.node.networkClickable{cursor:pointer}
+.node.networkClickable:hover{border-color:#aab5c7;box-shadow:0 0 0 1px rgba(255,255,255,.06),0 0 34px rgba(215,223,236,.14)}
+.edge.waveActive{stroke:#f5f7fb !important;stroke-width:3.4 !important;opacity:1 !important}
 
 #narrative{position:absolute;z-index:20;left:50%;top:4.6vh;transform:translateX(-50%);width:min(980px,88vw);height:96px;text-align:center;pointer-events:none;visibility:hidden}
 #eyebrow{min-height:16px;font-size:11px;letter-spacing:.19em;text-transform:uppercase;color:#6d7788}
@@ -165,7 +168,7 @@ transition:opacity .48s ease,visibility .48s ease}
 <div id="hud">
   <div id="journey"><span class="jdot"></span><span class="jdot"></span><span class="jdot"></span><span class="jdot"></span><span class="jdot"></span></div>
   <div>← назад · → дальше</div>
-  <div>RFT · v0.6</div>
+  <div>RFT · v0.7</div>
 </div>
 <div id="tools"><button class="tool" id="fs">⛶</button></div>
 
@@ -323,6 +326,83 @@ function pulse(id){
   const p=document.createElementNS('http://www.w3.org/2000/svg','path');
   p.setAttribute('d',pt.d);p.setAttribute('class','edgePulse');svg.appendChild(p);
   setTimeout(()=>p.remove(),1300);
+}
+
+function rippleNode(id,delay){
+  const el=document.getElementById('node-'+id);
+  if(!el||!el.classList.contains('visible'))return;
+  setTimeout(()=>{
+    el.animate([
+      {boxShadow:'0 0 0 rgba(255,255,255,0)',filter:'brightness(1)'},
+      {boxShadow:'0 0 0 2px rgba(255,255,255,.22),0 0 44px rgba(238,243,252,.75)',filter:'brightness(1.85)'},
+      {boxShadow:'0 0 0 1px rgba(255,255,255,.07),0 0 20px rgba(220,228,242,.25)',filter:'brightness(1.12)'},
+      {boxShadow:'',filter:'brightness(1)'}
+    ],{duration:720,easing:'cubic-bezier(.2,.7,.2,1)'});
+  },delay);
+}
+
+function rippleEdge(id,delay){
+  const el=document.getElementById('edge-'+id);
+  if(!el)return;
+  setTimeout(()=>{
+    el.classList.add('waveActive');
+    pulse(id);
+    setTimeout(()=>el.classList.remove('waveActive'),520);
+  },delay);
+}
+
+function rippleNetwork(startId){
+  if(!nodeState[startId])return;
+
+  const adjacency={};
+  Object.keys(nodeState).forEach(id=>adjacency[id]=[]);
+  Object.entries(edgeState).forEach(([edgeId,d])=>{
+    if(!nodeState[d.a]||!nodeState[d.b])return;
+    adjacency[d.a]??=[];
+    adjacency[d.b]??=[];
+    adjacency[d.a].push({node:d.b,edge:edgeId});
+    adjacency[d.b].push({node:d.a,edge:edgeId});
+  });
+
+  const dist={[startId]:0};
+  const queue=[startId];
+  while(queue.length){
+    const here=queue.shift();
+    (adjacency[here]||[]).forEach(({node})=>{
+      if(dist[node]!==undefined)return;
+      dist[node]=dist[here]+1;
+      queue.push(node);
+    });
+  }
+
+  const step=145;
+  Object.entries(dist).forEach(([id,d])=>rippleNode(id,d*step));
+
+  Object.entries(edgeState).forEach(([edgeId,d])=>{
+    if(dist[d.a]===undefined||dist[d.b]===undefined)return;
+    const layer=Math.min(dist[d.a],dist[d.b]);
+    rippleEdge(edgeId,layer*step+55);
+  });
+
+  const maxDist=Math.max(...Object.values(dist),0);
+  setTimeout(()=>{
+    world.animate(
+      [{filter:'brightness(1)'},{filter:'brightness(1.12)'},{filter:'brightness(1)'}],
+      {duration:620,easing:'ease-out'}
+    );
+  },maxDist*step+180);
+}
+
+function enableNetworkRipple(){
+  Object.keys(nodeState).forEach(id=>{
+    const el=document.getElementById('node-'+id);
+    if(!el||!el.classList.contains('visible'))return;
+    el.classList.add('networkClickable');
+    el.onclick=(event)=>{
+      event.stopPropagation();
+      rippleNetwork(id);
+    };
+  });
 }
 function syncFinish(){
   hideUnwantedNodes();hideUnwantedEdges();
@@ -715,7 +795,8 @@ function render(n){
     tintNode('noma','#4b141a','#e05563','#ffd7db');
     tintNode('diamond','#4a183f','#d067bf','#ffd5f7');
 
-    reflection.textContent='Мы начали с трёх бессмысленных слов. Теперь те же отношения участвуют в том, как один эпизод на сессии приобретает смысл и направляет поведение.';
+    reflection.textContent='Мы начали с трёх бессмысленных слов. Теперь те же отношения участвуют в том, как один эпизод на сессии приобретает смысл и направляет поведение. Нажми на любой узел — и посмотри, как откликается вся сеть.';
+    enableNetworkRipple();
     cont('Узнать, как называется этот процесс',next);
   }
 
@@ -733,7 +814,9 @@ function render(n){
     world.style.filter='none';
     setJourney(5);
     bonusContextNetwork();
-    reflection.textContent='И эта сеть не существует отдельно. Всё, что мы только что построили, уже находится внутри других связей: это обучение, конкретный день и время, ведущий, автор, работа, психология — и у каждого из этих элементов есть свои связи дальше.';
+    question.textContent='Нажми на любой элемент сети';
+    reflection.textContent='И эта сеть не существует отдельно. Всё, что мы только что построили, уже находится внутри других связей. Импульс в одном месте может пройти по всей связанной сети — как по паутине.';
+    enableNetworkRipple();
   }
 
   syncFinish();
