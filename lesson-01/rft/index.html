@@ -3,373 +3,628 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>RFT — опыт отношений · v0.2</title>
+<title>RFT — одна растущая сеть · v0.3</title>
 <style>
 :root{
-  --bg:#07090d; --fg:#f4f6fb; --muted:#8f99aa; --soft:#151a23; --line:#465064;
-  --bright:#e9edf6; --danger:#d6d9df;
+  --bg:#07090d;--fg:#f4f6fb;--muted:#939dac;--faint:#596273;
+  --panel:rgba(13,17,24,.86);--border:#303846;--line:#738096;--derived:#d7dce6;
 }
 *{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--fg);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--fg);
+font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 button{font:inherit}
 body{user-select:none}
-#experience{position:relative;width:100%;height:100%;overflow:hidden;background:
-radial-gradient(circle at 50% 45%,rgba(60,73,95,.10),transparent 38%),
-radial-gradient(circle at 50% 50%,#0b0e14 0%,#07090d 64%,#05070a 100%)}
-#grain{position:absolute;inset:0;pointer-events:none;opacity:.13;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.18'/%3E%3C/svg%3E")}
-#world{position:absolute;inset:0;transition:filter 1s ease,transform 1.2s cubic-bezier(.2,.75,.2,1)}
-#links{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
-.edge{stroke:#697387;stroke-width:2;opacity:.75;stroke-linecap:round;transition:opacity .6s ease,stroke .6s ease,stroke-width .6s ease}
-.edge.derived{stroke:#cdd3de;stroke-dasharray:8 10;opacity:.88}
-.edge.hot{stroke:#eef1f7;stroke-width:3}
-.edgePulse{fill:none;stroke:#f2f4f8;stroke-width:3;stroke-linecap:round;stroke-dasharray:10 1000;animation:pulse 1.25s ease-out forwards}
-@keyframes pulse{from{stroke-dashoffset:0;opacity:1}to{stroke-dashoffset:-500;opacity:0}}
-.edgeLabel{
-position:absolute;transform:translate(-50%,-50%);padding:5px 9px;border-radius:999px;
-font-size:12px;letter-spacing:.04em;color:#aeb6c5;background:rgba(7,9,13,.86);
-border:1px solid rgba(116,126,145,.26);white-space:nowrap;z-index:3;
-transition:opacity .5s ease,transform .7s ease
-}
-.node{
-position:absolute;transform:translate(-50%,-50%) scale(.92);min-width:74px;min-height:74px;
-padding:18px 22px;border-radius:999px;border:1px solid #313949;background:rgba(14,18,25,.91);
-display:flex;align-items:center;justify-content:center;text-align:center;white-space:nowrap;
-font-weight:720;font-size:clamp(22px,3vw,44px);letter-spacing:-.025em;
-box-shadow:0 12px 55px rgba(0,0,0,.34);opacity:0;z-index:5;
+#app{position:relative;width:100%;height:100%;overflow:hidden;background:
+radial-gradient(circle at 50% 48%,rgba(64,76,96,.11),transparent 37%),
+radial-gradient(circle at 50% 50%,#0b0e14 0%,#07090d 68%,#05070a 100%)}
+#grain{position:absolute;inset:0;opacity:.11;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.18'/%3E%3C/svg%3E")}
+#world{position:absolute;inset:0;transform-style:preserve-3d;transition:transform 1.3s cubic-bezier(.2,.75,.2,1),filter .9s ease}
+#world.final3d{transform:perspective(1200px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) scale(.985)}
+#edges{position:absolute;inset:0;width:100%;height:100%;z-index:1;overflow:visible;pointer-events:none}
+.edge{fill:none;stroke-linecap:round;stroke-width:2.2;opacity:.92;transition:opacity .55s ease,stroke .55s ease,stroke-width .55s ease}
+.edge.given{stroke:#78859a}
+.edge.derived{stroke:var(--derived);stroke-dasharray:8 9}
+.edge.coord{stroke:#667185;stroke-width:1.7}
+.edge.meaning{stroke:#8f9bad;stroke-width:1.8}
+.edge.dim{opacity:.27}
+.edge.hot{stroke:#f3f5fa;stroke-width:3.2}
+.edgePulse{fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round;stroke-dasharray:12 900;animation:pulse 1.25s ease-out forwards}
+@keyframes pulse{from{stroke-dashoffset:0;opacity:1}to{stroke-dashoffset:-520;opacity:0}}
+.edgeLabel{position:absolute;z-index:3;transform:translate(-50%,-50%);padding:4px 8px;border-radius:999px;
+font-size:11px;letter-spacing:.035em;color:#aab3c2;background:rgba(7,9,13,.9);
+border:1px solid rgba(112,123,142,.24);white-space:nowrap;transition:opacity .45s ease,left .9s ease,top .9s ease}
+.edgeLabel.dim{opacity:.22}
+.node{position:absolute;z-index:5;transform:translate(-50%,-50%) scale(.88);opacity:0;
+min-width:74px;min-height:66px;padding:16px 21px;border-radius:999px;border:1px solid #323a48;
+background:rgba(14,18,25,.92);display:flex;align-items:center;justify-content:center;text-align:center;
+white-space:nowrap;font-weight:730;font-size:clamp(20px,2.7vw,40px);letter-spacing:-.026em;
+box-shadow:0 16px 58px rgba(0,0,0,.35);
 transition:left 1.05s cubic-bezier(.2,.75,.2,1),top 1.05s cubic-bezier(.2,.75,.2,1),
-transform .7s ease,opacity .6s ease,background .7s ease,border-color .7s ease,box-shadow .7s ease,font-size .7s ease;
-}
+opacity .55s ease,transform .7s ease,border-color .6s ease,box-shadow .6s ease,filter .6s ease}
 .node.visible{opacity:1;transform:translate(-50%,-50%) scale(1)}
-.node.dim{opacity:.24}
-.node.focus{border-color:#8d98aa;box-shadow:0 0 0 1px rgba(255,255,255,.04),0 0 62px rgba(184,194,212,.14)}
-.node.small{font-size:clamp(16px,2vw,26px);min-width:64px;min-height:64px}
-.node.human{font-size:clamp(15px,2vw,28px);font-weight:650;padding:16px 20px}
-.node.loss{border-color:#aeb5c2;box-shadow:0 0 0 1px rgba(255,255,255,.08),0 0 75px rgba(255,255,255,.16)}
-#narrative{position:absolute;left:50%;top:7vh;transform:translateX(-50%);width:min(920px,84vw);z-index:20;text-align:center;pointer-events:none}
-#eyebrow{height:20px;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#6f798a;transition:opacity .4s ease}
-#headline{margin-top:10px;font-size:clamp(25px,3.9vw,54px);line-height:1.08;letter-spacing:-.038em;font-weight:690;transition:opacity .3s ease,transform .45s ease}
-#subline{margin:14px auto 0;max-width:760px;color:var(--muted);font-size:clamp(15px,1.5vw,20px);line-height:1.5;transition:opacity .3s ease}
-.fadeSwap{animation:swap .48s ease}
-@keyframes swap{0%{opacity:0;transform:translateY(8px)}100%{opacity:1;transform:none}}
-#interaction{
-position:absolute;left:50%;bottom:10vh;transform:translateX(-50%);z-index:30;width:min(920px,90vw);
-display:flex;flex-direction:column;align-items:center;gap:16px;transition:opacity .35s ease
-}
-#question{font-size:clamp(18px,2vw,28px);text-align:center;line-height:1.3;color:#e8ebf2}
-#answers{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-.answer,.continue{
-border:1px solid #303846;background:rgba(14,18,25,.92);color:#eff2f7;border-radius:999px;
-padding:14px 24px;min-width:150px;cursor:pointer;transition:transform .18s ease,border-color .2s ease,background .2s ease,opacity .3s ease
-}
-.answer:hover,.continue:hover{transform:translateY(-2px);border-color:#697488}
-.answer.chosen,.continue{background:#edf0f6;color:#0a0c10;border-color:#edf0f6}
+.node.dim{opacity:.22}
+.node.focus{border-color:#8c97aa;box-shadow:0 0 0 1px rgba(255,255,255,.04),0 0 58px rgba(194,202,217,.13)}
+.node.symbol{font-size:clamp(27px,4vw,58px);min-width:68px;min-height:68px}
+.node.human{font-size:clamp(14px,1.55vw,23px);font-weight:640;min-width:80px;min-height:54px;padding:13px 18px}
+.node.clickable{cursor:pointer}
+.node.clickable:hover{border-color:#929db0;box-shadow:0 0 0 1px rgba(255,255,255,.05),0 0 50px rgba(194,202,217,.13)}
+.node.depthNear.visible{transform:translate(-50%,-50%) scale(1.13);filter:none;opacity:1}
+.node.depthMid.visible{transform:translate(-50%,-50%) scale(.94);filter:none;opacity:.82}
+.node.depthFar.visible{transform:translate(-50%,-50%) scale(.78);filter:blur(.35px);opacity:.56}
+
+#narrative{position:absolute;z-index:20;left:50%;top:5.4vh;transform:translateX(-50%);width:min(980px,88vw);text-align:center;pointer-events:none}
+#eyebrow{min-height:16px;font-size:11px;letter-spacing:.19em;text-transform:uppercase;color:#6d7788}
+#headline{margin-top:9px;font-size:clamp(24px,3.6vw,50px);line-height:1.07;letter-spacing:-.038em;font-weight:690}
+#subline{margin:12px auto 0;max-width:790px;color:var(--muted);font-size:clamp(14px,1.45vw,19px);line-height:1.48}
+.swap{animation:swap .45s ease}
+@keyframes swap{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+
+#interaction{position:absolute;z-index:30;left:50%;bottom:7.4vh;transform:translateX(-50%);width:min(930px,92vw);
+display:flex;flex-direction:column;align-items:center;gap:13px}
+#question{font-size:clamp(17px,1.9vw,27px);line-height:1.25;text-align:center}
+#answers{display:flex;gap:11px;justify-content:center;flex-wrap:wrap}
+.answer,.continue{border:1px solid var(--border);background:var(--panel);color:#eef1f7;border-radius:999px;
+padding:13px 22px;min-width:145px;cursor:pointer;transition:.18s ease}
+.answer:hover,.continue:hover{transform:translateY(-2px);border-color:#6a7588}
+.answer.chosen,.continue{background:#edf0f6;color:#090b0f;border-color:#edf0f6}
 .answer.wrong{animation:shake .3s ease}
 @keyframes shake{25%{transform:translateX(-5px)}50%{transform:translateX(5px)}75%{transform:translateX(-3px)}}
-#timer{height:3px;width:min(420px,70vw);background:#1b202a;border-radius:8px;overflow:hidden;opacity:0}
-#timer>i{display:block;width:100%;height:100%;background:#aeb6c5;transform-origin:left}
-#reflection{max-width:720px;color:#aab2c1;text-align:center;font-size:clamp(14px,1.4vw,18px);line-height:1.48}
-#meta{position:absolute;left:24px;right:24px;bottom:20px;z-index:40;display:flex;align-items:center;justify-content:space-between;gap:20px;color:#626c7d;font-size:12px;pointer-events:none}
-#journey{display:flex;align-items:center;gap:9px}
-.jdot{width:6px;height:6px;border-radius:50%;background:#2b3240;transition:.45s ease}
-.jdot.on{background:#cdd3df;box-shadow:0 0 18px rgba(205,211,223,.28)}
-#hint{letter-spacing:.03em}
-#tools{position:absolute;right:18px;top:18px;z-index:50;display:flex;gap:8px}
-.tool{background:rgba(12,16,22,.75);border:1px solid #242c38;color:#8993a4;border-radius:12px;padding:8px 11px;cursor:pointer}
-#intro{
-position:absolute;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;
-background:#07090d;transition:opacity .9s ease,visibility .9s ease
-}
-#intro.hide{opacity:0;visibility:hidden}
-.introInner{text-align:center;width:min(850px,86vw)}
-.introMark{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#667083;margin-bottom:24px}
-.introTitle{font-size:clamp(34px,6vw,76px);letter-spacing:-.045em;line-height:1.02;font-weight:690}
-.introText{margin:24px auto 30px;max-width:640px;color:#959fae;font-size:clamp(16px,1.7vw,21px);line-height:1.55}
-#start{border:1px solid #e9edf5;background:#e9edf5;color:#090b0f;border-radius:999px;padding:15px 27px;cursor:pointer;font-weight:680}
-#titleReveal{
-position:absolute;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;
-background:#07090d;opacity:0;visibility:hidden;transition:opacity 1.1s ease,visibility 1.1s ease;text-align:center
-}
-#titleReveal.on{opacity:1;visibility:visible}
-#titleReveal .tiny{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#747e8e;margin-bottom:18px}
-#titleReveal .rft{font-size:clamp(82px,17vw,230px);font-weight:820;letter-spacing:-.08em;line-height:.82}
-#titleReveal .long{margin-top:28px;font-size:clamp(19px,2.3vw,32px);color:#cdd3de}
-#titleReveal .meaning{margin-top:18px;max-width:780px;color:#8f99aa;font-size:clamp(15px,1.4vw,19px);line-height:1.55}
-#titleReveal .continue{margin-top:30px}
-#score{
-position:absolute;right:8vw;top:30vh;z-index:8;font-size:clamp(28px,4vw,58px);font-weight:780;opacity:0;
-transition:opacity .4s ease,transform .45s ease;color:#e6e9ef
-}
-#score.show{opacity:1;transform:scale(1.04)}
-#score.hit{animation:scoreHit .55s ease}
-@keyframes scoreHit{0%{transform:scale(1)}40%{transform:scale(1.22)}100%{transform:scale(1)}}
-body.flash #experience:after{
-content:"";position:absolute;inset:0;z-index:7;pointer-events:none;background:rgba(255,255,255,.06);animation:flash .55s ease forwards
-}
-@keyframes flash{from{opacity:1}to{opacity:0}}
-@media(max-width:720px){
-#narrative{top:6.5vh;width:90vw}#interaction{bottom:12vh}.node{min-width:58px;min-height:58px;padding:13px 16px}
-#meta{left:14px;right:14px;bottom:12px}#hint{display:none}#tools{right:10px;top:10px}
+#reflection{max-width:780px;color:#a7b0bf;text-align:center;font-size:clamp(13px,1.3vw,17px);line-height:1.45;min-height:24px}
+#practiceDots{display:flex;gap:8px;height:10px}
+.practiceDot{width:7px;height:7px;border-radius:50%;background:#303744}
+.practiceDot.on{background:#d9dee8;box-shadow:0 0 16px rgba(217,222,232,.22)}
+
+#hud{position:absolute;z-index:40;left:20px;right:20px;bottom:16px;display:flex;justify-content:space-between;align-items:center;
+font-size:11px;color:#606a7b;pointer-events:none}
+#journey{display:flex;gap:8px}
+.jdot{width:6px;height:6px;border-radius:50%;background:#2b3240;transition:.4s ease}
+.jdot.on{background:#cbd1dc}
+#tools{position:absolute;z-index:45;right:16px;top:16px}
+.tool{border:1px solid #252d38;background:rgba(11,14,20,.72);color:#8d97a8;border-radius:11px;padding:8px 10px;cursor:pointer}
+
+#intro,#reveal{position:absolute;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;text-align:center;background:#07090d;
+transition:opacity .85s ease,visibility .85s ease}
+#intro.hide,#reveal.hide{opacity:0;visibility:hidden}
+#reveal{opacity:0;visibility:hidden;z-index:80}
+#reveal.on{opacity:1;visibility:visible}
+.introInner,.revealInner{width:min(880px,88vw)}
+.kicker{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#697386;margin-bottom:22px}
+.introTitle{font-size:clamp(34px,5.8vw,74px);line-height:1.02;letter-spacing:-.045em;font-weight:700}
+.introText{margin:22px auto 28px;max-width:680px;color:#929cac;font-size:clamp(15px,1.65vw,20px);line-height:1.55}
+#start{border:1px solid #eef1f6;background:#eef1f6;color:#090b0f;border-radius:999px;padding:14px 26px;cursor:pointer;font-weight:680}
+.rft{font-size:clamp(88px,17vw,230px);font-weight:830;letter-spacing:-.08em;line-height:.82}
+.long{margin-top:26px;font-size:clamp(19px,2.3vw,31px);color:#d0d5df}
+.meaning{margin:17px auto 0;max-width:790px;color:#909aaa;font-size:clamp(14px,1.45vw,19px);line-height:1.55}
+.revealInner .continue{margin-top:28px}
+
+.legend{position:absolute;z-index:15;left:20px;top:18px;display:flex;gap:13px;align-items:center;color:#697386;font-size:11px;opacity:.85}
+.legendItem{display:flex;align-items:center;gap:6px}
+.legendLine{width:28px;height:0;border-top:2px solid #78859a}
+.legendLine.dashed{border-top-color:#d7dce6;border-top-style:dashed}
+
+@media(max-width:780px){
+#narrative{top:5.8vh;width:92vw}
+#interaction{bottom:9vh}
+.node{min-width:58px;min-height:54px;padding:12px 14px}
+.node.human{font-size:12px}
+.edgeLabel{font-size:9px}
+.legend{display:none}
+#hud{left:12px;right:12px;bottom:10px}
 }
 </style>
 </head>
 <body>
-<div id="experience">
+<div id="app">
 <div id="grain"></div>
+<div class="legend">
+  <div class="legendItem"><span class="legendLine"></span><span>дано</span></div>
+  <div class="legendItem"><span class="legendLine dashed"></span><span>выведено</span></div>
+</div>
 <div id="world">
-<svg id="links"></svg>
-<div id="labels"></div>
-<div id="nodes"></div>
-<div id="score">1000</div>
+  <svg id="edges">
+    <defs>
+      <marker id="arrowGiven" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="strokeWidth">
+        <path d="M0,0 L9,4.5 L0,9 z" fill="#78859a"></path>
+      </marker>
+      <marker id="arrowDerived" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="strokeWidth">
+        <path d="M0,0 L9,4.5 L0,9 z" fill="#d7dce6"></path>
+      </marker>
+      <marker id="arrowMeaning" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="strokeWidth">
+        <path d="M0,0 L9,4.5 L0,9 z" fill="#8f9bad"></path>
+      </marker>
+    </defs>
+  </svg>
+  <div id="labels"></div>
+  <div id="nodes"></div>
 </div>
 
 <div id="narrative">
-<div id="eyebrow"></div>
-<div id="headline"></div>
-<div id="subline"></div>
+  <div id="eyebrow"></div>
+  <div id="headline"></div>
+  <div id="subline"></div>
 </div>
 
 <div id="interaction">
-<div id="question"></div>
-<div id="answers"></div>
-<div id="timer"><i></i></div>
-<div id="reflection"></div>
+  <div id="question"></div>
+  <div id="answers"></div>
+  <div id="practiceDots"></div>
+  <div id="reflection"></div>
 </div>
 
-<div id="meta">
-<div id="journey"><span class="jdot"></span><span class="jdot"></span><span class="jdot"></span><span class="jdot"></span></div>
-<div id="hint">← назад · → дальше</div>
-<div>RFT · прототип 0.2</div>
+<div id="hud">
+  <div id="journey"><span class="jdot"></span><span class="jdot"></span><span class="jdot"></span><span class="jdot"></span><span class="jdot"></span></div>
+  <div>← назад · → дальше</div>
+  <div>RFT · v0.3</div>
 </div>
-
-<div id="tools">
-<button class="tool" id="mute" title="Звук">♪</button>
-<button class="tool" id="fs" title="Полный экран">⛶</button>
-</div>
+<div id="tools"><button class="tool" id="fs">⛶</button></div>
 
 <div id="intro">
-<div class="introInner">
-<div class="introMark">Небольшой эксперимент</div>
-<div class="introTitle">Не пытайся понять.<br>Просто следуй.</div>
-<div class="introText">Здесь нет материала, который нужно успеть запомнить. Несколько минут просто отвечай на то, что появляется перед тобой.</div>
-<button id="start">Начать</button>
-</div>
+  <div class="introInner">
+    <div class="kicker">Небольшой эксперимент</div>
+    <div class="introTitle">Одна сеть.<br>Шаг за шагом.</div>
+    <div class="introText">Ничего не нужно учить заранее. Просто следи за тем, как одна бессмысленная вещь постепенно приобретает отношения и функции.</div>
+    <button id="start">Начать</button>
+  </div>
 </div>
 
-<div id="titleReveal">
-<div class="tiny">Relational Frame Theory</div>
-<div class="rft">RFT</div>
-<div class="long">Теория реляционных фреймов</div>
-<div class="meaning">Мы способны устанавливать отношения между событиями, выводить новые отношения и менять функции событий через эти сети отношений.</div>
-<button class="continue" id="finishReveal">Посмотреть, что только что произошло</button>
+<div id="reveal">
+  <div class="revealInner">
+    <div class="kicker">Relational Frame Theory</div>
+    <div class="rft">RFT</div>
+    <div class="long">Теория реляционных фреймов</div>
+    <div class="meaning">Люди способны устанавливать отношения между событиями, выводить новые отношения и через эти сети изменять психологические функции событий.</div>
+    <button class="continue" id="afterReveal">Вернуться к NOMA</button>
+  </div>
 </div>
 </div>
 
 <script>
 (function(){
 const world=document.getElementById('world');
+const svg=document.getElementById('edges');
 const nodesWrap=document.getElementById('nodes');
-const links=document.getElementById('links');
 const labels=document.getElementById('labels');
+const eyebrow=document.getElementById('eyebrow');
 const headline=document.getElementById('headline');
 const subline=document.getElementById('subline');
-const eyebrow=document.getElementById('eyebrow');
 const question=document.getElementById('question');
 const answers=document.getElementById('answers');
 const reflection=document.getElementById('reflection');
-const timer=document.getElementById('timer');
+const practiceDots=document.getElementById('practiceDots');
+const reveal=document.getElementById('reveal');
 const journey=[...document.querySelectorAll('.jdot')];
-const titleReveal=document.getElementById('titleReveal');
-const score=document.getElementById('score');
-let beat=0, completed={}, muted=false, audioCtx=null;
-const nodeData={}, edgeData={};
+
+let beat=0;
+let practiceCount=0;
+let symbolResponse=null;
+let finalMode=false;
+
+const nodeState={};
+const edgeState={};
+let wantedNodes=new Set();
+let wantedEdges=new Set();
 
 function say(e,h,s){
-  eyebrow.textContent=e||''; headline.textContent=h||''; subline.textContent=s||'';
-  [headline,subline].forEach(function(el){el.classList.remove('fadeSwap');void el.offsetWidth;el.classList.add('fadeSwap')});
+  eyebrow.textContent=e||'';
+  headline.textContent=h||'';
+  subline.textContent=s||'';
+  [headline,subline].forEach(el=>{el.classList.remove('swap');void el.offsetWidth;el.classList.add('swap')});
 }
 function clearInteraction(){
-  question.textContent=''; answers.innerHTML=''; reflection.textContent=''; timer.style.opacity='0';
+  question.textContent='';answers.innerHTML='';reflection.textContent='';practiceDots.innerHTML='';
 }
-function setJourney(n){journey.forEach(function(d,i){d.classList.toggle('on',i<n)})}
-function ensureNode(id,text,x,y,cls){
-  let el=document.getElementById('node-'+id);
-  if(!el){el=document.createElement('div');el.id='node-'+id;el.className='node';nodesWrap.appendChild(el)}
-  el.textContent=text; el.style.left=x+'%'; el.style.top=y+'%'; el.className='node visible '+(cls||'');
-  nodeData[id]={x:x,y:y};
-  requestAnimationFrame(updateEdges); return el;
-}
-function hideNode(id){const el=document.getElementById('node-'+id);if(el)el.classList.remove('visible');delete nodeData[id];requestAnimationFrame(updateEdges)}
-function clearWorld(){
-  nodesWrap.innerHTML=''; links.innerHTML=''; labels.innerHTML=''; Object.keys(nodeData).forEach(function(k){delete nodeData[k]});Object.keys(edgeData).forEach(function(k){delete edgeData[k]});
-}
-function edge(id,a,b,label,derived,hot){
-  let line=document.getElementById('edge-'+id);
-  if(!line){line=document.createElementNS('http://www.w3.org/2000/svg','line');line.id='edge-'+id;links.appendChild(line)}
-  line.setAttribute('class','edge'+(derived?' derived':'')+(hot?' hot':''));
-  let lab=document.getElementById('label-'+id);
-  if(!lab){lab=document.createElement('div');lab.id='label-'+id;lab.className='edgeLabel';labels.appendChild(lab)}
-  lab.textContent=label||''; edgeData[id]={a:a,b:b,label:label};updateEdges();
-  return line;
-}
-function removeEdge(id){const l=document.getElementById('edge-'+id),t=document.getElementById('label-'+id);if(l)l.remove();if(t)t.remove();delete edgeData[id]}
-function updateEdges(){
-  const w=world.clientWidth,h=world.clientHeight;
-  Object.keys(edgeData).forEach(function(id){
-    const d=edgeData[id],a=nodeData[d.a],b=nodeData[d.b]; if(!a||!b)return;
-    const x1=a.x*w/100,y1=a.y*h/100,x2=b.x*w/100,y2=b.y*h/100;
-    const line=document.getElementById('edge-'+id); if(line){line.setAttribute('x1',x1);line.setAttribute('y1',y1);line.setAttribute('x2',x2);line.setAttribute('y2',y2)}
-    const lab=document.getElementById('label-'+id); if(lab){lab.style.left=((a.x+b.x)/2)+'%';lab.style.top=((a.y+b.y)/2)+'%'}
-  });
-}
-function pulseEdge(a,b){
-  const A=nodeData[a],B=nodeData[b];if(!A||!B)return;
-  const w=world.clientWidth,h=world.clientHeight;
-  const p=document.createElementNS('http://www.w3.org/2000/svg','line');
-  p.setAttribute('x1',A.x*w/100);p.setAttribute('y1',A.y*h/100);p.setAttribute('x2',B.x*w/100);p.setAttribute('y2',B.y*h/100);p.setAttribute('class','edgePulse');links.appendChild(p);
-  setTimeout(function(){p.remove()},1300);
+function setJourney(n){journey.forEach((d,i)=>d.classList.toggle('on',i<n))}
+function wrong(btn){btn.classList.remove('wrong');void btn.offsetWidth;btn.classList.add('wrong')}
+function cont(label,fn){
+  answers.innerHTML='';
+  const b=document.createElement('button');b.className='continue';b.textContent=label||'Дальше';b.onclick=fn||next;answers.appendChild(b);
 }
 function buttons(items,handler){
   answers.innerHTML='';
-  items.forEach(function(item){
+  items.forEach(item=>{
     const b=document.createElement('button');b.className='answer';b.textContent=item.label;
-    b.onclick=function(){handler(item,b)};answers.appendChild(b);
+    b.onclick=()=>handler(item,b);answers.appendChild(b);
   });
 }
-function cont(label,fn){
-  answers.innerHTML='';const b=document.createElement('button');b.className='continue';b.textContent=label||'Дальше';b.onclick=fn||next;answers.appendChild(b);
+function showNode(id,text,x,y,cls='',onClick=null){
+  wantedNodes.add(id);
+  let el=document.getElementById('node-'+id);
+  if(!el){
+    el=document.createElement('div');el.id='node-'+id;nodesWrap.appendChild(el);
+    requestAnimationFrame(()=>el.classList.add('visible'));
+  }
+  el.textContent=text;
+  el.style.left=x+'%';el.style.top=y+'%';
+  el.className='node visible '+cls+(onClick?' clickable':'');
+  el.onclick=onClick||null;
+  nodeState[id]={x,y};
+  return el;
 }
-function wrong(btn){btn.classList.remove('wrong');void btn.offsetWidth;btn.classList.add('wrong')}
-function tone(freq,duration){
-  if(muted)return; try{
-    if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();
-    const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.frequency.value=freq;o.type='sine';g.gain.setValueAtTime(.0001,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.08,audioCtx.currentTime+.02);g.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+duration);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+duration+.03);
-  }catch(e){}
+function hideUnwantedNodes(){
+  [...nodesWrap.children].forEach(el=>{
+    const id=el.id.replace('node-','');
+    if(!wantedNodes.has(id)){
+      el.classList.remove('visible');
+      el.onclick=null;
+      delete nodeState[id];
+    }
+  });
 }
-function lowHit(){tone(118,.42);document.body.classList.add('flash');setTimeout(function(){document.body.classList.remove('flash')},600)}
-function startTimer(ms,done){
-  timer.style.opacity='1';const bar=timer.querySelector('i');bar.style.transition='none';bar.style.transform='scaleX(1)';void bar.offsetWidth;bar.style.transition='transform '+ms+'ms linear';bar.style.transform='scaleX(0)';setTimeout(done,ms);
+function pathPoint(a,b,curve,t){
+  const w=world.clientWidth,h=world.clientHeight;
+  const x1=a.x*w/100,y1=a.y*h/100,x2=b.x*w/100,y2=b.y*h/100;
+  const dx=x2-x1,dy=y2-y1,len=Math.max(1,Math.hypot(dx,dy));
+  const nx=-dy/len,ny=dx/len;
+  const trim=48;
+  const sx=x1+(dx/len)*trim,sy=y1+(dy/len)*trim;
+  const ex=x2-(dx/len)*trim,ey=y2-(dy/len)*trim;
+  const mx=(sx+ex)/2,my=(sy+ey)/2;
+  const cx=mx+nx*curve,cy=my+ny*curve;
+  const mt=1-t;
+  return {
+    x:mt*mt*sx+2*mt*t*cx+t*t*ex,
+    y:mt*mt*sy+2*mt*t*cy+t*t*ey,
+    d:`M ${sx} ${sy} Q ${cx} ${cy} ${ex} ${ey}`
+  };
+}
+function showEdge(id,a,b,label,type='given',curve=0,hot=false,dim=false,arrow=true){
+  wantedEdges.add(id);
+  let p=document.getElementById('edge-'+id);
+  if(!p){p=document.createElementNS('http://www.w3.org/2000/svg','path');p.id='edge-'+id;svg.appendChild(p)}
+  p.setAttribute('class','edge '+type+(hot?' hot':'')+(dim?' dim':''));
+  const A=nodeState[a],B=nodeState[b]; if(!A||!B)return;
+  const pt=pathPoint(A,B,curve,.5);
+  p.setAttribute('d',pt.d);
+  if(arrow){
+    p.setAttribute('marker-end',type==='derived'?'url(#arrowDerived)':type==='meaning'?'url(#arrowMeaning)':'url(#arrowGiven)');
+  }else p.removeAttribute('marker-end');
+
+  let lab=document.getElementById('label-'+id);
+  if(!lab){lab=document.createElement('div');lab.id='label-'+id;lab.className='edgeLabel';labels.appendChild(lab)}
+  lab.textContent=label||'';
+  lab.style.left=pt.x+'px';lab.style.top=pt.y+'px';
+  lab.className='edgeLabel'+(dim?' dim':'');
+  lab.style.opacity=label? (dim?'.22':'1'):'0';
+  edgeState[id]={a,b,label,type,curve,hot,dim,arrow};
+}
+function hideUnwantedEdges(){
+  [...svg.querySelectorAll('.edge')].forEach(p=>{
+    const id=p.id.replace('edge-','');
+    if(!wantedEdges.has(id))p.remove();
+  });
+  [...labels.children].forEach(l=>{
+    const id=l.id.replace('label-','');
+    if(!wantedEdges.has(id))l.remove();
+  });
+  Object.keys(edgeState).forEach(k=>{if(!wantedEdges.has(k))delete edgeState[k]});
+}
+function pulse(id){
+  const d=edgeState[id];if(!d)return;
+  const A=nodeState[d.a],B=nodeState[d.b];if(!A||!B)return;
+  const pt=pathPoint(A,B,d.curve,.5);
+  const p=document.createElementNS('http://www.w3.org/2000/svg','path');
+  p.setAttribute('d',pt.d);p.setAttribute('class','edgePulse');svg.appendChild(p);
+  setTimeout(()=>p.remove(),1300);
+}
+function syncFinish(){
+  hideUnwantedNodes();hideUnwantedEdges();
+  wantedNodes=new Set();wantedEdges=new Set();
+}
+function coreTriangle(opts={}){
+  const dim=!!opts.dim;
+  showNode('noma','NOMA',30,36,(opts.nomaCls||'')+(dim?' dim':''));
+  showNode('tev','TEV',50,54,(opts.tevCls||'')+(dim?' dim':''));
+  showNode('luri','LURI',70,36,(opts.luriCls||'')+(dim?' dim':''));
+  showEdge('nt','noma','tev','старше','given',24,false,dim,true);
+  showEdge('tn','tev','noma','младше','derived',24,false,dim,true);
+  showEdge('tl','tev','luri','старше','given',-24,false,dim,true);
+  showEdge('nl','noma','luri','старше','derived',-72,false,dim,true);
+}
+function symbols(opts={}){
+  const dim=!!opts.dim;
+  showNode('diamond','◆',30,68,'symbol'+(dim?' dim':''));
+  showNode('triangle','▲',50,76,'symbol'+(dim?' dim':''));
+  showNode('circle','●',70,68,'symbol'+(dim?' dim':''));
+  showEdge('nomaDiamond','noma','diamond','=','coord',0,false,dim,false);
+  showEdge('tevTriangle','tev','triangle','=','coord',0,false,dim,false);
+  showEdge('luriCircle','luri','circle','=','coord',0,false,dim,false);
+}
+function semanticBranch(stage=4,dim=false){
+  showNode('interview','СОБЕСЕДОВАНИЕ',82,47,'human'+(dim?' dim':''));
+  showEdge('diamondInterview','diamond','interview','обозначает','meaning',-34,false,dim,true);
+  if(stage>=1){
+    showNode('evaluation','оценка',88,27,'human'+(dim?' dim':''));
+    showEdge('ie','interview','evaluation','может быть','meaning',24,false,dim,true);
+  }
+  if(stage>=2){
+    showNode('mistake','ошибка',91,61,'human'+(dim?' dim':''));
+    showEdge('im','interview','mistake','возможна','meaning',-20,false,dim,true);
+  }
+  if(stage>=3){
+    showNode('notgood','«я недостаточно хороший специалист»',72,82,'human'+(dim?' dim':''));
+    showEdge('mn','mistake','notgood','значит','derived',32,false,dim,true);
+  }
+  if(stage>=4){
+    showNode('exposed','«меня разоблачат»',91,82,'human'+(dim?' dim':''));
+    showEdge('ne','notgood','exposed','тогда','derived',-18,false,dim,true);
+  }
 }
 function render(n){
-  beat=Math.max(0,Math.min(11,n));clearInteraction();titleReveal.classList.remove('on');score.classList.remove('show');world.style.transform='none';world.style.filter='none';
+  beat=Math.max(0,Math.min(15,n));
+  clearInteraction();
+  reveal.classList.remove('on');
+  world.classList.remove('final3d');
+  world.style.filter='none';
+  finalMode=false;
+
   if(beat===0){
-    clearWorld();setJourney(0);say('','Посмотри на два слова.','Пока они ничего от тебя не требуют.');
-    ensureNode('noma','NOMA',35,52,'focus');ensureNode('tev','TEV',65,52,'');
-    setTimeout(function(){edge('nt','noma','tev','старше',false,false)},450);
-    cont('Я вижу',next);
+    setJourney(0);
+    say('Шаг 1','Пока только одна связь.','NOMA старше TEV.');
+    showNode('noma','NOMA',34,51,'focus');
+    showNode('tev','TEV',66,51,'');
+    showEdge('nt','noma','tev','старше','given',58,false,false,true);
+    reflection.textContent='Сплошная линия — то, что было дано напрямую.';
+    cont('Понятно',next);
   }
+
   if(beat===1){
-    setJourney(1);say('','Не вспоминай правило. Просто ответь.','');
-    ensureNode('noma','NOMA',35,52,'focus');ensureNode('tev','TEV',65,52,'');edge('nt','noma','tev','старше',false,false);
+    setJourney(1);
+    say('','Теперь ответь сам.','');
+    showNode('noma','NOMA',34,51,'');
+    showNode('tev','TEV',66,51,'');
+    showEdge('nt','noma','tev','старше','given',58,false,false,true);
     question.textContent='Кто младше?';
-    buttons([{label:'NOMA',ok:false},{label:'TEV',ok:true}],function(it,b){
+    buttons([{label:'NOMA',ok:false},{label:'TEV',ok:true}],(it,b)=>{
       if(!it.ok){wrong(b);return}
-      b.classList.add('chosen');completed[1]=true;
-      edge('rev','tev','noma','младше',true,true);pulseEdge('tev','noma');tone(520,.16);
-      question.textContent='';reflection.textContent='Эту связь тебе никто не сообщал напрямую.';
-      setTimeout(function(){cont('Дальше',next)},450);
+      b.classList.add('chosen');
+      showEdge('tn','tev','noma','младше','derived',58,true,false,true);
+      pulse('tn');
+      reflection.textContent='Эту вторую связь никто не сообщал напрямую. Ты её вывел.';
+      cont('Дальше',next);
     });
   }
+
   if(beat===2){
-    setJourney(2);say('','Добавим только одну вещь.','');
-    ensureNode('noma','NOMA',28,45,'');ensureNode('tev','TEV',50,65,'focus');ensureNode('luri','LURI',72,45,'');
-    edge('nt','noma','tev','старше',false,false);edge('tl','tev','luri','старше',false,false);removeEdge('rev');
+    setJourney(2);
+    say('Шаг 2','Добавим LURI.','Сеть растёт, но предыдущие отношения никуда не исчезают.');
+    showNode('noma','NOMA',30,36,'');
+    showNode('tev','TEV',50,54,'focus');
+    showNode('luri','LURI',70,36,'');
+    showEdge('nt','noma','tev','старше','given',24,false,false,true);
+    showEdge('tn','tev','noma','младше','derived',24,false,false,true);
+    showEdge('tl','tev','luri','старше','given',-24,false,false,true);
     question.textContent='Кто старше: NOMA или LURI?';
-    buttons([{label:'NOMA',ok:true},{label:'LURI',ok:false}],function(it,b){
+    buttons([{label:'NOMA',ok:true},{label:'LURI',ok:false}],(it,b)=>{
       if(!it.ok){wrong(b);return}
-      b.classList.add('chosen');completed[2]=true;
-      edge('nl','noma','luri','старше',true,true);pulseEdge('noma','luri');tone(560,.17);
-      reflection.textContent='Новая связь появилась без прямого обучения.';
-      setTimeout(function(){cont('Продолжить',next)},500);
+      b.classList.add('chosen');
+      showEdge('nl','noma','luri','старше','derived',-72,true,false,true);
+      pulse('nl');
+      reflection.textContent='Ты замкнул треугольник отношением, которого не было среди исходных данных.';
+      cont('Посмотреть на сеть',next);
     });
   }
+
   if(beat===3){
-    setJourney(3);say('','Теперь посмотри на то, что получилось.','Две заданные связи породили сеть отношений, которые ты можешь вывести.');
-    ensureNode('noma','NOMA',28,45,'');ensureNode('tev','TEV',50,65,'');ensureNode('luri','LURI',72,45,'');
-    edge('nt','noma','tev','старше',false,false);edge('tl','tev','luri','старше',false,false);edge('nl','noma','luri','выведено',true,false);
-    setTimeout(function(){pulseEdge('noma','tev');setTimeout(function(){pulseEdge('tev','luri')},280);setTimeout(function(){pulseEdge('noma','luri')},620)},400);
-    reflection.textContent='Ты не просто сохранил факты. Ты достроил отношения.';
-    cont('А что если отношения начнут что-то менять?',next);
+    setJourney(2);
+    say('','Вот она.','Сплошные отношения были даны. Пунктирные — появились как вывод.');
+    coreTriangle();
+    setTimeout(()=>{pulse('nt');setTimeout(()=>pulse('tl'),250);setTimeout(()=>pulse('nl'),560)},300);
+    reflection.textContent='Важно: это уже не список фактов. Это маленькая реляционная сеть.';
+    cont('Добавить новый слой',next);
   }
+
   if(beat===4){
-    setJourney(3);say('','Та же способность. Новая сеть.','Слова сменятся на символы. Механизм останется тем же.');
-    clearWorld();ensureNode('a','⬡',27,53,'focus');ensureNode('b','△',50,53,'');ensureNode('c','✦',73,53,'');
-    edge('ab','a','b','связаны',false,false);edge('bc','b','c','связаны',false,false);edge('ac','a','c','следует из сети',true,false);
-    cont('Продолжить',next);
-  }
-  if(beat===5){
-    setJourney(3);say('','Пока это просто символы.','Никакой из них ещё не хороший и не плохой.');
-    ensureNode('a','⬡',27,53,'');ensureNode('b','△',50,53,'');ensureNode('c','✦',73,53,'focus');
-    edge('ab','a','b','связаны',false,false);edge('bc','b','c','связаны',false,false);edge('ac','a','c','следует из сети',true,false);
-    score.classList.add('show');score.textContent='1000';
-    question.textContent='Нажми на ✦';
-    buttons([{label:'✦',ok:true}],function(it,b){
-      b.classList.add('chosen');document.getElementById('node-c').classList.add('loss');score.textContent='900';score.classList.add('hit');lowHit();
-      reflection.textContent='✦ теперь связан с потерей 100 очков.';
-      setTimeout(function(){cont('Дальше',next)},650);
-    });
-  }
-  if(beat===6){
-    setJourney(4);say('','А теперь — быстро.','Не рассуждай. Выбери один объект.');
-    clearWorld();ensureNode('a','⬡',38,54,'');ensureNode('new','○',62,54,'');
-    question.textContent='Выбери';
-    buttons([{label:'⬡',pick:'a'},{label:'○',pick:'new'}],function(it,b){
-      if(completed[6])return;completed[6]=it.pick;b.classList.add('chosen');
-      clearTimeout(window.fastTimer);
-      const msg=it.pick==='new'?'С ⬡ напрямую ничего плохого не происходило. И всё же сеть могла изменить его функцию для тебя.':'Ты выбрал ⬡. Это тоже важно: реляционная сеть не заставляет всех реагировать одинаково — она меняет возможные функции в контексте.';
-      reflection.textContent=msg;setTimeout(function(){cont('Что это значит для человеческой жизни?',next)},900);
-    });
-    startTimer(2200,function(){
-      if(completed[6])return;reflection.textContent='Даже отсутствие выбора — тоже реакция. Сеть уже стала частью контекста.';cont('Продолжить',next);
-    });
-  }
-  if(beat===7){
-    setJourney(4);say('','До сих пор мы играли бессмысленными объектами.','Теперь заменим только содержание.');
-    clearWorld();
-    ensureNode('event','СОБЕСЕДОВАНИЕ',50,48,'human focus');
-    cont('Продолжить',next);
-  }
-  if(beat===8){
-    setJourney(4);say('','Физически впереди может быть просто разговор.','Но человек способен входить в него вместе с целой сетью.');
-    ensureNode('event','СОБЕСЕДОВАНИЕ',50,30,'human focus');
-    ensureNode('eval','оценка',27,53,'human');ensureNode('bad','«я недостаточно хорош»',73,53,'human');
-    ensureNode('fail','провал',33,75,'human');ensureNode('self','«я не справляюсь»',70,76,'human');
-    edge('e1','event','eval','',false,false);edge('e2','event','bad','',false,false);edge('e3','eval','fail','',true,false);edge('e4','bad','self','',true,false);edge('e5','fail','self','',true,false);
-    setTimeout(function(){pulseEdge('event','eval');setTimeout(function(){pulseEdge('eval','fail')},250);setTimeout(function(){pulseEdge('fail','self')},500)},300);
-    reflection.textContent='Событие ещё не произошло. А психологические функции уже могут быть здесь.';
+    setJourney(3);
+    say('Шаг 3','NOMA получит второй ярлык.','В этой игре ◆ и NOMA обозначают одно и то же.');
+    coreTriangle();
+    showNode('diamond','◆',30,68,'symbol focus');
+    showEdge('nomaDiamond','noma','diamond','=','coord',0,true,false,false);
+    reflection.textContent='Мы ничего не удаляем. К существующей сети просто добавилось ещё одно отношение.';
     cont('Дальше',next);
   }
+
+  if(beat===5){
+    setJourney(3);
+    say('','Теперь TEV.','▲ и TEV — одно и то же в рамках этой игры.');
+    coreTriangle();
+    showNode('diamond','◆',30,68,'symbol');
+    showNode('triangle','▲',50,76,'symbol focus');
+    showEdge('nomaDiamond','noma','diamond','=','coord',0,false,false,false);
+    showEdge('tevTriangle','tev','triangle','=','coord',0,true,false,false);
+    cont('Дальше',next);
+  }
+
+  if(beat===6){
+    setJourney(3);
+    say('','И LURI.','● и LURI — одно и то же в рамках этой игры.');
+    coreTriangle();
+    symbols();
+    document.getElementById('node-circle').classList.add('focus');
+    reflection.textContent='Теперь у одной сети два слоя: слова и символы.';
+    cont('Проверить, что сеть действительно работает',next);
+  }
+
+  if(beat===7){
+    setJourney(3);
+    say('','Слова слегка уйдут в фон.','Отношения при этом никуда не исчезают.');
+    coreTriangle({dim:true});
+    symbols();
+    question.textContent='Какой символ связан с самым старшим из трёх?';
+    buttons([{label:'◆',ok:true},{label:'▲',ok:false},{label:'●',ok:false}],(it,b)=>{
+      if(!it.ok){wrong(b);return}
+      b.classList.add('chosen');
+      document.getElementById('node-noma').classList.remove('dim');
+      document.getElementById('node-diamond').classList.add('focus');
+      showEdge('nomaDiamond','noma','diamond','=','coord',0,true,false,false);
+      showEdge('nt','noma','tev','старше','given',24,true,true,true);
+      showEdge('nl','noma','luri','старше','derived',-72,true,true,true);
+      pulse('nomaDiamond');setTimeout(()=>pulse('nl'),260);
+      reflection.textContent='Ты смог ответить о ◆ благодаря отношениям, которые были построены вокруг NOMA.';
+      cont('А теперь — функция',next);
+    });
+  }
+
+  if(beat===8){
+    setJourney(4);
+    say('Шаг 4','Научим NOMA одному действию.','Когда нажимаешь NOMA, сеть отвечает коротким импульсом.');
+    coreTriangle({nomaCls:'focus clickable'});
+    symbols({dim:true});
+    question.textContent='Нажми на NOMA три раза';
+    practiceDots.innerHTML='<span class="practiceDot"></span><span class="practiceDot"></span><span class="practiceDot"></span>';
+    const noma=document.getElementById('node-noma');
+    noma.classList.add('clickable');
+    noma.onclick=()=>{
+      practiceCount=Math.min(3,practiceCount+1);
+      [...practiceDots.children].forEach((d,i)=>d.classList.toggle('on',i<practiceCount));
+      pulse('nt');
+      if(practiceCount>=3){
+        noma.onclick=null;noma.classList.remove('clickable');
+        reflection.textContent='Хорошо. Действие «нажать» теперь было несколько раз связано именно с NOMA.';
+        cont('Продолжить',next);
+      }
+    };
+  }
+
   if(beat===9){
-    setJourney(4);say('','Заметь последовательность.','');
-    ensureNode('event','СОБЕСЕДОВАНИЕ',50,30,'human focus');ensureNode('eval','оценка',27,53,'human');ensureNode('bad','«я недостаточно хорош»',73,53,'human');ensureNode('fail','провал',33,75,'human');ensureNode('self','«я не справляюсь»',70,76,'human');
-    edge('e1','event','eval','',false,false);edge('e2','event','bad','',false,false);edge('e3','eval','fail','',true,false);edge('e4','bad','self','',true,false);edge('e5','fail','self','',true,false);
-    question.innerHTML='<span style="opacity:.55">связал</span> &nbsp;→&nbsp; <span style="opacity:.7">вывел</span> &nbsp;→&nbsp; <span style="opacity:.85">построил сеть</span> &nbsp;→&nbsp; <b>изменилась функция</b>';
-    reflection.textContent='До сих пор название теории было не нужно. Ты уже видел процесс.';
-    cont('Теперь можно назвать его',next);
+    setJourney(4);
+    say('','Теперь ничего нового не учим.','Просто посмотрим, что ты сделаешь с тем, что уже есть в сети.');
+    coreTriangle({dim:true});
+    symbols({dim:true});
+    document.getElementById('node-diamond').classList.remove('dim');
+    document.getElementById('node-diamond').classList.add('focus');
+    question.textContent='Что сделать с ◆?';
+    buttons([{label:'Нажать ◆',action:'click'},{label:'Ничего',action:'nothing'}],(it,b)=>{
+      symbolResponse=it.action;b.classList.add('chosen');
+      if(it.action==='click'){
+        document.getElementById('node-noma').classList.remove('dim');
+        showEdge('nomaDiamond','noma','diamond','=','coord',0,true,false,false);
+        pulse('nomaDiamond');
+        reflection.textContent='Нажимать тебя учили на NOMA, а не на ◆. Но связанная функция смогла перейти через отношение «это то же самое».';
+      }else{
+        reflection.textContent='Это тоже допустимо. Реляционная сеть не механически заставляет реакцию; она меняет возможные функции события в данном контексте.';
+      }
+      cont('Связать сеть с человеческим событием',next);
+    });
   }
+
   if(beat===10){
-    clearInteraction();say('','','');world.style.filter='blur(9px) brightness(.35)';setTimeout(function(){titleReveal.classList.add('on')},300);
+    setJourney(4);
+    say('Шаг 5','Теперь сеть входит в человеческий мир.','Пусть ◆ в этой игре обозначает предстоящее собеседование.');
+    coreTriangle({dim:true});symbols();
+    showNode('interview','СОБЕСЕДОВАНИЕ',82,47,'human focus');
+    showEdge('diamondInterview','diamond','interview','обозначает','meaning',-34,true,false,true);
+    reflection.textContent='Собеседование не заменило прежнюю сеть. Оно встроилось в неё.';
+    cont('Добавить смысл',next);
   }
+
   if(beat===11){
-    titleReveal.classList.remove('on');clearWorld();setJourney(4);say('','Что изменилось?','Несколько минут назад NOMA была бессмысленной последовательностью букв.');
-    ensureNode('noma','NOMA',50,51,'focus');
-    question.textContent='Само слово — или отношения, которые вокруг него появились?';
-    reflection.textContent='Этого пока достаточно, чтобы идти дальше к схеме RFT.';
-    answers.innerHTML='';
+    setJourney(5);
+    say('','Одно событие начинает обрастать значениями.','Не всё сразу. Один узел за другим.');
+    coreTriangle({dim:true});symbols({dim:true});semanticBranch(1,false);
+    document.getElementById('node-interview').classList.add('focus');
+    reflection.textContent='Собеседование может быть связано с оценкой.';
+    cont('Ещё один узел',next);
+  }
+
+  if(beat===12){
+    setJourney(5);
+    say('','Ещё одна связь.','На собеседовании возможна ошибка.');
+    coreTriangle({dim:true});symbols({dim:true});semanticBranch(2,false);
+    document.getElementById('node-mistake').classList.add('focus');
+    cont('Что может быть выведено дальше?',next);
+  }
+
+  if(beat===13){
+    setJourney(5);
+    say('','Теперь появляются уже не просто события.','Появляются выводимые значения.');
+    coreTriangle({dim:true});symbols({dim:true});semanticBranch(4,false);
+    showEdge('mn','mistake','notgood','значит','derived',32,true,false,true);
+    setTimeout(()=>pulse('mn'),260);
+    reflection.textContent='«Ошибка» может войти в отношение с «я недостаточно хороший специалист», а затем — с «меня разоблачат».';
+    cont('Вернуться к самому началу',next);
+  }
+
+  if(beat===14){
+    setJourney(5);
+    say('','В начале здесь были четыре буквы.','Теперь посмотрим, что стало доступно вокруг них.');
+    finalMode=true;world.classList.add('final3d');
+
+    showNode('noma','NOMA',50,48,'focus depthNear');
+    showNode('tev','TEV',29,34,'depthMid');
+    showNode('luri','LURI',24,61,'depthFar');
+    showNode('diamond','◆',66,29,'symbol depthMid');
+    showNode('triangle','▲',73,55,'symbol depthFar');
+    showNode('circle','●',63,74,'symbol depthMid');
+    showNode('interview','СОБЕСЕДОВАНИЕ',42,78,'human depthNear');
+    showNode('evaluation','оценка',19,78,'human depthFar');
+    showNode('mistake','ошибка',81,21,'human depthMid');
+    showNode('notgood','«я недостаточно хороший специалист»',85,43,'human depthFar');
+    showNode('exposed','«меня разоблачат»',84,73,'human depthMid');
+
+    showEdge('nt','noma','tev','старше','given',18,false,false,true);
+    showEdge('tn','tev','noma','младше','derived',18,false,false,true);
+    showEdge('tl','tev','luri','старше','given',-12,false,false,true);
+    showEdge('nl','noma','luri','старше','derived',-55,false,false,true);
+    showEdge('nomaDiamond','noma','diamond','=','coord',-10,false,false,false);
+    showEdge('tevTriangle','tev','triangle','=','coord',22,false,false,false);
+    showEdge('luriCircle','luri','circle','=','coord',-26,false,false,false);
+    showEdge('diamondInterview','diamond','interview','обозначает','meaning',28,false,false,true);
+    showEdge('ie','interview','evaluation','может быть','meaning',15,false,false,true);
+    showEdge('im','interview','mistake','возможна','meaning',-30,false,false,true);
+    showEdge('mn','mistake','notgood','значит','derived',22,false,false,true);
+    showEdge('ne','notgood','exposed','тогда','derived',-18,false,false,true);
+
+    reflection.textContent='NOMA не изменилась. Изменился мир отношений, который стал доступен вокруг неё.';
+    cont('У этого процесса есть имя',next);
+  }
+
+  if(beat===15){
+    finalMode=false;
+    world.classList.remove('final3d');
+    world.style.filter='blur(7px) brightness(.35)';
+    clearInteraction();say('','','');
+    reveal.classList.add('on');
+  }
+
+  syncFinish();
+}
+
+function next(){if(beat<15)render(beat+1)}
+function prev(){
+  if(beat>0){
+    practiceCount=0;
+    render(beat-1);
   }
 }
-function next(){if(beat<11)render(beat+1)}
-function prev(){if(beat>0)render(beat-1)}
-document.getElementById('start').onclick=function(){
-  document.getElementById('intro').classList.add('hide');try{audioCtx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){};render(0)
+
+document.getElementById('start').onclick=()=>{
+  document.getElementById('intro').classList.add('hide');
+  render(0);
 };
-document.getElementById('finishReveal').onclick=function(){render(11)};
-document.getElementById('mute').onclick=function(){muted=!muted;this.textContent=muted?'×':'♪'};
-document.getElementById('fs').onclick=async function(){if(!document.fullscreenElement)await document.documentElement.requestFullscreen?.();else await document.exitFullscreen?.()};
-document.addEventListener('keydown',function(e){
+document.getElementById('afterReveal').onclick=()=>{
+  reveal.classList.remove('on');
+  render(14);
+};
+document.getElementById('fs').onclick=async()=>{
+  if(!document.fullscreenElement)await document.documentElement.requestFullscreen?.();
+  else await document.exitFullscreen?.();
+};
+document.addEventListener('keydown',e=>{
   if(e.key==='ArrowLeft'){e.preventDefault();prev()}
   if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();next()}
 });
-window.addEventListener('resize',updateEdges);
+window.addEventListener('resize',()=>{
+  Object.keys(edgeState).forEach(id=>{
+    const d=edgeState[id];
+    showEdge(id,d.a,d.b,d.label,d.type,d.curve,d.hot,d.dim,d.arrow);
+  });
+});
+window.addEventListener('mousemove',e=>{
+  if(!finalMode)return;
+  const x=(e.clientX/window.innerWidth-.5),y=(e.clientY/window.innerHeight-.5);
+  world.style.setProperty('--ry',(x*2.2)+'deg');
+  world.style.setProperty('--rx',(-y*1.7)+'deg');
+});
 })();
 </script>
 </body>
