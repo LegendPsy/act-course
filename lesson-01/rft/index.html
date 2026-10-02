@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>RFT — одна растущая сеть · v0.7</title>
+<title>RFT — одна растущая сеть · v0.8</title>
 <style>
 :root{
   --bg:#07090d;--fg:#f4f6fb;--muted:#97a1b1;--faint:#616c7d;
@@ -54,11 +54,12 @@ opacity .55s ease,transform .7s ease,border-color .6s ease,box-shadow .6s ease,f
 .node.depthNear.visible{transform:translate(-50%,-50%) scale(1.13);filter:none;opacity:1}
 .node.depthMid.visible{transform:translate(-50%,-50%) scale(.94);filter:none;opacity:.84}
 .node.depthFar.visible{transform:translate(-50%,-50%) scale(.78);filter:blur(.35px);opacity:.58}
-.node.mini{min-width:48px;min-height:42px;padding:8px 11px;font-size:clamp(10px,1vw,14px);font-weight:620;opacity:.72}
-.node.mini.symbol{font-size:clamp(16px,2vw,24px);min-width:42px;min-height:42px}
-.node.context{min-width:90px;min-height:44px;padding:11px 15px;font-size:clamp(12px,1.2vw,17px);font-weight:650;background:rgba(15,20,28,.92)}
-.node.context.primary{border-color:#8b97aa;box-shadow:0 0 48px rgba(190,199,214,.10)}
-.edge.contextLink{stroke:#69778c;stroke-width:1.5;opacity:.62}
+.node.mini{min-width:58px;min-height:46px;padding:9px 13px;font-size:clamp(11px,1.12vw,15px);font-weight:650;opacity:.86}
+.node.mini.symbol{font-size:clamp(18px,2.2vw,28px);min-width:48px;min-height:48px}
+.node.mini.human{max-width:180px}
+.node.context{min-width:76px;min-height:38px;padding:9px 13px;font-size:clamp(10px,1.02vw,14px);font-weight:620;background:rgba(13,17,23,.84);opacity:.72}
+.node.context.primary{opacity:.96;border-color:#8b97aa;box-shadow:0 0 38px rgba(190,199,214,.10)}
+.edge.contextLink{stroke:#647185;stroke-width:1.35;opacity:.48}
 .node.networkClickable{cursor:pointer}
 .node.networkClickable:hover{border-color:#aab5c7;box-shadow:0 0 0 1px rgba(255,255,255,.06),0 0 34px rgba(215,223,236,.14)}
 .edge.waveActive{stroke:#f5f7fb !important;stroke-width:3.4 !important;opacity:1 !important}
@@ -168,7 +169,7 @@ transition:opacity .48s ease,visibility .48s ease}
 <div id="hud">
   <div id="journey"><span class="jdot"></span><span class="jdot"></span><span class="jdot"></span><span class="jdot"></span><span class="jdot"></span></div>
   <div>← назад · → дальше</div>
-  <div>RFT · v0.7</div>
+  <div>RFT · v0.8</div>
 </div>
 <div id="tools"><button class="tool" id="fs">⛶</button></div>
 
@@ -487,64 +488,65 @@ function lifeMeaningLayer(stage=0){
 }
 
 function bonusContextNetwork(){
-  // The network we just built compresses into a smaller cluster.
-  showNode('noma','NOMA',42,43,'mini depthFar');
-  showNode('tev','TEV',50,40,'mini depthFar');
-  showNode('luri','LURI',58,43,'mini depthFar');
-  showNode('diamond','◆',42,51,'mini symbol depthMid');
-  showNode('triangle','▲',50,49,'mini symbol depthMid');
-  showNode('circle','●',58,51,'mini symbol depthMid');
+  // The network we just built stays the visual core.
+  showNode('noma','NOMA',38,33,'mini depthFar');
+  showNode('tev','TEV',50,30,'mini depthFar');
+  showNode('luri','LURI',62,33,'mini depthFar');
 
-  showNode('silence','Клиент замолчал',42,61,'mini human depthMid');
-  showNode('thought','«Я сказал что-то не то»',50,59,'mini human depthMid');
-  showNode('urge','«Надо срочно исправить»',58,61,'mini human depthMid');
-  showNode('selfeval','«Я плохой психолог»',49,68,'mini human depthFar');
-  showNode('behavior','Начинаю заполнять паузу',59,69,'mini human depthFar');
+  showNode('diamond','◆',38,43,'mini symbol depthMid');
+  showNode('triangle','▲',50,41,'mini symbol depthMid');
+  showNode('circle','●',62,43,'mini symbol depthMid');
 
-  showEdge('nt','noma','tev','','given',10,false,true,true);
-  showEdge('tl','tev','luri','','given',-10,false,true,true);
-  showEdge('nl','noma','luri','','derived',-28,false,true,true);
+  showNode('silence','Клиент замолчал',38,55,'mini human depthNear');
+  showNode('thought','«Я сказал что-то не то»',50,53,'mini human depthNear');
+  showNode('urge','«Надо срочно исправить»',62,55,'mini human depthNear');
+  showNode('selfeval','«Я плохой психолог»',47,65,'mini human depthMid');
+  showNode('behavior','Начинаю заполнять паузу',62,66,'mini human depthMid');
+
+  showEdge('nt','noma','tev','','given',12,false,true,true);
+  showEdge('tl','tev','luri','','given',-12,false,true,true);
+  showEdge('nl','noma','luri','','derived',-30,false,true,true);
   showEdge('nomaDiamond','noma','diamond','','coord',0,false,true,false);
   showEdge('tevTriangle','tev','triangle','','coord',0,false,true,false);
   showEdge('luriCircle','luri','circle','','coord',0,false,true,false);
   showEdge('diamondSilence','diamond','silence','','meaning',0,false,true,true);
   showEdge('triangleThought','triangle','thought','','meaning',0,false,true,true);
   showEdge('circleUrge','circle','urge','','meaning',0,false,true,true);
-  showEdge('silenceThought','silence','thought','','derived',8,false,true,true);
-  showEdge('thoughtUrge','thought','urge','','derived',-8,false,true,true);
-  showEdge('thoughtSelf','thought','selfeval','','meaning',8,false,true,true);
-  showEdge('urgeBehavior','urge','behavior','','meaning',8,false,true,true);
+  showEdge('silenceThought','silence','thought','','derived',10,false,true,true);
+  showEdge('thoughtUrge','thought','urge','','derived',-10,false,true,true);
+  showEdge('thoughtSelf','thought','selfeval','','meaning',10,false,true,true);
+  showEdge('urgeBehavior','urge','behavior','','meaning',10,false,true,true);
 
   tintNode('noma','#4b141a','#e05563','#ffd7db');
   tintNode('diamond','#4a183f','#d067bf','#ffd5f7');
 
-  // Existing context around the lesson itself.
-  showNode('learning','ЭТО ОБУЧЕНИЕ',50,20,'context primary focus');
-  showNode('weekday','ДЕНЬ НЕДЕЛИ',27,16,'context');
-  showNode('timeofday','ВРЕМЯ ДНЯ',73,16,'context');
-  showNode('presenter','ВЕДУЩИЙ',17,36,'context');
-  showNode('name','ИМЯ',10,58,'context');
-  showNode('author','АВТОР',83,36,'context');
-  showNode('work','РАБОТА',24,77,'context');
-  showNode('psychology','ПСИХОЛОГИЯ',76,77,'context');
+  // A calmer outer ring: context surrounds the core instead of competing with it.
+  showNode('learning','ЭТО ОБУЧЕНИЕ',50,15,'context primary focus');
+  showNode('weekday','ДЕНЬ НЕДЕЛИ',29,13,'context');
+  showNode('timeofday','ВРЕМЯ ДНЯ',71,13,'context');
 
-  // The new network is not isolated: it is already embedded in this context.
-  showEdge('learningDiamond','learning','diamond','','meaning',-18,false,false,true);
-  showEdge('learningTriangle','learning','triangle','','meaning',0,false,false,true);
-  showEdge('learningCircle','learning','circle','','meaning',18,false,false,true);
+  showNode('presenter','ВЕДУЩИЙ',19,33,'context');
+  showNode('author','АВТОР',81,33,'context');
 
-  showEdge('learningWeek','learning','weekday','','meaning',8,false,false,true);
-  showEdge('learningTime','learning','timeofday','','meaning',-8,false,false,true);
-  showEdge('learningPresenter','learning','presenter','','meaning',14,false,false,true);
-  showEdge('presenterName','presenter','name','','meaning',8,false,false,true);
-  showEdge('learningAuthor','learning','author','','meaning',-14,false,false,true);
-  showEdge('learningWork','learning','work','','meaning',20,false,false,true);
-  showEdge('workPsych','work','psychology','','meaning',-22,false,false,true);
+  showNode('name','ИМЯ',16,55,'context');
+  showNode('work','РАБОТА',28,79,'context');
+  showNode('psychology','ПСИХОЛОГИЯ',72,79,'context');
+
+  // One bridge from the current network to "this learning".
+  showEdge('learningCore','learning','thought','','meaning',0,false,false,false);
+
+  // Existing context is grouped into short local branches.
+  showEdge('learningWeek','learning','weekday','','meaning',8,false,false,false);
+  showEdge('learningTime','learning','timeofday','','meaning',-8,false,false,false);
+  showEdge('learningPresenter','learning','presenter','','meaning',18,false,false,false);
+  showEdge('presenterName','presenter','name','','meaning',8,false,false,false);
+  showEdge('learningAuthor','learning','author','','meaning',-18,false,false,false);
+  showEdge('learningWork','learning','work','','meaning',24,false,false,false);
+  showEdge('workPsych','work','psychology','','meaning',-16,false,false,false);
 
   [
-    'learningDiamond','learningTriangle','learningCircle',
-    'learningWeek','learningTime','learningPresenter','presenterName',
-    'learningAuthor','learningWork','workPsych'
+    'learningCore','learningWeek','learningTime','learningPresenter',
+    'presenterName','learningAuthor','learningWork','workPsych'
   ].forEach(id=>{
     const el=document.getElementById('edge-'+id);
     if(el)el.classList.add('contextLink');
@@ -815,7 +817,7 @@ function render(n){
     setJourney(5);
     bonusContextNetwork();
     question.textContent='Нажми на любой элемент сети';
-    reflection.textContent='И эта сеть не существует отдельно. Всё, что мы только что построили, уже находится внутри других связей. Импульс в одном месте может пройти по всей связанной сети — как по паутине.';
+    reflection.textContent='Эта сеть уже встроена в более широкий контекст: обучение, время, люди, работа, психология. Нажми на любой узел — импульс пройдёт по связанным элементам.';
     enableNetworkRipple();
   }
 
