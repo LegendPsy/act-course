@@ -1,52 +1,376 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>RFT — интерактивный прототип</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>RFT — опыт отношений · v0.2</title>
 <style>
-:root{--bg:#090b10;--fg:#f6f7fb;--muted:#9aa3b2;--line:#313949}
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:var(--bg);color:var(--fg);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow:hidden}button{font:inherit}
-#app{width:100%;height:100%;position:relative}.scene{position:absolute;inset:0;padding:7vh 7vw 10vh;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transform:translateY(14px) scale(.995);transition:opacity .55s ease,transform .55s ease}.scene.active{opacity:1;pointer-events:auto;transform:none}
-.kicker{font-size:14px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:22px}h1,h2,h3,p{margin:0}h1{font-size:clamp(48px,9vw,110px);line-height:.95;letter-spacing:-.055em;text-align:center}h2{font-size:clamp(34px,6vw,76px);line-height:1.02;letter-spacing:-.04em;text-align:center;max-width:1100px}h3{font-size:clamp(22px,3vw,38px);line-height:1.15;text-align:center}.lead{font-size:clamp(20px,2.3vw,34px);line-height:1.35;text-align:center;max-width:980px}.small{font-size:clamp(15px,1.5vw,20px);line-height:1.5;color:var(--muted);text-align:center;max-width:900px}
-.row{display:flex;gap:28px;align-items:center;justify-content:center;flex-wrap:wrap}.card{background:linear-gradient(180deg,#131822,#0f131b);border:1px solid #242b37;border-radius:24px;padding:28px 34px;min-width:220px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.28)}.symbol{font-weight:800;font-size:clamp(44px,7vw,90px);letter-spacing:-.04em}.relation{font-size:clamp(22px,2.5vw,36px);color:#d9deea}.prompt{margin-top:34px;font-size:clamp(20px,2vw,30px);color:#e8ebf2;text-align:center}
-.choice{background:#121722;border:1px solid #2a3341;color:var(--fg);border-radius:18px;padding:18px 28px;min-width:180px;cursor:pointer;transition:.2s ease}.choice:hover{transform:translateY(-2px);border-color:#596477}.choice.reveal{background:#e7ebf5;color:#0b0d12;border-color:#e7ebf5}.line{height:2px;background:linear-gradient(90deg,transparent,#7c879b,transparent);width:min(620px,70vw);margin:30px 0}.badge{display:inline-flex;align-items:center;gap:10px;border:1px solid #2b3340;border-radius:999px;padding:10px 16px;color:#c9cfdb;background:#10141c}.dot{width:8px;height:8px;border-radius:50%;background:#8993a4}.two{display:grid;grid-template-columns:1fr 1fr;gap:28px;width:min(1050px,88vw)}.two .card{min-height:240px;display:flex;flex-direction:column;justify-content:center;gap:18px}.label{font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-.net{position:relative;width:min(900px,82vw);height:min(470px,50vh);margin-top:18px}.node{position:absolute;transform:translate(-50%,-50%);background:#111722;border:1px solid #323b4b;border-radius:999px;padding:15px 22px;white-space:nowrap;font-size:clamp(16px,2vw,24px);z-index:2}.edge{position:absolute;height:2px;background:#596376;transform-origin:left center;z-index:1;opacity:.7}.glow{box-shadow:0 0 0 1px rgba(255,255,255,.05),0 0 42px rgba(255,255,255,.10)}.minus{font-size:clamp(30px,5vw,64px);font-weight:800}.four{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;width:min(980px,92vw);margin-top:38px}.step{padding:18px;border:1px solid #272f3c;border-radius:18px;color:#596273;text-align:center;background:#0d1118}.step.on{color:#eef1f8;border-color:#576174;background:#141a24}
-#hud{position:absolute;left:24px;right:24px;bottom:20px;display:flex;justify-content:space-between;align-items:center;z-index:50;color:#758095;font-size:13px;pointer-events:none}#progress{display:flex;gap:8px}.pip{width:7px;height:7px;border-radius:50%;background:#28303c}.pip.on{background:#cfd5df}#navhint{opacity:.8}.topright{position:absolute;right:24px;top:20px;z-index:60}.ctrl{background:#0e131b;border:1px solid #29313d;color:#b8c0cf;border-radius:12px;padding:9px 12px;cursor:pointer}.revealblock{opacity:0;transform:translateY(8px);transition:.4s ease}.revealblock.on{opacity:1;transform:none}.note{margin-top:22px;color:#9ea8b8;font-size:clamp(16px,1.5vw,21px);text-align:center;max-width:880px}hr.sep{border:0;height:1px;background:#222934;width:min(880px,75vw);margin:34px 0}
-@media(max-width:720px){.scene{padding:7vh 5vw 12vh}.two{grid-template-columns:1fr}.four{grid-template-columns:1fr 1fr}.net{height:420px}#navhint{display:none}}
+:root{
+  --bg:#07090d; --fg:#f4f6fb; --muted:#8f99aa; --soft:#151a23; --line:#465064;
+  --bright:#e9edf6; --danger:#d6d9df;
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--fg);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button{font:inherit}
+body{user-select:none}
+#experience{position:relative;width:100%;height:100%;overflow:hidden;background:
+radial-gradient(circle at 50% 45%,rgba(60,73,95,.10),transparent 38%),
+radial-gradient(circle at 50% 50%,#0b0e14 0%,#07090d 64%,#05070a 100%)}
+#grain{position:absolute;inset:0;pointer-events:none;opacity:.13;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.18'/%3E%3C/svg%3E")}
+#world{position:absolute;inset:0;transition:filter 1s ease,transform 1.2s cubic-bezier(.2,.75,.2,1)}
+#links{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.edge{stroke:#697387;stroke-width:2;opacity:.75;stroke-linecap:round;transition:opacity .6s ease,stroke .6s ease,stroke-width .6s ease}
+.edge.derived{stroke:#cdd3de;stroke-dasharray:8 10;opacity:.88}
+.edge.hot{stroke:#eef1f7;stroke-width:3}
+.edgePulse{fill:none;stroke:#f2f4f8;stroke-width:3;stroke-linecap:round;stroke-dasharray:10 1000;animation:pulse 1.25s ease-out forwards}
+@keyframes pulse{from{stroke-dashoffset:0;opacity:1}to{stroke-dashoffset:-500;opacity:0}}
+.edgeLabel{
+position:absolute;transform:translate(-50%,-50%);padding:5px 9px;border-radius:999px;
+font-size:12px;letter-spacing:.04em;color:#aeb6c5;background:rgba(7,9,13,.86);
+border:1px solid rgba(116,126,145,.26);white-space:nowrap;z-index:3;
+transition:opacity .5s ease,transform .7s ease
+}
+.node{
+position:absolute;transform:translate(-50%,-50%) scale(.92);min-width:74px;min-height:74px;
+padding:18px 22px;border-radius:999px;border:1px solid #313949;background:rgba(14,18,25,.91);
+display:flex;align-items:center;justify-content:center;text-align:center;white-space:nowrap;
+font-weight:720;font-size:clamp(22px,3vw,44px);letter-spacing:-.025em;
+box-shadow:0 12px 55px rgba(0,0,0,.34);opacity:0;z-index:5;
+transition:left 1.05s cubic-bezier(.2,.75,.2,1),top 1.05s cubic-bezier(.2,.75,.2,1),
+transform .7s ease,opacity .6s ease,background .7s ease,border-color .7s ease,box-shadow .7s ease,font-size .7s ease;
+}
+.node.visible{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.node.dim{opacity:.24}
+.node.focus{border-color:#8d98aa;box-shadow:0 0 0 1px rgba(255,255,255,.04),0 0 62px rgba(184,194,212,.14)}
+.node.small{font-size:clamp(16px,2vw,26px);min-width:64px;min-height:64px}
+.node.human{font-size:clamp(15px,2vw,28px);font-weight:650;padding:16px 20px}
+.node.loss{border-color:#aeb5c2;box-shadow:0 0 0 1px rgba(255,255,255,.08),0 0 75px rgba(255,255,255,.16)}
+#narrative{position:absolute;left:50%;top:7vh;transform:translateX(-50%);width:min(920px,84vw);z-index:20;text-align:center;pointer-events:none}
+#eyebrow{height:20px;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#6f798a;transition:opacity .4s ease}
+#headline{margin-top:10px;font-size:clamp(25px,3.9vw,54px);line-height:1.08;letter-spacing:-.038em;font-weight:690;transition:opacity .3s ease,transform .45s ease}
+#subline{margin:14px auto 0;max-width:760px;color:var(--muted);font-size:clamp(15px,1.5vw,20px);line-height:1.5;transition:opacity .3s ease}
+.fadeSwap{animation:swap .48s ease}
+@keyframes swap{0%{opacity:0;transform:translateY(8px)}100%{opacity:1;transform:none}}
+#interaction{
+position:absolute;left:50%;bottom:10vh;transform:translateX(-50%);z-index:30;width:min(920px,90vw);
+display:flex;flex-direction:column;align-items:center;gap:16px;transition:opacity .35s ease
+}
+#question{font-size:clamp(18px,2vw,28px);text-align:center;line-height:1.3;color:#e8ebf2}
+#answers{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.answer,.continue{
+border:1px solid #303846;background:rgba(14,18,25,.92);color:#eff2f7;border-radius:999px;
+padding:14px 24px;min-width:150px;cursor:pointer;transition:transform .18s ease,border-color .2s ease,background .2s ease,opacity .3s ease
+}
+.answer:hover,.continue:hover{transform:translateY(-2px);border-color:#697488}
+.answer.chosen,.continue{background:#edf0f6;color:#0a0c10;border-color:#edf0f6}
+.answer.wrong{animation:shake .3s ease}
+@keyframes shake{25%{transform:translateX(-5px)}50%{transform:translateX(5px)}75%{transform:translateX(-3px)}}
+#timer{height:3px;width:min(420px,70vw);background:#1b202a;border-radius:8px;overflow:hidden;opacity:0}
+#timer>i{display:block;width:100%;height:100%;background:#aeb6c5;transform-origin:left}
+#reflection{max-width:720px;color:#aab2c1;text-align:center;font-size:clamp(14px,1.4vw,18px);line-height:1.48}
+#meta{position:absolute;left:24px;right:24px;bottom:20px;z-index:40;display:flex;align-items:center;justify-content:space-between;gap:20px;color:#626c7d;font-size:12px;pointer-events:none}
+#journey{display:flex;align-items:center;gap:9px}
+.jdot{width:6px;height:6px;border-radius:50%;background:#2b3240;transition:.45s ease}
+.jdot.on{background:#cdd3df;box-shadow:0 0 18px rgba(205,211,223,.28)}
+#hint{letter-spacing:.03em}
+#tools{position:absolute;right:18px;top:18px;z-index:50;display:flex;gap:8px}
+.tool{background:rgba(12,16,22,.75);border:1px solid #242c38;color:#8993a4;border-radius:12px;padding:8px 11px;cursor:pointer}
+#intro{
+position:absolute;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;
+background:#07090d;transition:opacity .9s ease,visibility .9s ease
+}
+#intro.hide{opacity:0;visibility:hidden}
+.introInner{text-align:center;width:min(850px,86vw)}
+.introMark{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#667083;margin-bottom:24px}
+.introTitle{font-size:clamp(34px,6vw,76px);letter-spacing:-.045em;line-height:1.02;font-weight:690}
+.introText{margin:24px auto 30px;max-width:640px;color:#959fae;font-size:clamp(16px,1.7vw,21px);line-height:1.55}
+#start{border:1px solid #e9edf5;background:#e9edf5;color:#090b0f;border-radius:999px;padding:15px 27px;cursor:pointer;font-weight:680}
+#titleReveal{
+position:absolute;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;
+background:#07090d;opacity:0;visibility:hidden;transition:opacity 1.1s ease,visibility 1.1s ease;text-align:center
+}
+#titleReveal.on{opacity:1;visibility:visible}
+#titleReveal .tiny{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#747e8e;margin-bottom:18px}
+#titleReveal .rft{font-size:clamp(82px,17vw,230px);font-weight:820;letter-spacing:-.08em;line-height:.82}
+#titleReveal .long{margin-top:28px;font-size:clamp(19px,2.3vw,32px);color:#cdd3de}
+#titleReveal .meaning{margin-top:18px;max-width:780px;color:#8f99aa;font-size:clamp(15px,1.4vw,19px);line-height:1.55}
+#titleReveal .continue{margin-top:30px}
+#score{
+position:absolute;right:8vw;top:30vh;z-index:8;font-size:clamp(28px,4vw,58px);font-weight:780;opacity:0;
+transition:opacity .4s ease,transform .45s ease;color:#e6e9ef
+}
+#score.show{opacity:1;transform:scale(1.04)}
+#score.hit{animation:scoreHit .55s ease}
+@keyframes scoreHit{0%{transform:scale(1)}40%{transform:scale(1.22)}100%{transform:scale(1)}}
+body.flash #experience:after{
+content:"";position:absolute;inset:0;z-index:7;pointer-events:none;background:rgba(255,255,255,.06);animation:flash .55s ease forwards
+}
+@keyframes flash{from{opacity:1}to{opacity:0}}
+@media(max-width:720px){
+#narrative{top:6.5vh;width:90vw}#interaction{bottom:12vh}.node{min-width:58px;min-height:58px;padding:13px 16px}
+#meta{left:14px;right:14px;bottom:12px}#hint{display:none}#tools{right:10px;top:10px}
+}
 </style>
 </head>
 <body>
-<div id="app">
-<button class="ctrl topright" id="fs">⛶ Полный экран</button>
-<section class="scene active"><div class="kicker">Эксперимент</div><h2>Сейчас я научу вас кое-чему,<br>не объясняя, чему именно.</h2><div class="line"></div><p class="lead">Не пытайтесь запоминать. Просто играйте.</p></section>
-<section class="scene"><div class="kicker">Раунд 1</div><div class="row"><div class="card"><div class="symbol">NOMA</div></div><div class="relation">старше</div><div class="card"><div class="symbol">TEV</div></div></div><div class="prompt">Запомните только это.</div></section>
-<section class="scene" data-interactive="choice1"><div class="kicker">Вопрос</div><h2>Кто младше?</h2><div class="row" style="margin-top:34px"><button class="choice" data-wrong>NOMA</button><button class="choice" data-correct>TEV</button></div><div class="revealblock" style="margin-top:36px"><div class="badge"><span class="dot"></span> TEV младше NOMA</div><p class="note">Но этой фразы вам никто не сообщал напрямую.</p></div></section>
-<section class="scene"><div class="kicker">Что только что произошло?</div><div class="two"><div class="card"><div class="label">Тебе дали</div><div class="symbol" style="font-size:52px">NOMA</div><div class="relation">старше TEV</div></div><div class="card"><div class="label">Ты вывел</div><div class="symbol" style="font-size:52px">TEV</div><div class="relation">младше NOMA</div></div></div><p class="prompt"><b>ДАЛИ → ВЫВЕЛ</b></p></section>
-<section class="scene"><div class="kicker">Добавим третьего</div><div class="row"><div class="card"><div class="symbol">NOMA</div></div><div class="relation">старше</div><div class="card"><div class="symbol">TEV</div></div><div class="relation">старше</div><div class="card"><div class="symbol">LURI</div></div></div><div class="prompt">Кто старше: NOMA или LURI?</div></section>
-<section class="scene" data-interactive="choice2"><div class="kicker">Выводим новую связь</div><h2>NOMA ? LURI</h2><div class="row" style="margin-top:32px"><button class="choice" data-correct>NOMA старше LURI</button><button class="choice" data-wrong>LURI старше NOMA</button></div><div class="revealblock" style="margin-top:34px"><p class="lead">Этой связи вам тоже никто напрямую не давал.</p></div></section>
-<section class="scene"><div class="kicker">Мини-игра</div><h3>KETA больше MIVO</h3><h3 style="margin-top:12px">MIVO больше SULO</h3><hr class="sep"><h2>SULO меньше KETA?</h2><div class="row" style="margin-top:28px"><button class="choice" onclick="this.classList.add('reveal')">ДА</button><button class="choice">НЕТ</button></div><p class="note">Две заданные связи уже дают доступ к новым отношениям.</p></section>
-<section class="scene"><div class="kicker">Контекст меняет правило</div><div class="row"><div class="card"><div class="symbol">●</div><div class="small">большой круг</div></div><div class="card"><div class="symbol" style="font-size:46px">●</div><div class="small">маленький круг</div></div></div><p class="prompt">Физически первый круг больше.</p></section>
-<section class="scene"><div class="kicker">Но теперь правило другое</div><h3>В этой игре слово <b>ZAV</b> означает:<br>«считать меньшим независимо от размера».</h3><div class="line"></div><p class="lead">Красный круг <b>ZAV</b> синего.</p><div class="prompt">Какой считается меньшим <b>в этом контексте</b>?</div><p class="note">Мы уже реагируем не только на физические свойства объектов, но и на заданное отношение.</p></section>
-<section class="scene"><div class="kicker">Теперь самое важное</div><h2>Связи могут менять не только то,<br>что мы знаем.</h2><div class="line"></div><h2>Они могут менять то,<br><b>что событие для нас делает.</b></h2></section>
-<section class="scene"><div class="kicker">Сеть</div><div class="net"><div class="node glow" style="left:20%;top:50%">⬡</div><div class="node" style="left:50%;top:50%">△</div><div class="node" style="left:80%;top:50%">✦</div><div class="edge" style="left:24%;top:50%;width:22%;"></div><div class="edge" style="left:54%;top:50%;width:22%;"></div><div class="node" style="left:80%;top:25%;border-color:#596377"><span class="minus">−100</span></div></div><p class="note">Если функция одного элемента меняется, возникает вопрос: что произойдёт с другими элементами сети?</p></section>
-<section class="scene"><div class="kicker">Первый человеческий пример</div><div class="net"><div class="node glow" style="left:50%;top:18%">СОБЕСЕДОВАНИЕ</div><div class="node" style="left:28%;top:42%">оценка</div><div class="node" style="left:72%;top:42%">«недостаточно хорош»</div><div class="node" style="left:36%;top:70%">провал</div><div class="node" style="left:70%;top:74%">«я не справляюсь»</div><div class="edge" style="left:47%;top:23%;width:23%;transform:rotate(151deg)"></div><div class="edge" style="left:53%;top:23%;width:23%;transform:rotate(29deg)"></div><div class="edge" style="left:32%;top:48%;width:22%;transform:rotate(62deg)"></div><div class="edge" style="left:66%;top:48%;width:23%;transform:rotate(73deg)"></div></div><p class="note">Физически впереди может быть всего лишь разговор. Психологически человек способен входить в него вместе со всей сетью.</p></section>
-<section class="scene"><div class="kicker">Собираем опыт</div><div class="four"><div class="step on">1. СВЯЗАЛ</div><div class="step on">2. ВЫВЕЛ</div><div class="step on">3. ПОСТРОИЛ СЕТЬ</div><div class="step on">4. ИЗМЕНИЛАСЬ ФУНКЦИЯ</div></div><div class="line"></div><h2>Вот теперь можно дать этому название.</h2></section>
-<section class="scene"><div class="kicker">Relational Frame Theory</div><h1>RFT</h1><p class="lead" style="margin-top:28px"><b>Теория реляционных фреймов</b></p><p class="note">Как люди научаются реляционно соотносить события — и как эти отношения начинают влиять на поведение.</p></section>
-<section class="scene"><div class="kicker">Проверка без экзамена</div><h2>Что здесь было самым важным?</h2><div style="display:flex;flex-direction:column;gap:14px;margin-top:32px;width:min(860px,90vw)"><button class="choice">Люди умеют логически мыслить</button><button class="choice" onclick="this.classList.add('reveal')">Мы создаём и выводим отношения, а они могут менять функции событий</button><button class="choice">Нужно контролировать негативные мысли</button></div><p class="note">Этого пока достаточно.</p></section>
-<section class="scene"><div class="kicker">Возвращаемся в начало</div><h1>NOMA</h1><p class="lead" style="margin-top:30px">Несколько минут назад это слово ничего для вас не значило.</p><div class="line"></div><h3>Что изменилось — слово или отношения?</h3><p class="note" style="margin-top:30px">1. RFT ✓ &nbsp;&nbsp;→&nbsp;&nbsp; 2. Схема</p></section>
-<div id="hud"><div id="progress"></div><div id="navhint">← назад &nbsp;&nbsp; → дальше &nbsp;&nbsp; пробел — дальше</div><div id="counter"></div></div>
+<div id="experience">
+<div id="grain"></div>
+<div id="world">
+<svg id="links"></svg>
+<div id="labels"></div>
+<div id="nodes"></div>
+<div id="score">1000</div>
 </div>
+
+<div id="narrative">
+<div id="eyebrow"></div>
+<div id="headline"></div>
+<div id="subline"></div>
+</div>
+
+<div id="interaction">
+<div id="question"></div>
+<div id="answers"></div>
+<div id="timer"><i></i></div>
+<div id="reflection"></div>
+</div>
+
+<div id="meta">
+<div id="journey"><span class="jdot"></span><span class="jdot"></span><span class="jdot"></span><span class="jdot"></span></div>
+<div id="hint">← назад · → дальше</div>
+<div>RFT · прототип 0.2</div>
+</div>
+
+<div id="tools">
+<button class="tool" id="mute" title="Звук">♪</button>
+<button class="tool" id="fs" title="Полный экран">⛶</button>
+</div>
+
+<div id="intro">
+<div class="introInner">
+<div class="introMark">Небольшой эксперимент</div>
+<div class="introTitle">Не пытайся понять.<br>Просто следуй.</div>
+<div class="introText">Здесь нет материала, который нужно успеть запомнить. Несколько минут просто отвечай на то, что появляется перед тобой.</div>
+<button id="start">Начать</button>
+</div>
+</div>
+
+<div id="titleReveal">
+<div class="tiny">Relational Frame Theory</div>
+<div class="rft">RFT</div>
+<div class="long">Теория реляционных фреймов</div>
+<div class="meaning">Мы способны устанавливать отношения между событиями, выводить новые отношения и менять функции событий через эти сети отношений.</div>
+<button class="continue" id="finishReveal">Посмотреть, что только что произошло</button>
+</div>
+</div>
+
 <script>
-const scenes=[...document.querySelectorAll('.scene')];let idx=0;const progress=document.getElementById('progress');const counter=document.getElementById('counter');
-function buildPips(){progress.innerHTML='';scenes.forEach((_,i)=>{const d=document.createElement('div');d.className='pip'+(i===idx?' on':'');progress.appendChild(d);});}
-function show(i){idx=Math.max(0,Math.min(scenes.length-1,i));scenes.forEach((s,n)=>s.classList.toggle('active',n===idx));[...progress.children].forEach((p,n)=>p.classList.toggle('on',n===idx));counter.textContent=(idx+1)+' / '+scenes.length;}
-function next(){show(idx+1)}function prev(){show(idx-1)}
-document.addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();next()}if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();prev()}});
-document.addEventListener('click',e=>{if(e.target.closest('button'))return;const x=e.clientX/window.innerWidth;if(x>.72)next();else if(x<.28)prev();});
-document.querySelectorAll('[data-interactive]').forEach(sec=>{sec.querySelectorAll('[data-correct]').forEach(btn=>{btn.addEventListener('click',()=>{btn.classList.add('reveal');sec.querySelector('.revealblock')?.classList.add('on');});});sec.querySelectorAll('[data-wrong]').forEach(btn=>{btn.addEventListener('click',()=>{btn.animate([{transform:'translateX(0)'},{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'translateX(0)'}],{duration:300});});});});
-document.getElementById('fs').addEventListener('click',async()=>{if(!document.fullscreenElement)await document.documentElement.requestFullscreen?.();else await document.exitFullscreen?.();});
-buildPips();show(0);
+(function(){
+const world=document.getElementById('world');
+const nodesWrap=document.getElementById('nodes');
+const links=document.getElementById('links');
+const labels=document.getElementById('labels');
+const headline=document.getElementById('headline');
+const subline=document.getElementById('subline');
+const eyebrow=document.getElementById('eyebrow');
+const question=document.getElementById('question');
+const answers=document.getElementById('answers');
+const reflection=document.getElementById('reflection');
+const timer=document.getElementById('timer');
+const journey=[...document.querySelectorAll('.jdot')];
+const titleReveal=document.getElementById('titleReveal');
+const score=document.getElementById('score');
+let beat=0, completed={}, muted=false, audioCtx=null;
+const nodeData={}, edgeData={};
+
+function say(e,h,s){
+  eyebrow.textContent=e||''; headline.textContent=h||''; subline.textContent=s||'';
+  [headline,subline].forEach(function(el){el.classList.remove('fadeSwap');void el.offsetWidth;el.classList.add('fadeSwap')});
+}
+function clearInteraction(){
+  question.textContent=''; answers.innerHTML=''; reflection.textContent=''; timer.style.opacity='0';
+}
+function setJourney(n){journey.forEach(function(d,i){d.classList.toggle('on',i<n)})}
+function ensureNode(id,text,x,y,cls){
+  let el=document.getElementById('node-'+id);
+  if(!el){el=document.createElement('div');el.id='node-'+id;el.className='node';nodesWrap.appendChild(el)}
+  el.textContent=text; el.style.left=x+'%'; el.style.top=y+'%'; el.className='node visible '+(cls||'');
+  nodeData[id]={x:x,y:y};
+  requestAnimationFrame(updateEdges); return el;
+}
+function hideNode(id){const el=document.getElementById('node-'+id);if(el)el.classList.remove('visible');delete nodeData[id];requestAnimationFrame(updateEdges)}
+function clearWorld(){
+  nodesWrap.innerHTML=''; links.innerHTML=''; labels.innerHTML=''; Object.keys(nodeData).forEach(function(k){delete nodeData[k]});Object.keys(edgeData).forEach(function(k){delete edgeData[k]});
+}
+function edge(id,a,b,label,derived,hot){
+  let line=document.getElementById('edge-'+id);
+  if(!line){line=document.createElementNS('http://www.w3.org/2000/svg','line');line.id='edge-'+id;links.appendChild(line)}
+  line.setAttribute('class','edge'+(derived?' derived':'')+(hot?' hot':''));
+  let lab=document.getElementById('label-'+id);
+  if(!lab){lab=document.createElement('div');lab.id='label-'+id;lab.className='edgeLabel';labels.appendChild(lab)}
+  lab.textContent=label||''; edgeData[id]={a:a,b:b,label:label};updateEdges();
+  return line;
+}
+function removeEdge(id){const l=document.getElementById('edge-'+id),t=document.getElementById('label-'+id);if(l)l.remove();if(t)t.remove();delete edgeData[id]}
+function updateEdges(){
+  const w=world.clientWidth,h=world.clientHeight;
+  Object.keys(edgeData).forEach(function(id){
+    const d=edgeData[id],a=nodeData[d.a],b=nodeData[d.b]; if(!a||!b)return;
+    const x1=a.x*w/100,y1=a.y*h/100,x2=b.x*w/100,y2=b.y*h/100;
+    const line=document.getElementById('edge-'+id); if(line){line.setAttribute('x1',x1);line.setAttribute('y1',y1);line.setAttribute('x2',x2);line.setAttribute('y2',y2)}
+    const lab=document.getElementById('label-'+id); if(lab){lab.style.left=((a.x+b.x)/2)+'%';lab.style.top=((a.y+b.y)/2)+'%'}
+  });
+}
+function pulseEdge(a,b){
+  const A=nodeData[a],B=nodeData[b];if(!A||!B)return;
+  const w=world.clientWidth,h=world.clientHeight;
+  const p=document.createElementNS('http://www.w3.org/2000/svg','line');
+  p.setAttribute('x1',A.x*w/100);p.setAttribute('y1',A.y*h/100);p.setAttribute('x2',B.x*w/100);p.setAttribute('y2',B.y*h/100);p.setAttribute('class','edgePulse');links.appendChild(p);
+  setTimeout(function(){p.remove()},1300);
+}
+function buttons(items,handler){
+  answers.innerHTML='';
+  items.forEach(function(item){
+    const b=document.createElement('button');b.className='answer';b.textContent=item.label;
+    b.onclick=function(){handler(item,b)};answers.appendChild(b);
+  });
+}
+function cont(label,fn){
+  answers.innerHTML='';const b=document.createElement('button');b.className='continue';b.textContent=label||'Дальше';b.onclick=fn||next;answers.appendChild(b);
+}
+function wrong(btn){btn.classList.remove('wrong');void btn.offsetWidth;btn.classList.add('wrong')}
+function tone(freq,duration){
+  if(muted)return; try{
+    if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+    const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.frequency.value=freq;o.type='sine';g.gain.setValueAtTime(.0001,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.08,audioCtx.currentTime+.02);g.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+duration);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+duration+.03);
+  }catch(e){}
+}
+function lowHit(){tone(118,.42);document.body.classList.add('flash');setTimeout(function(){document.body.classList.remove('flash')},600)}
+function startTimer(ms,done){
+  timer.style.opacity='1';const bar=timer.querySelector('i');bar.style.transition='none';bar.style.transform='scaleX(1)';void bar.offsetWidth;bar.style.transition='transform '+ms+'ms linear';bar.style.transform='scaleX(0)';setTimeout(done,ms);
+}
+function render(n){
+  beat=Math.max(0,Math.min(11,n));clearInteraction();titleReveal.classList.remove('on');score.classList.remove('show');world.style.transform='none';world.style.filter='none';
+  if(beat===0){
+    clearWorld();setJourney(0);say('','Посмотри на два слова.','Пока они ничего от тебя не требуют.');
+    ensureNode('noma','NOMA',35,52,'focus');ensureNode('tev','TEV',65,52,'');
+    setTimeout(function(){edge('nt','noma','tev','старше',false,false)},450);
+    cont('Я вижу',next);
+  }
+  if(beat===1){
+    setJourney(1);say('','Не вспоминай правило. Просто ответь.','');
+    ensureNode('noma','NOMA',35,52,'focus');ensureNode('tev','TEV',65,52,'');edge('nt','noma','tev','старше',false,false);
+    question.textContent='Кто младше?';
+    buttons([{label:'NOMA',ok:false},{label:'TEV',ok:true}],function(it,b){
+      if(!it.ok){wrong(b);return}
+      b.classList.add('chosen');completed[1]=true;
+      edge('rev','tev','noma','младше',true,true);pulseEdge('tev','noma');tone(520,.16);
+      question.textContent='';reflection.textContent='Эту связь тебе никто не сообщал напрямую.';
+      setTimeout(function(){cont('Дальше',next)},450);
+    });
+  }
+  if(beat===2){
+    setJourney(2);say('','Добавим только одну вещь.','');
+    ensureNode('noma','NOMA',24,52,'');ensureNode('tev','TEV',50,52,'focus');ensureNode('luri','LURI',76,52,'');
+    edge('nt','noma','tev','старше',false,false);edge('tl','tev','luri','старше',false,false);removeEdge('rev');
+    question.textContent='Кто старше: NOMA или LURI?';
+    buttons([{label:'NOMA',ok:true},{label:'LURI',ok:false}],function(it,b){
+      if(!it.ok){wrong(b);return}
+      b.classList.add('chosen');completed[2]=true;
+      edge('nl','noma','luri','старше',true,true);pulseEdge('noma','luri');tone(560,.17);
+      reflection.textContent='Новая связь появилась без прямого обучения.';
+      setTimeout(function(){cont('Продолжить',next)},500);
+    });
+  }
+  if(beat===3){
+    setJourney(3);say('','Теперь посмотри на то, что получилось.','Две заданные связи породили сеть отношений, которые ты можешь вывести.');
+    ensureNode('noma','NOMA',24,52,'');ensureNode('tev','TEV',50,52,'');ensureNode('luri','LURI',76,52,'');
+    edge('nt','noma','tev','старше',false,false);edge('tl','tev','luri','старше',false,false);edge('nl','noma','luri','выведено',true,false);
+    setTimeout(function(){pulseEdge('noma','tev');setTimeout(function(){pulseEdge('tev','luri')},280);setTimeout(function(){pulseEdge('noma','luri')},620)},400);
+    reflection.textContent='Ты не просто сохранил факты. Ты достроил отношения.';
+    cont('А что если отношения начнут что-то менять?',next);
+  }
+  if(beat===4){
+    setJourney(3);say('','Та же способность. Новая сеть.','Слова сменятся на символы. Механизм останется тем же.');
+    clearWorld();ensureNode('a','⬡',27,53,'focus');ensureNode('b','△',50,53,'');ensureNode('c','✦',73,53,'');
+    edge('ab','a','b','связаны',false,false);edge('bc','b','c','связаны',false,false);edge('ac','a','c','следует из сети',true,false);
+    cont('Продолжить',next);
+  }
+  if(beat===5){
+    setJourney(3);say('','Пока это просто символы.','Никакой из них ещё не хороший и не плохой.');
+    ensureNode('a','⬡',27,53,'');ensureNode('b','△',50,53,'');ensureNode('c','✦',73,53,'focus');
+    edge('ab','a','b','связаны',false,false);edge('bc','b','c','связаны',false,false);edge('ac','a','c','следует из сети',true,false);
+    score.classList.add('show');score.textContent='1000';
+    question.textContent='Нажми на ✦';
+    buttons([{label:'✦',ok:true}],function(it,b){
+      b.classList.add('chosen');document.getElementById('node-c').classList.add('loss');score.textContent='900';score.classList.add('hit');lowHit();
+      reflection.textContent='✦ теперь связан с потерей 100 очков.';
+      setTimeout(function(){cont('Дальше',next)},650);
+    });
+  }
+  if(beat===6){
+    setJourney(4);say('','А теперь — быстро.','Не рассуждай. Выбери один объект.');
+    clearWorld();ensureNode('a','⬡',38,54,'');ensureNode('new','○',62,54,'');
+    question.textContent='Выбери';
+    buttons([{label:'⬡',pick:'a'},{label:'○',pick:'new'}],function(it,b){
+      if(completed[6])return;completed[6]=it.pick;b.classList.add('chosen');
+      clearTimeout(window.fastTimer);
+      const msg=it.pick==='new'?'С ⬡ напрямую ничего плохого не происходило. И всё же сеть могла изменить его функцию для тебя.':'Ты выбрал ⬡. Это тоже важно: реляционная сеть не заставляет всех реагировать одинаково — она меняет возможные функции в контексте.';
+      reflection.textContent=msg;setTimeout(function(){cont('Что это значит для человеческой жизни?',next)},900);
+    });
+    startTimer(2200,function(){
+      if(completed[6])return;reflection.textContent='Даже отсутствие выбора — тоже реакция. Сеть уже стала частью контекста.';cont('Продолжить',next);
+    });
+  }
+  if(beat===7){
+    setJourney(4);say('','До сих пор мы играли бессмысленными объектами.','Теперь заменим только содержание.');
+    clearWorld();
+    ensureNode('event','СОБЕСЕДОВАНИЕ',50,48,'human focus');
+    cont('Продолжить',next);
+  }
+  if(beat===8){
+    setJourney(4);say('','Физически впереди может быть просто разговор.','Но человек способен входить в него вместе с целой сетью.');
+    ensureNode('event','СОБЕСЕДОВАНИЕ',50,30,'human focus');
+    ensureNode('eval','оценка',27,53,'human');ensureNode('bad','«я недостаточно хорош»',73,53,'human');
+    ensureNode('fail','провал',33,75,'human');ensureNode('self','«я не справляюсь»',70,76,'human');
+    edge('e1','event','eval','',false,false);edge('e2','event','bad','',false,false);edge('e3','eval','fail','',true,false);edge('e4','bad','self','',true,false);edge('e5','fail','self','',true,false);
+    setTimeout(function(){pulseEdge('event','eval');setTimeout(function(){pulseEdge('eval','fail')},250);setTimeout(function(){pulseEdge('fail','self')},500)},300);
+    reflection.textContent='Событие ещё не произошло. А психологические функции уже могут быть здесь.';
+    cont('Дальше',next);
+  }
+  if(beat===9){
+    setJourney(4);say('','Заметь последовательность.','');
+    ensureNode('event','СОБЕСЕДОВАНИЕ',50,30,'human focus');ensureNode('eval','оценка',27,53,'human');ensureNode('bad','«я недостаточно хорош»',73,53,'human');ensureNode('fail','провал',33,75,'human');ensureNode('self','«я не справляюсь»',70,76,'human');
+    edge('e1','event','eval','',false,false);edge('e2','event','bad','',false,false);edge('e3','eval','fail','',true,false);edge('e4','bad','self','',true,false);edge('e5','fail','self','',true,false);
+    question.innerHTML='<span style="opacity:.55">связал</span> &nbsp;→&nbsp; <span style="opacity:.7">вывел</span> &nbsp;→&nbsp; <span style="opacity:.85">построил сеть</span> &nbsp;→&nbsp; <b>изменилась функция</b>';
+    reflection.textContent='До сих пор название теории было не нужно. Ты уже видел процесс.';
+    cont('Теперь можно назвать его',next);
+  }
+  if(beat===10){
+    clearInteraction();say('','','');world.style.filter='blur(9px) brightness(.35)';setTimeout(function(){titleReveal.classList.add('on')},300);
+  }
+  if(beat===11){
+    titleReveal.classList.remove('on');clearWorld();setJourney(4);say('','Что изменилось?','Несколько минут назад NOMA была бессмысленной последовательностью букв.');
+    ensureNode('noma','NOMA',50,51,'focus');
+    question.textContent='Само слово — или отношения, которые вокруг него появились?';
+    reflection.textContent='Этого пока достаточно, чтобы идти дальше к схеме RFT.';
+    answers.innerHTML='';
+  }
+}
+function next(){if(beat<11)render(beat+1)}
+function prev(){if(beat>0)render(beat-1)}
+document.getElementById('start').onclick=function(){
+  document.getElementById('intro').classList.add('hide');try{audioCtx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){};render(0)
+};
+document.getElementById('finishReveal').onclick=function(){render(11)};
+document.getElementById('mute').onclick=function(){muted=!muted;this.textContent=muted?'×':'♪'};
+document.getElementById('fs').onclick=async function(){if(!document.fullscreenElement)await document.documentElement.requestFullscreen?.();else await document.exitFullscreen?.()};
+document.addEventListener('keydown',function(e){
+  if(e.key==='ArrowLeft'){e.preventDefault();prev()}
+  if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();next()}
+});
+window.addEventListener('resize',updateEdges);
+})();
 </script>
 </body>
 </html>
