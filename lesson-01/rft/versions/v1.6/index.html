@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<!-- Модуль «Что такое RFT» · версия v1.7 (архив прошлых версий: ./versions/) -->
+<!-- Модуль «Что такое RFT» · версия v1.6 (архив прошлых версий: ./versions/) -->
 <title>Что такое RFT · Урок 1</title>
 <style>
 :root{
@@ -123,6 +123,10 @@ transition:opacity .48s ease,visibility .48s ease}
 .meaning{margin:17px auto 0;max-width:790px;color:#909aaa;font-size:clamp(14px,1.45vw,19px);line-height:1.55}
 .revealInner .continue{margin-top:28px}
 
+.legend{position:absolute;z-index:15;left:20px;top:18px;display:flex;gap:16px;align-items:center;color:#8a94a5;font-size:13px;opacity:.95}
+.legendItem{display:flex;align-items:center;gap:6px}
+.legendLine{width:28px;height:0;border-top:2px solid #78859a}
+.legendLine.dashed{border-top-color:#d7dce6;border-top-style:dashed}
 
 @media(max-width:780px){
 #world{bottom:28vh}
@@ -132,12 +136,17 @@ transition:opacity .48s ease,visibility .48s ease}
 .node.human{font-size:12px;max-width:160px}
 .edgeLabel{font-size:10px}
 #hud{left:12px;right:12px;bottom:6px}
+.legend{display:none}
 }
 </style>
 </head>
 <body>
 <div id="app">
 <div id="grain"></div>
+<div class="legend">
+  <div class="legendItem"><span class="legendLine"></span><span>дано</span></div>
+  <div class="legendItem"><span class="legendLine dashed"></span><span>выведено</span></div>
+</div>
 <div id="world">
   <svg id="edges">
     <defs>
@@ -185,8 +194,8 @@ transition:opacity .48s ease,visibility .48s ease}
 <div id="intro">
   <div class="introInner">
     <div class="kicker">Небольшой эксперимент</div>
-    <div class="introTitle">Учить ничего не нужно.<br>Это уже есть в вас.</div>
-    <div class="introText">Просто понаблюдайте, что ваш ум делает сам.</div>
+    <div class="introTitle">Одна сеть.<br>Шаг за шагом.</div>
+    <div class="introText">Ничего не нужно учить заранее. Просто следите за тем, как три бессмысленных слова постепенно превращаются в сеть, которая уже влияет на смысл и действие.</div>
     <button id="start">Начать</button>
   </div>
 </div>
