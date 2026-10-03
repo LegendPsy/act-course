@@ -45,7 +45,7 @@ linear-gradient(90deg,rgba(0,0,0,.08),transparent 12%,transparent 88%,rgba(0,0,0
 #p3{width:min(22vw,340px);left:10%;top:48%;transform:rotate(-2.1deg)}
 #stage{position:absolute;inset:0;z-index:50;display:grid;place-items:center;background:rgba(5,4,3,.56);backdrop-filter:blur(2px);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .35s,visibility .35s}
 #stage.visible{opacity:1;visibility:visible}
-#hero{display:block;width:min(86vw,1240px);height:auto;max-height:82vh;object-fit:contain;border:11px solid #eee8dc;background:#eee8dc;box-shadow:0 35px 95px rgba(0,0,0,.8),0 4px 12px #000}
+#hero{display:block;width:auto;height:auto;max-width:none;max-height:none;object-fit:contain;border:11px solid #eee8dc;background:#eee8dc;box-shadow:0 35px 95px rgba(0,0,0,.8),0 4px 12px #000}
 #fly{position:fixed;z-index:80;display:none;pointer-events:none;object-fit:contain;border:11px solid #eee8dc;background:#eee8dc;box-shadow:0 28px 74px #000b;transform-origin:top left}
 @media(max-width:850px){
   #board{inset:24px 22px;box-shadow:
@@ -57,7 +57,7 @@ linear-gradient(90deg,rgba(0,0,0,.08),transparent 12%,transparent 88%,rgba(0,0,0
   #p1{width:39vw;top:53%}
   #p2{width:29vw;left:5%;top:9%}
   #p3{width:31vw;left:6%;top:53%}
-  #hero{width:92vw;max-width:92vw;max-height:80vh;border-width:8px}
+  #hero{border-width:8px}
 }
 </style>
 </head>
@@ -105,8 +105,22 @@ function pinPoint(el){
     y:(r.top-1-br.top)/br.height*600
   };
 }
+function sizeHero(){
+  const br=board.getBoundingClientRect();
+  const iw=hero.naturalWidth||4;
+  const ih=hero.naturalHeight||3;
+  const maxW=Math.min(innerWidth*.84,br.width*.88,1240);
+  const maxH=Math.min(innerHeight*.80,br.height*.86);
+  const scale=Math.min(maxW/iw,maxH/ih);
+  hero.style.width=Math.round(iw*scale)+'px';
+  hero.style.height=Math.round(ih*scale)+'px';
+  hero.style.maxWidth='none';
+  hero.style.maxHeight='none';
+}
 function showHero(src){
+  hero.onload=()=>sizeHero();
   hero.src=src;
+  if(hero.complete) sizeHero();
   stage.classList.add('visible');
 }
 function hideHero(){
