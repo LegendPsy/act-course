@@ -12,6 +12,12 @@
 - RFT: https://legendpsy.github.io/act-course/lesson-01/rft/
 - Схема RFT / frames: https://legendpsy.github.io/act-course/lesson-01/frames/
 
+## Навигация (с 3 октября 2026)
+
+- главный адрес https://legendpsy.github.io/act-course/ открывает **карту урока** (`lesson-01/index.html`), а не RFT;
+- обновление страницы (F5) внутри модулей `rft` и `frames` возвращает на карту урока;
+- в обоих модулях в правом верхнем углу есть ссылка «Урок 1» (в `frames` клик по ней не листает доску).
+
 ## Структура первого урока
 
 Текущая страница `lesson-01/index.html` уже содержит карту 3×3:
