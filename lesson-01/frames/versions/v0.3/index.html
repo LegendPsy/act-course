@@ -53,37 +53,16 @@ background:radial-gradient(ellipse 60% 64% at 42% 46%,rgba(255,220,160,.12) 0,rg
 .pinPhoto img{display:block;width:100%;height:auto;border:solid #f4efe4;border-width:9px 9px 26px;background:#f4efe4;box-shadow:0 2px 2px rgba(0,0,0,.35),0 14px 28px rgba(0,0,0,.45)}
 /* булавки рисуются отдельным слоем #pins — поверх нитей */
 /* Раскладка «улик» вокруг паспорта (точка отсчёта в центре) */
-#p1{width:22vw;left:50%;top:48.5%;transform:translate(-50%,-50%) rotate(-1deg)}
+#p1{width:26vw;left:50%;top:47%;transform:translate(-50%,-50%) rotate(-1deg)}
 #p2{width:14vw;left:27%;top:3%;transform:rotate(2.4deg)}
 #p3{width:15vw;left:4%;top:44%;transform:rotate(-2.1deg)}
 #p4{width:16vw;left:78%;top:33%;transform:rotate(2.2deg)}
-#p5{width:14vw;left:43%;top:74.5%;transform:rotate(-1.6deg)}
+#p5{width:16vw;left:42%;top:70%;transform:rotate(-1.6deg)}
 #p6{width:15vw;left:80%;top:4%;transform:rotate(2.6deg)}
 #p7{width:19vw;left:16%;top:70%;transform:rotate(1.8deg)}
-#p8{width:13vw;left:46.5%;top:3%;transform:rotate(-2deg)}
+#p8{width:15vw;left:3%;top:15%;transform:rotate(-2deg)}
 #p9{width:18vw;left:77%;top:68%;transform:rotate(-1.8deg)}
-#p10{width:15vw;left:3%;top:15%;transform:rotate(-1.4deg)}
-/* ── Разбор: вопрос группе, ответы, название фрейма вдоль нити ── */
-#names{position:absolute;inset:0;width:100%;height:100%;z-index:11;pointer-events:none;overflow:visible}
-.frameName{font-family:CaseType,monospace;font-size:clamp(18px,1.65vw,30px);letter-spacing:.1em;fill:#8e0c14;dominant-baseline:central;
-  paint-order:stroke;stroke:rgba(246,232,200,.95);stroke-width:7px;stroke-linejoin:round}
-#dim{position:absolute;inset:0;z-index:30;background:rgba(8,6,4,.64);opacity:0;visibility:hidden;transition:opacity .45s,visibility .45s;pointer-events:none}
-#dim.on{opacity:1;visibility:visible}
-.pinPhoto.focused{z-index:40}
-#focusLayer{position:absolute;inset:0;width:100%;height:100%;z-index:41;pointer-events:none;overflow:visible}
-#focusPins{position:absolute;inset:0;z-index:42;pointer-events:none}
-#focusPins span{position:absolute;width:21px;height:21px;border-radius:50%;transform:translate(-50%,-50%);background:radial-gradient(circle at 35% 30%,#ff8d86 0 12%,#d4221b 30%,#8b0e0a 75%);box-shadow:3px 5px 5px rgba(0,0,0,.55)}
-#discuss{position:absolute;left:16%;right:16%;z-index:45;display:flex;flex-direction:column;align-items:center;gap:18px;pointer-events:none}
-#discuss.top{top:3.5%}
-#discuss.bottom{bottom:4.5%;flex-direction:column-reverse}
-.qCard{background:#efe6d0;color:#2a2622;font-family:CaseType,monospace;font-size:clamp(22px,2.2vw,40px);line-height:1.15;padding:16px 28px 18px;
-  box-shadow:0 2px 2px rgba(0,0,0,.3),0 14px 30px rgba(0,0,0,.5);transform:rotate(-.8deg);text-align:center;animation:qIn .45s cubic-bezier(.2,.8,.2,1) both}
-@keyframes qIn{from{opacity:0;transform:translateY(-10px) rotate(-.8deg)}to{opacity:1;transform:rotate(-.8deg)}}
-.notes{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:14px 16px}
-.note{font-family:CaseHand,cursive;font-size:clamp(22px,2vw,36px);color:#2b2a26;padding:10px 16px 12px;line-height:1.05;max-width:17vw;text-align:center;
-  box-shadow:0 2px 2px rgba(0,0,0,.25),0 10px 20px rgba(0,0,0,.4)}
-.note.in{animation:noteIn .5s cubic-bezier(.2,.9,.25,1.2) both}
-@keyframes noteIn{from{opacity:0;transform:translateY(16px) scale(.85) rotate(var(--r))}to{opacity:1;transform:rotate(var(--r))}}
+#p10{width:13vw;left:46.5%;top:3%;transform:rotate(-1.4deg)}
 #stage{position:absolute;inset:0;z-index:50;display:grid;place-items:center;background:rgba(5,4,3,.56);backdrop-filter:blur(2px);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .35s,visibility .35s}
 #stage.visible{opacity:1;visibility:visible}
 #hero{display:block;width:auto;height:auto;max-width:none;max-height:none;object-fit:contain;border:11px solid #f4efe4;background:#f4efe4;box-shadow:0 35px 95px rgba(0,0,0,.8),0 4px 12px #000}
@@ -152,19 +131,14 @@ background:radial-gradient(ellipse 60% 64% at 42% 46%,rgba(255,220,160,.12) 0,rg
   <figure id="p8" class="pinPhoto" hidden><img src="./assets/08-temporal.webp" alt=""></figure>
   <figure id="p9" class="pinPhoto" hidden><img src="./assets/09-deictic.webp" alt=""></figure>
   <figure id="p10" class="pinPhoto" hidden><img src="./assets/10-hierarchy.webp" alt=""></figure>
-  <svg id="names" aria-hidden="true"></svg>
   <div id="pins"></div>
-  <div id="dim"></div>
-  <svg id="focusLayer" aria-hidden="true"></svg>
-  <div id="focusPins"></div>
-  <div id="discuss"></div>
   <div id="stage"><img id="hero" alt=""></div>
 </div>
 <img id="fly" alt="">
 
 <script>
 (()=>{
-const MAX=57; // 30 шагов «улик» + 9 раундов разбора по 3 шага
+const MAX=30;
 const title=document.getElementById('titleSlide');
 const board=document.getElementById('board');
 const stage=document.getElementById('stage');
@@ -250,7 +224,6 @@ function addThread(aEl,bEl,animated=false,key=''){
   const my=(a.y+b.y)/2 + bend*1.4; // нить провисает вниз
   const path=document.createElementNS('http://www.w3.org/2000/svg','path');
   path.setAttribute('class','thread');
-  path.dataset.key=key;
   path.setAttribute('d',`M ${a.x} ${a.y} Q ${mx} ${my} ${b.x} ${b.y}`);
   svg.appendChild(path);
   if(animated){
@@ -309,7 +282,6 @@ function render(s){
   if(state>=27) addThread(p1,p9,false,'t8');
   if(state>=30) addThread(p1,p10,false,'t9');
   placePins();
-  renderDiscussion(state);
 }
 function animatePin(target,src,nextState){
   animating=true;
@@ -354,168 +326,6 @@ function animateThread(nextState,a,b,key){
   addThread(a,b,true,key);
   setTimeout(()=>{animating=false},880);
 }
-/* ══ Разбор доски ══════════════════════════════════════════════
-   Порядок — как появлялись фото. Каждый раунд = 3 шага:
-   1) вопрос группе  2) ответы  3) ответы сливаются в название фрейма вдоль нити.
-   Ответы ниже — примерные (пока нет голосования с телефонов, D-018).
-   Текст вопросов, ответов и названий можно менять прямо здесь. */
-const FRAMES=[
-  {el:p2, key:'t1', q:'Чем отличаются эти два кота?',
-   a:['разные паспорта','один русский, другой американский','разное гражданство','у них разные имена','из разных стран'],
-   name:'РАЗЛИЧИЕ'},
-  {el:p3, key:'t2', q:'Кто этот клоун?',
-   a:['это тот же кот','Мурзик','он же, только в костюме','тот же самый','наш кот'],
-   name:'КООРДИНАЦИЯ'},
-  {el:p4, key:'t3', q:'Кто тяжелее?',
-   a:['капибара','капибара тяжелее','кот легче','капибара больше весит','кот легче капибары'],
-   name:'СРАВНЕНИЕ'},
-  {el:p5, key:'t4', q:'Почему кот подпрыгнул?',
-   a:['испугался пылесоса','из-за пылесоса','если включить пылесос — он прыгает','пылесос шумит','потому что пылесос'],
-   name:'УСЛОВИЕ'},
-  {el:p6, key:'t5', q:'Где кот?',
-   a:['в коробке','внутри коробки','прячется в коробке','под крышкой','в коробке на ковре'],
-   name:'ПРОСТРАНСТВО'},
-  {el:p7, key:'t6', q:'Кто они друг для друга?',
-   a:['мужчина и женщина','жених и невеста','противоположности','он и она','муж и жена'],
-   name:'ПРОТИВОПОСТАВЛЕНИЕ'},
-  {el:p8, key:'t7', q:'Кого кот видит в зеркале?',
-   a:['себя в детстве','себя маленьким','котёнка, которым был','своё прошлое','каким он был раньше'],
-   name:'ВРЕМЯ'},
-  {el:p9, key:'t8', q:'Чьими глазами мы смотрим?',
-   a:['глазами кота','мы — кот','изнутри кота','от первого лица','как будто я кот'],
-   name:'ДЕЙКСИС'},
-  {el:p10, key:'t9', q:'Кем кот видит себя во сне?',
-   a:['царём зверей','вожаком','главным в стае','львом-королём','выше всех'],
-   name:'ИЕРАРХИЯ'}
-];
-const NOTE_COLORS=['#f3d55b','#f6e27a','#9fd3e8','#f6a5b8','#cfe8a9'];
-const NOTE_TILT=[-3,2.5,-1.5,3,-2.5];
-const names=document.getElementById('names');
-const dim=document.getElementById('dim');
-const focusLayer=document.getElementById('focusLayer');
-const focusPins=document.getElementById('focusPins');
-const discuss=document.getElementById('discuss');
-const NS='http://www.w3.org/2000/svg';
-let animateNameFor=-1, animateNotesIn=false;
-
-function discussInfo(s){
-  if(s<=30)return null;
-  const i=s-31;
-  return {k:Math.floor(i/3),phase:i%3+1};
-}
-// та же кривая, что у нити (addThread), но в пикселях доски
-function threadPx(aEl,bEl){
-  const br=board.getBoundingClientRect(),bw=br.width,bh=br.height;
-  const a=pinPoint(aEl),b=pinPoint(bEl);
-  const bend=Math.max(18,Math.abs(b.x-a.x)*.06);
-  const mx=(a.x+b.x)/2,my=(a.y+b.y)/2+bend*1.4;
-  const X=v=>v/1000*bw,Y=v=>v/600*bh;
-  return {bw,bh,A:[X(a.x),Y(a.y)],C:[X(mx),Y(my)],B:[X(b.x),Y(b.y)]};
-}
-function pathD(P,Q,C){return `M ${P[0]} ${P[1]} Q ${C[0]} ${C[1]} ${Q[0]} ${Q[1]}`}
-function drawName(k,anim){
-  const f=FRAMES[k],g=threadPx(p1,f.el);
-  names.setAttribute('viewBox',`0 0 ${g.bw} ${g.bh}`);
-  // текст всегда читается слева направо (или сверху вниз)
-  const flip=g.B[0]<g.A[0]-1;
-  const th=document.createElementNS(NS,'path');
-  th.setAttribute('d',pathD(g.A,g.B,g.C));th.setAttribute('class','thread');
-  names.appendChild(th);
-  const guide=document.createElementNS(NS,'path');
-  guide.id='nameGuide'+k;guide.setAttribute('fill','none');
-  guide.setAttribute('d',flip?pathD(g.B,g.A,g.C):pathD(g.A,g.B,g.C));
-  names.appendChild(guide);
-  const tx=document.createElementNS(NS,'text');tx.setAttribute('class','frameName');
-  const tp=document.createElementNS(NS,'textPath');
-  tp.setAttribute('href','#nameGuide'+k);tp.setAttribute('startOffset','50%');tp.setAttribute('text-anchor','middle');
-  tp.textContent=f.name;tx.appendChild(tp);names.appendChild(tx);
-  // название ставим на самый длинный участок нити, свободный от фотографий
-  const L=th.getTotalLength();
-  const br=board.getBoundingClientRect();
-  const rects=[...board.querySelectorAll('.pinPhoto')].filter(e=>!e.hidden).map(e=>{const r=e.getBoundingClientRect();return [r.left-br.left-4,r.top-br.top-4,r.right-br.left+4,r.bottom-br.top+4]});
-  let best=[0,L],run=null;
-  for(let l=0;l<=L;l+=3){
-    const q=th.getPointAtLength(l),free=!rects.some(([x1,y1,x2,y2])=>q.x>x1&&q.x<x2&&q.y>y1&&q.y<y2);
-    if(free){if(!run)run=[l,l];run[1]=l;if(!best.free||run[1]-run[0]>best[1]-best[0]){best=[run[0],run[1]];best.free=true;}}
-    else run=null;
-  }
-  const c=(best[0]+best[1])/2,room=best[1]-best[0];
-  let w=tx.getComputedTextLength();
-  if(w+22>room&&room>40){
-    tx.style.letterSpacing='.02em';w=tx.getComputedTextLength();
-  }
-  if(w+22>room&&room>40){
-    const fs=parseFloat(getComputedStyle(tx).fontSize);
-    tx.style.fontSize=Math.max(12,fs*(room-22)/w)+'px';
-    w=tx.getComputedTextLength();
-  }
-  tp.setAttribute('startOffset',flip?(L-c):c);
-  // в нити открывается «окно» под название — текст становится частью нити
-  const gap=Math.min(room,w+30),d1=Math.max(0,c-gap/2);
-  th.style.strokeDasharray=`${d1} ${gap} ${L}`;
-  const orig=svg.querySelector(`path[data-key="${f.key}"]`);
-  if(orig)orig.style.opacity='0';
-  if(anim){
-    th.animate([{strokeDasharray:`${c} 0 ${L}`},{strokeDasharray:`${d1} ${gap} ${L}`}],{duration:650,easing:'cubic-bezier(.2,.8,.2,1)'});
-    tx.animate([{opacity:0,filter:'blur(5px)'},{opacity:1,filter:'blur(0)'}],{duration:700,delay:150,easing:'ease-out',fill:'backwards'});
-  }
-}
-function renderDiscussion(s){
-  names.innerHTML='';focusLayer.innerHTML='';focusPins.innerHTML='';discuss.innerHTML='';discuss.className='';
-  [p1,...FRAMES.map(f=>f.el)].forEach(el=>el.classList.remove('focused'));
-  for(let k=0;k<FRAMES.length;k++){
-    if(s>=33+3*k) drawName(k,k===animateNameFor);
-  }
-  animateNameFor=-1;
-  const info=discussInfo(s);
-  if(!info||info.phase===3){dim.classList.remove('on');animateNotesIn=false;return;}
-  const f=FRAMES[info.k];
-  dim.classList.add('on');
-  p1.classList.add('focused');f.el.classList.add('focused');
-  // нить и булавки выбранной пары — поверх затемнения
-  const g=threadPx(p1,f.el);
-  focusLayer.setAttribute('viewBox',`0 0 ${g.bw} ${g.bh}`);
-  const th=document.createElementNS(NS,'path');th.setAttribute('d',pathD(g.A,g.B,g.C));th.setAttribute('class','thread');th.id='focusThread';
-  focusLayer.appendChild(th);
-  [g.A,g.B].forEach(([x,y])=>{const d=document.createElement('span');d.style.left=x+'px';d.style.top=y+'px';focusPins.appendChild(d)});
-  // вопрос и ответы — на противоположной от фото стороне
-  discuss.className=(g.B[1]>g.bh*.5)?'top':'bottom';
-  const q=document.createElement('div');q.className='qCard';q.textContent=f.q;discuss.appendChild(q);
-  if(info.phase===2){
-    const wrap=document.createElement('div');wrap.className='notes';
-    f.a.forEach((txt,i)=>{
-      const n=document.createElement('div');n.className='note'+(animateNotesIn?' in':'');
-      n.textContent=txt;n.style.background=NOTE_COLORS[i%NOTE_COLORS.length];
-      n.style.setProperty('--r',NOTE_TILT[i%NOTE_TILT.length]+'deg');n.style.transform=`rotate(${NOTE_TILT[i%NOTE_TILT.length]}deg)`;
-      if(animateNotesIn)n.style.animationDelay=(i*260)+'ms';
-      wrap.appendChild(n);
-    });
-    discuss.appendChild(wrap);
-  }
-  animateNotesIn=false;
-}
-// ответы слетаются к середине нити и становятся названием фрейма
-function animateMerge(nextState){
-  animating=true;
-  const k=discussInfo(nextState).k;
-  const th=document.getElementById('focusThread');
-  const br=board.getBoundingClientRect();
-  let tx=br.width/2,ty=br.height/2;
-  if(th){const L=th.getTotalLength(),pt=th.getPointAtLength(L/2);tx=pt.x;ty=pt.y;}
-  const notes=[...discuss.querySelectorAll('.note')];
-  notes.forEach((n,i)=>{
-    const r=n.getBoundingClientRect();
-    const dx=tx-(r.left+r.width/2-br.left),dy=ty-(r.top+r.height/2-br.top);
-    n.animate([{transform:n.style.transform,opacity:1},{transform:`translate(${dx}px,${dy}px) scale(.25)`,opacity:0}],
-      {duration:700,delay:i*70,easing:'cubic-bezier(.5,0,.3,1)',fill:'forwards'});
-  });
-  const q=discuss.querySelector('.qCard');
-  if(q)q.animate([{opacity:1},{opacity:0}],{duration:450,delay:250,fill:'forwards'});
-  setTimeout(()=>{
-    state=nextState;animateNameFor=k;animating=false;render(state);
-  },700+notes.length*70);
-}
-
 function forward(){
   if(animating||state>=MAX)return;
   const next=state+1;
@@ -538,9 +348,6 @@ function forward(){
   if(next===27){animateThread(27,p1,p9,'t8');return}
   if(next===29){animatePin(p10,photos[10],29);return}
   if(next===30){animateThread(30,p1,p10,'t9');return}
-  const di=discussInfo(next);
-  if(di&&di.phase===3){animateMerge(next);return}
-  if(di&&di.phase===2){animateNotesIn=true;}
   render(next);
 }
 function back(){
