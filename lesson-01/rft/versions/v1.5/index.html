@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<!-- Модуль «Что такое RFT» · версия v1.6 (архив прошлых версий: ./versions/) -->
+<!-- Модуль «Что такое RFT» · версия v1.5 (архив прошлых версий: ./versions/) -->
 <title>Что такое RFT · Урок 1</title>
 <style>
 :root{
@@ -19,8 +19,9 @@ body{user-select:none}
 radial-gradient(circle at 50% 44%,rgba(64,76,96,.10),transparent 36%),
 radial-gradient(circle at 50% 50%,#0b0e14 0%,#07090d 68%,#05070a 100%)}
 #grain{position:absolute;inset:0;opacity:.11;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.18'/%3E%3C/svg%3E")}
-#world{position:absolute;left:0;right:0;top:0;bottom:170px;transform-style:preserve-3d;transition:transform 1.3s cubic-bezier(.2,.75,.2,1),filter .9s ease}
+#world{position:absolute;left:0;right:0;top:0;bottom:24vh;transform-style:preserve-3d;transition:transform 1.3s cubic-bezier(.2,.75,.2,1),filter .9s ease}
 #world.final3d{transform:perspective(1200px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) scale(.95)}
+#world.final3d .edgeLabel{opacity:0 !important}
 #edges{position:absolute;inset:0;width:100%;height:100%;z-index:1;overflow:visible;pointer-events:none}
 .edge{fill:none;stroke-linecap:round;stroke-width:2.2;opacity:.95;transition:opacity .55s ease,stroke .55s ease,stroke-width .55s ease}
 .edge.given{stroke:var(--line)}
@@ -74,7 +75,7 @@ opacity .55s ease,transform .7s ease,border-color .6s ease,box-shadow .6s ease,f
 .swap{animation:swap .45s ease}
 @keyframes swap{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
 
-#interaction{position:absolute;z-index:30;left:0;right:0;bottom:0;min-height:160px;
+#interaction{position:absolute;z-index:30;left:0;right:0;bottom:0;min-height:max(24vh,185px);
 display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:12px;padding:16px 18px 54px;
 background:linear-gradient(180deg,rgba(7,9,13,0) 0%, rgba(7,9,13,.62) 10%, rgba(8,11,16,.88) 28%, rgba(8,11,16,.96) 100%);
 border-top:1px solid rgba(67,77,93,.28);backdrop-filter:blur(4px)}
@@ -195,8 +196,8 @@ transition:opacity .48s ease,visibility .48s ease}
   <div class="introInner">
     <div class="kicker">Небольшой эксперимент</div>
     <div class="introTitle">Одна сеть.<br>Шаг за шагом.</div>
-    <div class="introText">Ничего не нужно учить заранее. Просто следите за тем, как три бессмысленных слова постепенно превращаются в сеть, которая уже влияет на смысл и действие.</div>
-    <button id="start">Начать</button>
+    <div class="introText">Ничего не нужно учить заранее. Просто следи за тем, как три бессмысленных слова постепенно превращаются в сеть, которая уже влияет на смысл и действие.</div>
+    <button id="start">Попробовать</button>
   </div>
 </div>
 
@@ -206,7 +207,7 @@ transition:opacity .48s ease,visibility .48s ease}
     <div class="rft">RFT</div>
     <div class="long">Теория реляционных фреймов</div>
     <div class="meaning">Люди способны устанавливать отношения между событиями, выводить новые отношения и через эти сети изменять психологические функции событий.</div>
-    <button class="continue" id="afterReveal">Сеть шире →</button>
+    <button class="continue" id="afterReveal">И на этом всё не заканчивается</button>
   </div>
 </div>
 </div>
@@ -538,19 +539,19 @@ function updateNav(){
 }
 function coreTriangle(opts={}){
   const dim=!!opts.dim;
-  showNode('noma','NOMA',24,24,(opts.nomaCls||'')+(dim?' dim':''));
-  showNode('tev','TEV',50,50,(opts.tevCls||'')+(dim?' dim':''));
-  showNode('luri','LURI',76,24,(opts.luriCls||'')+(dim?' dim':''));
-  showEdge('nt','noma','tev','раньше','given',56,false,dim,true);
-  showEdge('tn','tev','noma','позже','derived',56,false,dim,true);
-  showEdge('tl','tev','luri','раньше','given',56,false,dim,true);
-  showEdge('nl','noma','luri','раньше','derived',-70,false,dim,true);
+  showNode('noma','NOMA',28,31,(opts.nomaCls||'')+(dim?' dim':''));
+  showNode('tev','TEV',50,47,(opts.tevCls||'')+(dim?' dim':''));
+  showNode('luri','LURI',72,31,(opts.luriCls||'')+(dim?' dim':''));
+  showEdge('nt','noma','tev','раньше','given',36,false,dim,true);
+  showEdge('tn','tev','noma','позже','derived',34,false,dim,true);
+  showEdge('tl','tev','luri','раньше','given',-36,false,dim,true);
+  showEdge('nl','noma','luri','раньше','derived',-78,false,dim,true);
 }
 function symbols(opts={}){
   const dim=!!opts.dim;
-  showNode('diamond','◆',24,62,'symbol'+(dim?' dim':''));
-  showNode('triangle','▲',50,86,'symbol'+(dim?' dim':''));
-  showNode('circle','●',76,62,'symbol'+(dim?' dim':''));
+  showNode('diamond','◆',28,61,'symbol'+(dim?' dim':''));
+  showNode('triangle','▲',50,67,'symbol'+(dim?' dim':''));
+  showNode('circle','●',72,61,'symbol'+(dim?' dim':''));
   showEdge('nomaDiamond','noma','diamond','=','coord',0,false,dim,false);
   showEdge('tevTriangle','tev','triangle','=','coord',0,false,dim,false);
   showEdge('luriCircle','luri','circle','=','coord',0,false,dim,false);
@@ -559,69 +560,67 @@ function symbolTemporalRelations(opts={}){
   const dim=!!opts.dim;
   const hot=!!opts.hot;
   const withLabels=opts.labels!==false;
-  const c=opts.curve||40;
-  showEdge('diamondTriangle','diamond','triangle',withLabels?'раньше':'','derived',c,hot,dim,true);
-  showEdge('triangleCircle','triangle','circle',withLabels?'раньше':'','derived',c,hot,dim,true);
-  showEdge('diamondCircle','diamond','circle',withLabels?'раньше':'','derived',-10,hot,dim,true);
+  showEdge('diamondTriangle','diamond','triangle',withLabels?'раньше':'','derived',24,hot,dim,true);
+  showEdge('triangleCircle','triangle','circle',withLabels?'раньше':'','derived',-24,hot,dim,true);
+  showEdge('diamondCircle','diamond','circle',withLabels?'раньше':'','derived',-52,hot,dim,true);
 }
 function lifeMappedNetwork(opts={}){
   const dimWords=opts.dimWords!==false;
   const dimSymbols=opts.dimSymbols!==false;
 
-  showNode('noma','NOMA',22,11,dimWords?'backdrop':'');
-  showNode('tev','TEV',50,22,dimWords?'backdrop':'');
-  showNode('luri','LURI',78,11,dimWords?'backdrop':'');
+  showNode('noma','NOMA',20,20,dimWords?'backdrop':'');
+  showNode('tev','TEV',50,20,dimWords?'backdrop':'');
+  showNode('luri','LURI',80,20,dimWords?'backdrop':'');
 
-  showNode('diamond','◆',22,40,'symbol '+(dimSymbols?'backdrop':''));
-  showNode('triangle','▲',50,52,'symbol '+(dimSymbols?'backdrop':''));
-  showNode('circle','●',78,40,'symbol '+(dimSymbols?'backdrop':''));
+  showNode('diamond','◆',20,41,'symbol '+(dimSymbols?'backdrop':''));
+  showNode('triangle','▲',50,41,'symbol '+(dimSymbols?'backdrop':''));
+  showNode('circle','●',80,41,'symbol '+(dimSymbols?'backdrop':''));
 
-  showEdge('nt','noma','tev','', 'given',24,false,true,true);
-  showEdge('tn','tev','noma','', 'derived',24,false,true,true);
-  showEdge('tl','tev','luri','', 'given',24,false,true,true);
-  showEdge('nl','noma','luri','', 'derived',-24,false,true,true);
+  showEdge('nt','noma','tev','', 'given',20,false,true,true);
+  showEdge('tn','tev','noma','', 'derived',18,false,true,true);
+  showEdge('tl','tev','luri','', 'given',-20,false,true,true);
+  showEdge('nl','noma','luri','', 'derived',-52,false,true,true);
   showEdge('nomaDiamond','noma','diamond','=', 'coord',0,false,true,false);
   showEdge('tevTriangle','tev','triangle','=', 'coord',0,false,true,false);
   showEdge('luriCircle','luri','circle','=', 'coord',0,false,true,false);
-  symbolTemporalRelations({dim:true,labels:false,curve:24});
+  symbolTemporalRelations({dim:true,labels:false});
 
   tintNode('noma','#4b141a','#e05563','#ffd7db');
   tintNode('diamond','#4b141a','#e05563','#ffd7db');
 
-  showNode('silence','КЛИЕНТ ЗАМОЛЧАЛ',22,68,'human'+(opts.focus==='silence'?' focus':''));
-  showNode('thought','«Я СКАЗАЛ ЧТО-ТО НЕ ТО»',50,84,'human'+(opts.focus==='thought'?' focus':''));
-  showNode('urge','«НАДО СРОЧНО ИСПРАВИТЬ»',78,68,'human'+(opts.focus==='urge'?' focus':''));
+  showNode('silence','КЛИЕНТ ЗАМОЛЧАЛ',20,65,'human'+(opts.focus==='silence'?' focus':''));
+  showNode('thought','«Я СКАЗАЛ ЧТО-ТО НЕ ТО»',50,65,'human'+(opts.focus==='thought'?' focus':''));
+  showNode('urge','«НАДО СРОЧНО ИСПРАВИТЬ»',80,65,'human'+(opts.focus==='urge'?' focus':''));
 
-  const ml=opts.meaningLabels===false?'':'обозначает';
-  showEdge('diamondSilence','diamond','silence',ml,'meaning',0,opts.focus==='silence',false,true);
-  showEdge('triangleThought','triangle','thought',ml,'meaning',0,opts.focus==='thought',false,true);
-  showEdge('circleUrge','circle','urge',ml,'meaning',0,opts.focus==='urge',false,true);
+  showEdge('diamondSilence','diamond','silence','обозначает','meaning',0,opts.focus==='silence',false,true);
+  showEdge('triangleThought','triangle','thought','обозначает','meaning',0,opts.focus==='thought',false,true);
+  showEdge('circleUrge','circle','urge','обозначает','meaning',0,opts.focus==='urge',false,true);
 }
 
 function lifeOnly(stage=0){
-  showNode('silence','КЛИЕНТ ЗАМОЛЧАЛ',20,34,'human'+(stage===0?' focus':''));
-  showNode('thought','«Я СКАЗАЛ ЧТО-ТО НЕ ТО»',50,62,'human'+(stage===1?' focus':''));
-  showNode('urge','«НАДО СРОЧНО ИСПРАВИТЬ»',80,34,'human'+(stage===2?' focus':''));
+  showNode('silence','КЛИЕНТ ЗАМОЛЧАЛ',20,43,'human'+(stage===0?' focus':''));
+  showNode('thought','«Я СКАЗАЛ ЧТО-ТО НЕ ТО»',50,43,'human'+(stage===1?' focus':''));
+  showNode('urge','«НАДО СРОЧНО ИСПРАВИТЬ»',80,43,'human'+(stage===2?' focus':''));
 
   if(stage>=1){
-    showEdge('st','silence','thought','раньше','derived',40,stage===1,false,true);
+    showEdge('st','silence','thought','раньше','derived',20,stage===1,false,true);
   }
   if(stage>=2){
-    showEdge('tu','thought','urge','раньше','derived',40,stage===2,false,true);
-    showEdge('su','silence','urge','раньше','derived',-40,false,false,true);
+    showEdge('tu','thought','urge','раньше','derived',-20,stage===2,false,true);
+    showEdge('su','silence','urge','раньше','derived',-50,false,false,true);
   }
 }
 
 function languagePayoffNetwork(){
-  showNode('noma','NOMA',24,24,'focus');
-  showNode('silence','КЛИЕНТ ЗАМОЛЧАЛ',24,66,'human depthNear');
+  showNode('noma','NOMA',28,28,'focus');
+  showNode('silence','КЛИЕНТ ЗАМОЛЧАЛ',28,56,'human depthNear');
   showEdge('nomaMeaning','noma','silence','теперь может означать','meaning',0,true,false,true);
 
-  showNode('luri','LURI',72,24,'focus');
-  showNode('urge','«НАДО СРОЧНО ИСПРАВИТЬ»',56,68,'human depthMid');
-  showNode('behavior','НАЧИНАЮ ОБЪЯСНЯТЬ И ЗАПОЛНЯТЬ ПАУЗУ',84,68,'human depthNear');
+  showNode('luri','LURI',72,28,'focus');
+  showNode('urge','«НАДО СРОЧНО ИСПРАВИТЬ»',72,51,'human depthMid');
+  showNode('behavior','НАЧИНАЮ ОБЪЯСНЯТЬ И ЗАПОЛНЯТЬ ПАУЗУ',72,72,'human depthNear');
   showEdge('luriUrge','luri','urge','связано с','meaning',0,false,false,true);
-  showEdge('luriBehavior','luri','behavior','так называем действие','meaning',0,true,false,true);
+  showEdge('luriBehavior','luri','behavior','так называем действие','meaning',34,true,false,true);
   showEdge('urgeBehavior','urge','behavior','ведёт к','meaning',0,false,false,true);
 
   showEdge('nomaLuriLanguage','noma','luri','может привести к','meaning',-56,true,false,true);
@@ -631,33 +630,33 @@ function languagePayoffNetwork(){
 
 function bonusContextNetwork(){
   // The familiar RFT network stays intact and readable in the middle.
-  showNode('noma','NOMA',32,24,'mini depthFar');
-  showNode('tev','TEV',50,31,'mini depthFar');
-  showNode('luri','LURI',68,24,'mini depthFar');
+  showNode('noma','NOMA',33,31,'mini depthFar');
+  showNode('tev','TEV',50,28,'mini depthFar');
+  showNode('luri','LURI',67,31,'mini depthFar');
 
-  showNode('diamond','◆',32,43,'mini symbol depthMid');
-  showNode('triangle','▲',50,50,'mini symbol depthMid');
-  showNode('circle','●',68,43,'mini symbol depthMid');
+  showNode('diamond','◆',33,43,'mini symbol depthMid');
+  showNode('triangle','▲',50,41,'mini symbol depthMid');
+  showNode('circle','●',67,43,'mini symbol depthMid');
 
-  showNode('silence','Клиент замолчал',32,62,'mini human depthNear');
-  showNode('thought','«Я сказал что-то не то»',50,70,'mini human depthNear');
-  showNode('urge','«Надо срочно исправить»',68,62,'mini human depthNear');
-  showNode('behavior','Начинаю заполнять паузу',72,82,'mini human depthMid');
+  showNode('silence','Клиент замолчал',33,58,'mini human depthNear');
+  showNode('thought','«Я сказал что-то не то»',50,56,'mini human depthNear');
+  showNode('urge','«Надо срочно исправить»',67,58,'mini human depthNear');
+  showNode('behavior','Начинаю заполнять паузу',67,73,'mini human depthMid');
 
-  showEdge('nt','noma','tev','','given',14,false,true,true);
-  showEdge('tl','tev','luri','','given',14,false,true,true);
-  showEdge('nl','noma','luri','','derived',-14,false,true,true);
+  showEdge('nt','noma','tev','','given',16,false,true,true);
+  showEdge('tl','tev','luri','','given',-16,false,true,true);
+  showEdge('nl','noma','luri','','derived',-36,false,true,true);
   showEdge('nomaDiamond','noma','diamond','','coord',0,false,true,false);
   showEdge('tevTriangle','tev','triangle','','coord',0,false,true,false);
   showEdge('luriCircle','luri','circle','','coord',0,false,true,false);
-  symbolTemporalRelations({dim:true,labels:false,curve:14});
+  symbolTemporalRelations({dim:true,labels:false});
   showEdge('diamondSilence','diamond','silence','','meaning',0,false,true,true);
   showEdge('triangleThought','triangle','thought','','meaning',0,false,true,true);
   showEdge('circleUrge','circle','urge','','meaning',0,false,true,true);
-  showEdge('silenceThought','silence','thought','','derived',14,false,true,true);
-  showEdge('thoughtUrge','thought','urge','','derived',14,false,true,true);
-  showEdge('urgeBehavior','urge','behavior','','meaning',0,false,true,true);
-  showEdge('luriBehavior','luri','behavior','','meaning',-190,false,true,true);
+  showEdge('silenceThought','silence','thought','','derived',12,false,true,true);
+  showEdge('thoughtUrge','thought','urge','','derived',-12,false,true,true);
+  showEdge('urgeBehavior','urge','behavior','','meaning',10,false,true,true);
+  showEdge('luriBehavior','luri','behavior','','meaning',42,false,true,true);
 
   tintNode('noma','#4b141a','#e05563','#ffd7db');
   tintNode('diamond','#4b141a','#e05563','#ffd7db');
@@ -669,8 +668,8 @@ function bonusContextNetwork(){
   showNode('presenter',CONTEXT_WORDS.presenter,11,34,'context');
   showNode('name',CONTEXT_WORDS.name,10,61,'context');
   showNode('learning',CONTEXT_WORDS.learning,88,48,'context');
-  showNode('work',CONTEXT_WORDS.work,20,90,'context');
-  showNode('psychology',CONTEXT_WORDS.psychology,90,68,'context');
+  showNode('work',CONTEXT_WORDS.work,25,84,'context');
+  showNode('psychology',CONTEXT_WORDS.psychology,76,84,'context');
 
   // Invisible continuation points make the web feel larger than the screen.
   showNode('outTopL','',38,-10,'anchor');
@@ -688,13 +687,13 @@ function bonusContextNetwork(){
   showEdge('presenterWeek','presenter','weekday','','meaning',18,false,false,false);
   showEdge('presenterName','presenter','name','','meaning',10,false,false,false);
   showEdge('nameWork','name','work','','meaning',-12,false,false,false);
-  showEdge('workPsych','work','psychology','','meaning',0,false,false,false);
+  showEdge('workPsych','work','psychology','','meaning',-18,false,false,false);
   showEdge('psychLearning','psychology','learning','','meaning',16,false,false,false);
   showEdge('learningAuthor','learning','author','','meaning',-14,false,false,false);
 
   // Several bridges stitch the familiar network directly into that web.
   showEdge('presenterCore','presenter','noma','','meaning',14,false,false,false);
-  showEdge('weekdayCore','weekday','tev','','meaning',-34,false,false,false);
+  showEdge('weekdayCore','weekday','tev','','meaning',-18,false,false,false);
   showEdge('authorCore','author','luri','','meaning',16,false,false,false);
   showEdge('nameCore','name','silence','','meaning',-12,false,false,false);
   showEdge('learningCore','learning','urge','','meaning',14,false,false,false);
@@ -761,23 +760,25 @@ function render(frame){
   if(beat===0){
     setJourney(0);
     say('Шаг 1','Пока только одна связь.','NOMA происходит раньше TEV.');
-    showNode('noma','NOMA',34,46,'focus');
-    showNode('tev','TEV',66,46,'');
+    showNode('noma','NOMA',34,41,'focus');
+    showNode('tev','TEV',66,41,'');
     showEdge('nt','noma','tev','раньше','given',62,false,false,true);
-    cont('Вопрос группе →',next);
+    reflection.textContent='Сплошная линия — отношение, которое было дано напрямую.';
+    cont('Попробовать самому',next);
   }
 
   if(beat===1){
     setJourney(1);
     say('','Теперь ответь сам.','');
-    showNode('noma','NOMA',34,46,'');
-    showNode('tev','TEV',66,46,'');
+    showNode('noma','NOMA',34,41,'');
+    showNode('tev','TEV',66,41,'');
     showEdge('nt','noma','tev','раньше','given',62,false,false,true);
     question.textContent='Что происходит позже?';
 
     if(frame.phase==='answered'){
       showEdge('tn','tev','noma','позже','derived',62,true,false,true);
-      cont('Добавить LURI →',next);
+      reflection.textContent='Тебе сказали только «NOMA раньше TEV». Отношение «TEV позже NOMA» ты достроил сам.';
+      cont('Добавить третье слово',next);
     }else{
       buttons([{label:'NOMA',ok:false},{label:'TEV',ok:true}],(it,b)=>{
         if(!it.ok){wrong(b);return}
@@ -789,17 +790,18 @@ function render(frame){
   if(beat===2){
     setJourney(2);
     say('Шаг 2','Добавим LURI.','Сеть растёт, но предыдущие отношения никуда не исчезают.');
-    showNode('noma','NOMA',24,24,'');
-    showNode('tev','TEV',50,50,'focus');
-    showNode('luri','LURI',76,24,'');
-    showEdge('nt','noma','tev','раньше','given',56,false,false,true);
-    showEdge('tn','tev','noma','позже','derived',56,false,false,true);
-    showEdge('tl','tev','luri','раньше','given',56,false,false,true);
+    showNode('noma','NOMA',28,31,'');
+    showNode('tev','TEV',50,47,'focus');
+    showNode('luri','LURI',72,31,'');
+    showEdge('nt','noma','tev','раньше','given',36,false,false,true);
+    showEdge('tn','tev','noma','позже','derived',34,false,false,true);
+    showEdge('tl','tev','luri','раньше','given',-36,false,false,true);
     question.textContent='Что происходит раньше: NOMA или LURI?';
 
     if(frame.phase==='answered'){
-      showEdge('nl','noma','luri','раньше','derived',-70,true,false,true);
-      cont('Вся сеть →',next);
+      showEdge('nl','noma','luri','раньше','derived',-78,true,false,true);
+      reflection.textContent='Ты замкнул треугольник отношением, которого не было среди исходных данных.';
+      cont('Увидеть, что получилось',next);
     }else{
       buttons([{label:'NOMA',ok:true},{label:'LURI',ok:false}],(it,b)=>{
         if(!it.ok){wrong(b);return}
@@ -812,7 +814,8 @@ function render(frame){
     setJourney(2);
     say('','Вот она.','Сплошные отношения были даны. Пунктирные — появились как вывод.');
     coreTriangle();
-    cont('Добавить ◆ →',next);
+    reflection.textContent='Теперь ты можешь реагировать не только на две заданные связи, но и на отношения, которые из них следуют.';
+    cont('Связать слова с символами',next);
     later(()=>{pulse('nt');later(()=>pulse('tl'),250);later(()=>pulse('nl'),560)},300);
   }
 
@@ -820,20 +823,21 @@ function render(frame){
     setJourney(3);
     say('Шаг 3','NOMA получит второй ярлык.','В этой игре ◆ и NOMA обозначают одно и то же.');
     coreTriangle();
-    showNode('diamond','◆',24,62,'symbol focus');
+    showNode('diamond','◆',28,61,'symbol focus');
     showEdge('nomaDiamond','noma','diamond','=','coord',0,true,false,false);
-    cont('Добавить ▲ →',next);
+    reflection.textContent='Мы ничего не удаляем. К существующей сети просто добавилось ещё одно отношение.';
+    cont('Связать TEV с символом',next);
   }
 
   if(beat===5){
     setJourney(3);
     say('','Теперь TEV.','▲ и TEV — одно и то же в рамках этой игры.');
     coreTriangle();
-    showNode('diamond','◆',24,62,'symbol');
-    showNode('triangle','▲',50,86,'symbol focus');
+    showNode('diamond','◆',28,61,'symbol');
+    showNode('triangle','▲',50,67,'symbol focus');
     showEdge('nomaDiamond','noma','diamond','=','coord',0,false,false,false);
     showEdge('tevTriangle','tev','triangle','=','coord',0,true,false,false);
-    cont('Добавить ● →',next);
+    cont('Связать LURI с символом',next);
   }
 
   if(beat===6){
@@ -842,7 +846,8 @@ function render(frame){
     coreTriangle();
     symbols();
     document.getElementById('node-circle').classList.add('focus');
-    cont('Вопрос группе →',next);
+    reflection.textContent='Теперь у одной сети два слоя: слова и символы.';
+    cont('Проверить себя по символам',next);
   }
 
   if(beat===7){
@@ -850,16 +855,17 @@ function render(frame){
     say('','Слова слегка уйдут в фон.','Отношения при этом никуда не исчезают.');
     coreTriangle({dim:true});
     symbols();
-    question.textContent='Какой символ происходит раньше всех?';
+    question.textContent='Какой символ происходит раньше других символов?';
 
     if(frame.phase==='answered'){
       document.getElementById('node-noma').classList.remove('dim');
       document.getElementById('node-diamond').classList.add('focus');
       showEdge('nomaDiamond','noma','diamond','=','coord',0,true,false,false);
-      showEdge('nt','noma','tev','раньше','given',56,true,true,true);
-      showEdge('nl','noma','luri','раньше','derived',-70,true,true,true);
+      showEdge('nt','noma','tev','раньше','given',36,true,true,true);
+      showEdge('nl','noma','luri','раньше','derived',-78,true,true,true);
       symbolTemporalRelations({hot:true});
-      cont('Цвет NOMA →',next);
+      reflection.textContent='Теперь ты вывел отношения уже между самими символами: ◆ раньше ▲, ▲ раньше ●, а значит ◆ раньше ●. Этого мы напрямую не задавали.';
+      cont('Узнать, что ещё передаётся по связи',next);
     }else{
       buttons([{label:'◆',ok:true},{label:'▲',ok:false},{label:'●',ok:false}],(it,b)=>{
         if(!it.ok){wrong(b);return}
@@ -875,7 +881,7 @@ function render(frame){
     coreTriangle({nomaCls:'focus'});
     symbols({dim:true});
     symbolTemporalRelations({dim:true});
-    question.textContent='Нажмите на NOMA три раза';
+    question.textContent='Чтобы узнать цвет NOMA, нажми три раза';
     practiceDots.innerHTML='<span class="practiceDot"></span><span class="practiceDot"></span><span class="practiceDot"></span>';
     [...practiceDots.children].forEach((d,i)=>d.classList.toggle('on',i<progress));
     clearTint('noma');
@@ -883,7 +889,8 @@ function render(frame){
     const noma=document.getElementById('node-noma');
     if(progress>=3){
       tintNode('noma','#4b141a','#e05563','#ffd7db');
-      cont('Цвет ◆ →',next);
+      reflection.textContent='Теперь ты узнал цвет NOMA: она стала красной. Правило было простым: три нажатия → появляется цвет.';
+      cont('Попробовать узнать цвет ◆',next);
     }else{
       noma.classList.add('clickable');
       noma.style.pointerEvents='auto';
@@ -913,12 +920,13 @@ function render(frame){
     document.getElementById('node-diamond').classList.remove('dim');
     document.getElementById('node-diamond').classList.add('focus');
     showEdge('nomaDiamond','noma','diamond','=','coord',0,true,false,false);
-    question.textContent='Узнайте цвет ◆';
+    question.textContent='Попробуй узнать цвет ◆';
 
     const diamond=document.getElementById('node-diamond');
     if(progress>=3){
       tintNode('diamond','#4b141a','#e05563','#ffd7db');
-      cont('Жизненный пример →',next);
+      reflection.textContent='Ты сам применил к ◆ способ, которому тебя учили только для NOMA. Никто не говорил «нажми ◆ три раза»: этот шаг был достроен через связь NOMA = ◆.';
+      cont('Посмотреть, как это работает с реальным событием',next);
     }else{
       diamond.classList.add('clickable');
       diamond.style.pointerEvents='auto';
@@ -938,19 +946,21 @@ function render(frame){
   if(beat===10){
     setJourney(4);
     lifeMappedNetwork({focus:'silence'});
-    cont('Вопрос группе →',next);
+    reflection.textContent='Теперь вся тройка получила жизненное содержание: ◆ — клиент замолчал, ▲ — «я сказал что-то не то», ● — «надо срочно исправить».';
+    cont('Проверить, сохранились ли отношения',next);
   }
 
   if(beat===11){
     setJourney(5);
-    lifeMappedNetwork({meaningLabels:frame.phase!=='answered'});
+    lifeMappedNetwork({});
     question.textContent='Что в этом эпизоде происходит раньше всего?';
 
     if(frame.phase==='answered'){
-      showEdge('silenceThought','silence','thought','раньше','derived',30,true,false,true);
-      showEdge('thoughtUrge','thought','urge','раньше','derived',30,true,false,true);
-      showEdge('silenceUrge','silence','urge','раньше','derived',-24,false,false,true);
-      cont('Только эпизод →',next);
+      showEdge('silenceThought','silence','thought','раньше','derived',18,true,false,true);
+      showEdge('thoughtUrge','thought','urge','раньше','derived',-18,true,false,true);
+      showEdge('silenceUrge','silence','urge','раньше','derived',-46,false,false,true);
+      reflection.textContent='Отношение «раньше/позже» перешло на новое содержание. Этому порядку тебя напрямую не учили.';
+      cont('Оставить только жизненный эпизод',next);
     }else{
       buttons([
         {label:'Клиент замолчал',ok:true},
@@ -966,7 +976,8 @@ function render(frame){
   if(beat===12){
     setJourney(5);
     lifeOnly(2);
-    cont('Действие →',next);
+    reflection.textContent='Сейчас NOMA, TEV, LURI и символы можно убрать. Отношения уже работают внутри самого жизненного эпизода.';
+    cont('Посмотреть, как события влияют на действие',next);
   }
 
   if(beat===13){
@@ -975,41 +986,42 @@ function render(frame){
     world.style.setProperty('--ry','0deg');
     world.classList.add('final3d');
 
-    showNode('noma','NOMA',22,10,'depthFar');
-    showNode('tev','TEV',44,20,'depthFar');
-    showNode('luri','LURI',68,10,'depthFar');
-    showNode('diamond','◆',22,36,'symbol depthMid');
-    showNode('triangle','▲',44,47,'symbol depthMid');
-    showNode('circle','●',68,36,'symbol depthMid');
+    showNode('noma','NOMA',12,16,'depthFar');
+    showNode('tev','TEV',36,13,'depthFar');
+    showNode('luri','LURI',61,16,'depthFar');
+    showNode('diamond','◆',12,34,'symbol depthMid');
+    showNode('triangle','▲',36,31,'symbol depthMid');
+    showNode('circle','●',61,34,'symbol depthMid');
 
-    showNode('silence','КЛИЕНТ ЗАМОЛЧАЛ',22,62,'human depthNear');
-    showNode('thought','«Я СКАЗАЛ ЧТО-ТО НЕ ТО»',44,80,'human depthNear');
-    showNode('urge','«НАДО СРОЧНО ИСПРАВИТЬ»',68,62,'human depthNear');
-    showNode('behavior','НАЧИНАЮ ОБЪЯСНЯТЬ И ЗАПОЛНЯТЬ ПАУЗУ',87,84,'human depthMid');
+    showNode('silence','КЛИЕНТ ЗАМОЛЧАЛ',18,56,'human depthNear');
+    showNode('thought','«Я СКАЗАЛ ЧТО-ТО НЕ ТО»',48,53,'human depthNear');
+    showNode('urge','«НАДО СРОЧНО ИСПРАВИТЬ»',78,56,'human depthNear');
+    showNode('behavior','НАЧИНАЮ ОБЪЯСНЯТЬ И ЗАПОЛНЯТЬ ПАУЗУ',82,76,'human depthMid');
 
-    showEdge('nt','noma','tev','','given',20,false,false,true);
-    showEdge('tl','tev','luri','','given',20,false,false,true);
-    showEdge('nl','noma','luri','','derived',-24,false,false,true);
+    showEdge('nt','noma','tev','','given',16,false,false,true);
+    showEdge('tl','tev','luri','','given',-16,false,false,true);
+    showEdge('nl','noma','luri','','derived',-42,false,false,true);
     showEdge('nomaDiamond','noma','diamond','','coord',0,false,false,false);
     showEdge('tevTriangle','tev','triangle','','coord',0,false,false,false);
     showEdge('luriCircle','luri','circle','','coord',0,false,false,false);
-    symbolTemporalRelations({labels:false,curve:20});
+    symbolTemporalRelations({labels:false});
 
     showEdge('diamondSilence','diamond','silence','','meaning',0,false,false,true);
     showEdge('triangleThought','triangle','thought','','meaning',0,false,false,true);
     showEdge('circleUrge','circle','urge','','meaning',0,false,false,true);
 
-    showEdge('silenceThought','silence','thought','','derived',24,false,false,true);
-    showEdge('thoughtUrge','thought','urge','','derived',24,false,false,true);
-    showEdge('silenceUrge','silence','urge','','derived',-24,false,false,true);
-    showEdge('urgeBehavior','urge','behavior','','meaning',0,true,false,true);
-    showEdge('luriBehavior','luri','behavior','так называем это действие','meaning',-90,true,false,true);
+    showEdge('silenceThought','silence','thought','','derived',16,false,false,true);
+    showEdge('thoughtUrge','thought','urge','','derived',-16,false,false,true);
+    showEdge('silenceUrge','silence','urge','','derived',-44,false,false,true);
+    showEdge('urgeBehavior','urge','behavior','','meaning',14,true,false,true);
+    showEdge('luriBehavior','luri','behavior','так называем это действие','meaning',-28,true,false,true);
 
     tintNode('noma','#4b141a','#e05563','#ffd7db');
     tintNode('diamond','#4b141a','#e05563','#ffd7db');
 
+    reflection.textContent='События в сети начинают направлять действие: клиент замолчал → «я сказал что-то не то» → «надо срочно исправить» → начинаю объяснять и заполнять паузу. LURI теперь можно использовать как обозначение этого поведенческого хода.';
     enableNetworkRipple();
-    cont('Смысл NOMA и LURI →',next);
+    cont('Посмотреть, что теперь значат NOMA и LURI',next);
   }
 
   if(beat===14){
@@ -1019,7 +1031,8 @@ function render(frame){
     setJourney(5);
     languagePayoffNetwork();
     question.textContent='«Когда у психолога происходит NOMA, есть риск, что он начнёт делать LURI».';
-    cont('Название →',next);
+    reflection.textContent='Ещё несколько минут назад эта фраза была бессмысленной. Теперь мы понимаем друг друга: NOMA и LURI приобрели смысл и новые функции через сеть отношений, в которую вошли.';
+    cont('Узнать, как называется этот процесс',next);
   }
 
   if(beat===15){
@@ -1036,9 +1049,10 @@ function render(frame){
     world.style.filter='none';
     setJourney(5);
     bonusContextNetwork();
-    question.textContent='Нажмите на любой элемент сети';
+    question.textContent='Нажми на любой элемент сети';
+    reflection.textContent='Теперь видно только маленький фрагмент гораздо большей паутины. Нажми на любой узел — импульс пойдёт по связям во все стороны, включая те, что уходят за пределы экрана.';
     enableNetworkRipple();
-    cont('Схема RFT →',()=>{window.location.href='../frames/'});
+    cont('Дальше: схема RFT →',()=>{window.location.href='../frames/'});
   }
 
   syncFinish();
