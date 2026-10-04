@@ -102,11 +102,6 @@ env.line(LX,0,LX,37,'hair',0)
 env.poly([(LX-9,37),(LX+9,37),(LX+17,50),(LX-17,50)],'red',0)
 env.rect(LX-8,38,LX+8,38,'red',1.5)
 env.rect(LX-12,49,LX+12,51,'bulb')
-# ── стулья (задние)
-for cx in (108,206):
-    env.rect(cx-2,108,cx+2,FLOOR+18,'wood',-0.3)
-    env.rect(cx-1,108,cx-1,FLOOR+18,'wood',0.8)
-    env.rect(cx-4,106,cx+4,109,'wood',0.6)
 # ── стол
 TX0,TX1,TY=106,206,134
 for lx in (118,190):
@@ -156,24 +151,46 @@ def head(L,cx,cy,f,hairr,style,expr,hairsh=0):
         L.put(cx+f*4,cy+6,'mouth'); L.put(cx+f*5,cy+6,'mouth')
         L.put(e1-f*1,cy+4,'cheek')
     L.rect(cx+f*1-1,cy+9,cx+f*1+1,cy+11,'skin',-0.3)   # шея
-# мама (слева, смотрит вправо)
-mx,my=124,100
-chars.poly([(mx-11,my+12),(mx+9,my+11),(mx+13,TY+2),(mx-15,TY+2)],'blue',0)
-chars.rect(mx-11,my+12,mx+8,my+13,'blue',0.8)
-chars.ell(mx-9,my+15,3,3,'blue',0.4)
-chars.line(mx+6,my+15,mx+20,my+27,'blue',0.2,4)   # рука к тарелке
-chars.line(mx+6,my+18,mx+19,my+29,'blue',-0.6,2)
-chars.ell(mx+24,my+29,2.3,2,'skin',0.6)
-head(chars,mx,my,1,'hair','bob','laugh',hairsh=1.4)
-# подруга (справа, смотрит влево)
-fx,fy=188,100
-chars.poly([(fx-9,fy+11),(fx+11,fy+12),(fx+15,TY+2),(fx-13,TY+2)],'mag',0)
-chars.rect(fx-8,fy+11,fx+10,fy+12,'mag',0.8)
-head(chars,fx,fy,-1,'blond','long','laugh',hairsh=0.3)
-chars.line(fx-6,fy+16,fx-16,fy+20,'mag',0.3,4)     # рука с телефоном
-chars.ell(fx-19,fy+20,2.4,2.2,'skin',0.6)
-# телефон
-front.rect(fx-23,fy+12,fx-19,fy+20,'black'); front.rect(fx-22,fy+13,fx-20,fy+19,'screen')
+# ── сидящая фигура в профиль: цельная модель, стол потом закрывает её часть
+def seated(cx,f,top,pants,hairr,style,hairsh,arm):
+    X=lambda d:cx+f*d
+    hy=100
+    # стул: спинка, сиденье, ножки (за фигурой)
+    env.rect(min(X(-11),X(-10)),112,max(X(-11),X(-10)),FLOOR+16,'wood',-0.2)
+    env.rect(min(X(-12),X(-9)),110,max(X(-12),X(-9)),112,'wood',0.8)
+    env.rect(min(X(-11),X(8)),153,max(X(-11),X(8)),155,'wood',0.3)
+    env.rect(min(X(-11),X(8)),153,max(X(-11),X(8)),153,'wood',1.2)
+    env.rect(min(X(7),X(8)),156,max(X(7),X(8)),FLOOR+16,'wood',-0.7)
+    # голень, стопа (дальняя нога — темнее, чуть сзади)
+    for off,sh in ((-2,-0.9),(0,0)):
+        chars.rect(min(X(17+off),X(20+off)),150,max(X(17+off),X(20+off)),FLOOR+10,pants,psh_(pants)+sh)
+        chars.rect(min(X(16+off),X(24+off)),FLOOR+11,max(X(16+off),X(24+off)),FLOOR+12,'hair',-0.3+sh)
+    # бедро и таз
+    chars.poly([(X(-8),146),(X(20),146),(X(22),149),(X(20),152),(X(-8),153)],pants,psh_(pants))
+    chars.rect(min(X(-6),X(20)),146,max(X(-6),X(20)),146,pants,psh_(pants)+1.1)
+    # торс (профиль, чуть наклонён к столу)
+    chars.poly([(X(-5),111),(X(5),111),(X(7),117),(X(6),136),(X(7),146),(X(-8),147),(X(-7),126),(X(-6),116)],top,0)
+    chars.rect(min(X(-4),X(4)),111,max(X(-4),X(4)),111,top,0.9)
+    for yy in range(116,146): chars.put(X(-7) if f>0 else X(-7),yy,top,-0.8)
+    # шея
+    chars.rect(min(X(0),X(2)),108,max(X(0),X(2)),111,'skin',-0.3)
+    head(chars,X(2),hy,f,hairr,style,'laugh',hairsh=hairsh)
+    # рука
+    if arm=='table':
+        chars.line(X(1),114,X(5),127,top,-0.3,3)
+        chars.line(X(5),127,X(17),131,top,0.1,3)
+        chars.ell(X(20),131,2.2,1.8,'skin',0.6)
+    else:
+        chars.line(X(1),114,X(4),126,top,-0.3,3)
+        chars.line(X(4),126,X(12),119,top,0.1,3)
+        chars.ell(X(14),118,2.2,2,'skin',0.6)
+def psh_(p): return {'hair':0.4,'blue':-1.6}.get(p,0)
+mx,my=120,100
+seated(mx,1,'blue','hair','hair','bob',1.4,'table')
+fx,fy=192,100
+seated(fx,-1,'mag','blue','blond','long',0.3,'phone')
+# телефон в руке подруги
+front.rect(fx-18,fy+12,fx-14,fy+20,'black'); front.rect(fx-17,fy+13,fx-15,fy+19,'screen')
 # Лена (6) в дверях, смотрит вправо
 lx,ly=60,113
 chars.poly([(lx-7,ly+12),(lx+8,ly+12),(lx+13,ly+36),(lx-11,ly+36)],'yel',0.2)   # платье
@@ -194,28 +211,6 @@ for dx in (-5,3):
     chars.rect(lx+dx,ly+48,lx+dx+2,ly+51,'white',0.5)
     chars.rect(lx+dx-1,ly+52,lx+dx+4,ly+54,'red',-0.6)
 head(chars,lx,ly,1,'hair','pony','look',hairsh=0.6)
-# ── нижняя часть тел под столом + сиденья стульев
-def lower(cx,f,pants,psh,top):
-    seat_y=TY+19
-    # сиденье стула под тазом и его ножки
-    env.rect(min(cx-f*13,cx+f*7),seat_y+4,max(cx-f*13,cx+f*7),seat_y+6,'wood',0.3)
-    env.rect(min(cx-f*13,cx+f*7),seat_y+4,max(cx-f*13,cx+f*7),seat_y+4,'wood',1.2)
-    for lx_ in (cx-f*12,cx+f*6):
-        env.rect(lx_,seat_y+7,lx_+1,FLOOR+15,'wood',-0.6)
-    # продолжение туловища до сиденья (свитер)
-    chars.poly([(cx-f*11,TY),(cx+f*9,TY),(cx+f*8,seat_y-2),(cx-f*10,seat_y-2)],top,-0.4)
-    # таз и бёдра: длинные, к колену под столом
-    chars.rect(min(cx-f*10,cx+f*6),seat_y-2,max(cx-f*10,cx+f*6),seat_y+3,pants,psh)
-    chars.rect(min(cx,cx+f*22),seat_y-1,max(cx,cx+f*22),seat_y+3,pants,psh)
-    chars.rect(min(cx,cx+f*22),seat_y-1,max(cx,cx+f*22),seat_y-1,pants,psh+1.1)
-    kx=cx+f*19
-    # голень до пола
-    chars.rect(min(kx,kx+f*3),seat_y+3,max(kx,kx+f*3),FLOOR+10,pants,psh-0.3)
-    chars.rect(kx+f*3,seat_y+3,kx+f*3,FLOOR+10,pants,psh+0.5)
-    chars.rect(min(kx-f*1,kx+f*6),FLOOR+11,max(kx-f*1,kx+f*6),FLOOR+12,'hair',-0.3)
-    chars.rect(min(kx-f*1,kx+f*4),FLOOR+10,max(kx-f*1,kx+f*4),FLOOR+10,'hair',0.4)
-lower(mx,1,'hair',0.4,'blue')
-lower(fx,-1,'blue',-1.6,'mag')
 # тень Лены на полу
 env.rect(lx-9,FLOOR+1,lx+11,FLOOR+2,'wood',-2.2)
 env.rect(lx-6,FLOOR+3,lx+8,FLOOR+3,'wood',-1.8)
@@ -233,7 +228,7 @@ for x,c in ((130,'white'),(178,'green')):
     front.put(x+2,TY-9,'white',1.5); front.put(x+3,TY-11,'white',1)
 
 # ── свет
-PHX,PHY=fx-21,fy+16
+PHX,PHY=fx-16,fy+16
 def L(x,y):
     dx=x-LX;dy=y-LY
     d=math.hypot(dx,dy*(2.4 if dy<0 else 0.82))
