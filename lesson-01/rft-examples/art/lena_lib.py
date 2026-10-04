@@ -131,6 +131,17 @@ def head(L,cx,cy,f,hairr,style,expr,hairsh=0):
         for ex in (e1,e2): L.put(ex,ey,'eye'); L.put(ex,ey+1,'eye')
         L.put(cx+f*4,cy+6,'mouth'); L.put(cx+f*5,cy+5,'mouth'); L.put(cx+f*3,cy+5,'mouth')
         L.put(e1-f*1,cy+4,'cheek')
+    elif expr=='down':   # смотрит вниз (рисует)
+        for ex in (e1,e2): L.put(ex,ey+1,'eye'); L.put(ex+f*1,ey+1,'eye')
+        L.put(cx+f*4,cy+6,'mouth'); L.put(e1-f*1,cy+4,'cheek')
+    elif expr=='sleep':  # глаза закрыты, спокойна
+        for ex in (e1,e2): L.put(ex-1,ey,'eye'); L.put(ex,ey+1,'eye'); L.put(ex+1,ey,'eye')
+        L.put(cx+f*4,cy+6,'mouth'); L.put(e1-f*1,cy+4,'cheek'); L.put(e2+f*1,cy+4,'cheek')
+    elif expr=='smile':  # открытые глаза + улыбка
+        for ex in (e1,e2): L.put(ex,ey,'eye'); L.put(ex,ey+1,'eye'); L.put(ex+f*1 if f<0 else ex,ey,'white',3)
+        mx=cx+f*4
+        L.rect(mx-1,cy+5,mx+1,cy+5,'mouthd'); L.put(mx-f*2,cy+4,'mouthd'); L.put(mx,cy+6,'mouth')
+        L.put(e1-f*1,cy+4,'cheek'); L.put(e2+f*1,cy+4,'cheek')
     else:  # look / up (взгляд вверх)
         dy=-1 if expr=='up' else 0
         for ex in (e1,e2):

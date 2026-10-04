@@ -23,7 +23,7 @@ R={k:[hx(c) for c in v.split()] for k,v in dict(
  stone='#5b6070 #737889 #8d91a0 #a8abb7 #c3c5ce',
 ).items()}
 FIX={'eye':hx('#160c0e'),'mouth':hx('#8a2e2a'),'mouthd':hx('#3a1012'),'cheek':hx('#e38a76'),'screen':hx('#d6f4ff'),
-     'glow':hx('#8fd0ff'),'city':hx('#ffd56b'),'city2':hx('#ff9f4a'),'moon':hx('#f4eccf'),'bulb':hx('#fff6d6'),'black':hx('#07060a')}
+     'glow':hx('#8fd0ff'),'city':hx('#ffd56b'),'city2':hx('#ff9f4a'),'moon':hx('#f4eccf'),'bulb':hx('#fff6d6'),'black':hx('#07060a'),'heart':hx('#ff4d6d'),'heart2':hx('#ffb3c1')}
 NOLIGHT={'daysky','stone'}
 BAYER=[[0,8,2,10],[12,4,14,6],[3,11,1,9],[15,7,13,5]]
 class Layer:
