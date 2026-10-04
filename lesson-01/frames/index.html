@@ -17,6 +17,11 @@ linear-gradient(135deg,#151311,#080807 72%);color:#f4f4f2;font-family:Inter,syst
 body{user-select:none;cursor:pointer}
 #toMap{position:fixed;z-index:120;top:12px;right:14px;padding:7px 11px;border-radius:10px;border:1px solid #2c2925;background:rgba(14,13,12,.72);color:#8f897f;font-size:13px;text-decoration:none;opacity:.7;transition:.18s}
 #toMap:hover{opacity:1;color:#eee8dc;border-color:#57514a}
+/* Быстрые переходы для ведущего — левый нижний угол */
+#jumps{position:fixed;z-index:120;left:14px;bottom:12px;display:flex;gap:6px}
+#jumps button{font:13px Inter,system-ui,sans-serif;padding:6px 10px;border-radius:9px;border:1px solid #3a352f;background:rgba(14,13,12,.84);color:#c2b9ab;cursor:pointer;opacity:.9;transition:.18s}
+#jumps button:hover{opacity:1;color:#eee8dc;border-color:#57514a}
+#jumps button.on{color:#eee8dc;border-color:#8a5a3c}
 #titleSlide{position:fixed;inset:0;display:grid;place-items:center;background:#050505;z-index:100;transition:opacity .42s,visibility .42s}
 #titleSlide.hidden{opacity:0;visibility:hidden;pointer-events:none}
 #titleSlide h1{margin:0;font-size:clamp(42px,7vw,110px);font-weight:760;letter-spacing:-.055em;text-align:center}
@@ -95,6 +100,11 @@ background:radial-gradient(ellipse 60% 64% at 42% 46%,rgba(255,220,160,.12) 0,rg
 </head>
 <body>
 <a id="toMap" href="../" title="Вернуться к карте урока">Урок 1</a>
+<nav id="jumps" aria-label="Быстрые переходы">
+  <button data-to="3" title="На стене только паспорт">Паспорт</button>
+  <button data-to="30" title="Все фото и нити, разбор ещё не начался">Все улики</button>
+  <button data-to="57" title="Разбор закончен, все названия на нитях">Итог</button>
+</nav>
 <section id="titleSlide"><h1>Все любят котиков.</h1></section>
 
 <div id="board">
@@ -196,6 +206,7 @@ const photos={
 };
 let state=0;
 let animating=false;
+let epoch=0; // увеличивается при быстром переходе — отменяет незавершённые анимации
 
 function rectOf(el){
   const r=el.getBoundingClientRect();
@@ -310,6 +321,7 @@ function render(s){
   if(state>=30) addThread(p1,p10,false,'t9');
   placePins();
   renderDiscussion(state);
+  document.querySelectorAll('#jumps button').forEach(b=>b.classList.toggle('on',+b.dataset.to===state));
 }
 function animatePin(target,src,nextState){
   animating=true;
@@ -336,7 +348,9 @@ function animatePin(target,src,nextState){
     const sx=to.w/from.w, sy=to.h/from.h;
     fly.style.transition='transform 760ms cubic-bezier(.2,.82,.2,1),opacity 130ms 690ms';
     fly.style.transform=`translate(${to.x-from.x}px,${to.y-from.y}px) scale(${sx},${sy})`;
+    const my=epoch;
     setTimeout(()=>{
+      if(my!==epoch)return;
       state=nextState;
       fly.style.display='none';
       target.style.opacity='1';
@@ -352,7 +366,8 @@ function animateThread(nextState,a,b,key){
   // все прежние нити уже нарисованы; самую новую (последнюю) рисуем заново — с анимацией
   if(svg.lastChild) svg.removeChild(svg.lastChild);
   addThread(a,b,true,key);
-  setTimeout(()=>{animating=false},880);
+  const my=epoch;
+  setTimeout(()=>{if(my===epoch)animating=false},880);
 }
 /* ══ Разбор доски ══════════════════════════════════════════════
    Порядок — как появлялись фото. Каждый раунд = 3 шага:
@@ -511,7 +526,9 @@ function animateMerge(nextState){
   });
   const q=discuss.querySelector('.qCard');
   if(q)q.animate([{opacity:1},{opacity:0}],{duration:450,delay:250,fill:'forwards'});
+  const my=epoch;
   setTimeout(()=>{
+    if(my!==epoch)return;
     state=nextState;animateNameFor=k;animating=false;render(state);
   },700+notes.length*70);
 }
@@ -550,7 +567,7 @@ function back(){
 
 document.addEventListener('click',e=>{
   if(e.button!==0)return;
-  if(e.target.closest&&e.target.closest('a'))return;
+  if(e.target.closest&&e.target.closest('a,#jumps'))return;
   forward();
 });
 document.addEventListener('keydown',e=>{
@@ -561,6 +578,14 @@ document.addEventListener('keydown',e=>{
   }
 });
 window.addEventListener('resize',()=>render(state));
+function jumpTo(n){
+  epoch++;animating=false;animateNameFor=-1;animateNotesIn=false;
+  document.getAnimations().forEach(a=>a.cancel());
+  render(n);
+}
+document.querySelectorAll('#jumps button').forEach(b=>b.addEventListener('click',e=>{
+  e.stopPropagation();jumpTo(+b.dataset.to);b.blur();
+}));
 render(0);
 })();
 </script>
