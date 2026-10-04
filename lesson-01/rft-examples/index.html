@@ -214,7 +214,10 @@ const SCENES={
     {t:'Всё хорошо, мам',box:[194,50,92],dot:[178,114]}]},
   vstrecha:{src:'assets/10-vstrecha.png',tl:10,b:[
     {t:'Давай встретимся?',box:[186,96,104],dot:[172,150]},
-    {t:'Он же меня увидит…',box:[150,40,110],dot:[152,124]}]}
+    {t:'Он же меня увидит…',box:[150,40,110],dot:[152,124]}]},
+  kabinet:{src:'assets/11-kabinet.png',tl:11,b:[
+    {t:'С чем вы пришли?',box:[258,22,98],dot:[262,88]},
+    {t:'У меня проблема с едой',box:[34,20,118],dot:[150,88]}]}
 };
 const IMG={x:80,y:30,k:1440/384};
 // Порядок кусочков коллажа (3×3, слева направо, сверху вниз) = выходы
@@ -281,7 +284,10 @@ evS(10,'vstrecha',['20–24 года · «Давай встретимся?»','�
  {},{flows:[['uvidyat','vstrecha']]});
 MARK.net=steps.length-1;
 // Финал
-st.tl=11;st.card=['25 лет · Кабинет','«У меня проблема с едой»',''];st.cam='eda';S({},'cab');
+st.tl=11;st.scene={id:'kabinet',b:0};S({},'cab');
+SCENES.kabinet.b.forEach((_,k)=>{st.scene.b=k+1;S()});
+st.scene=null;st.thumbs.push('kabinet');st.card=['25 лет · Кабинет','«У меня проблема с едой»',''];S({fly:'kabinet'});
+st.cam='eda';S();
 st.cam='norm';S();                                                                    // 34
 st.card=null;st.q='С чем мы будем работать?';st.wh=0;S();                             // 35
 st.free=true;STIM.forEach(id=>n(id,'stim'));
