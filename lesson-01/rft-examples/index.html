@@ -211,7 +211,10 @@ const SCENES={
     {t:'Что я наделала… Завтра — спортзал',box:[240,44,136],dot:[240,90]}]},
   kvartira:{src:'assets/09-kvartira.png',tl:9,b:[
     {t:'Как ты там, доченька? Кушаешь нормально?',box:[188,10,150],dot:[177,112]},
-    {t:'Всё хорошо, мам',box:[194,50,92],dot:[178,114]}]}
+    {t:'Всё хорошо, мам',box:[194,50,92],dot:[178,114]}]},
+  vstrecha:{src:'assets/10-vstrecha.png',tl:10,b:[
+    {t:'Давай встретимся?',box:[186,96,104],dot:[172,150]},
+    {t:'Он же меня увидит…',box:[150,40,110],dot:[152,124]}]}
 };
 const IMG={x:80,y:30,k:1440/384};
 // Порядок кусочков коллажа (3×3, слева направо, сверху вниз) = выходы
@@ -271,7 +274,7 @@ evS(9,'kvartira',['19 лет · Своя квартира','«Всё хорош�
  ()=>{n('odin','c-red');e('odin','pereed','g')},
  ()=>{e('ya','polnota','d');n('ya','c-red');x('podderzh','x-dark');x('mechtat','x-dark');x('basseyn','x-grey');st.wh=5},
  {},{flows:[['polnota','ya']]});
-ev(10,['20–24 года · «Давай встретимся?»','Она не ответила','Перестала фотографироваться и ходить в бассейн'],
+evS(10,'vstrecha',['20–24 года · «Давай встретимся?»','«Он же меня увидит…»','Она не ответила. Перестала фотографироваться и ходить в бассейн'],
  ()=>{n('vstrecha','c-neutral');n('uvidyat','c-red');n('otverg','c-red');e('vstrecha','uvidyat','g');e('uvidyat','otverg','g')},
  ()=>{x('pryat','x-red');e('otverg','pryat','x');e('styd','pryat','x');e('otverg','styd','d');n('vstrecha','c-red');
       ['basseyn','foto','vlyub','igrat','risovat'].forEach(id=>x(id,'x-dark'))},
