@@ -19,9 +19,12 @@ R={k:[hx(c) for c in v.split()] for k,v in dict(
  white='#2a2730 #4b4650 #757078 #a19b9c #c9c2ba #e6dfd2 #fbf6ea #ffffff',
  green='#0b120d #15241a #20382a #2f5038 #436c45 #5f8a55 #84ab6c',
  sky='#05060d #0a0d1c #10162c #18203d #22294d #2f3560',
+ daysky='#5f86b8 #7aa2cf #97bde0 #b8d6ee #d9eaf6 #f4f9fd',
+ stone='#5b6070 #737889 #8d91a0 #a8abb7 #c3c5ce',
 ).items()}
 FIX={'eye':hx('#160c0e'),'mouth':hx('#8a2e2a'),'mouthd':hx('#3a1012'),'cheek':hx('#e38a76'),'screen':hx('#d6f4ff'),
      'glow':hx('#8fd0ff'),'city':hx('#ffd56b'),'city2':hx('#ff9f4a'),'moon':hx('#f4eccf'),'bulb':hx('#fff6d6'),'black':hx('#07060a')}
+NOLIGHT={'daysky','stone'}
 BAYER=[[0,8,2,10],[12,4,14,6],[3,11,1,9],[15,7,13,5]]
 class Layer:
     def __init__(s): s.m=[[None]*W for _ in range(H)]
@@ -70,7 +73,7 @@ def render(layers,L,dither=True,rim=None):
             r=R[ramp];n=len(r)
             l=L(x,y)
             if rim and rim(li,x,y): l+=0.28
-            f=max(0,min(1,l))*(n-1)*0.92+sh
+            f=sh if ramp in NOLIGHT else max(0,min(1,l))*(n-1)*0.92+sh
             base=math.floor(f);fr=f-base
             if dither and getattr(layers[li],'dither',True):
                 if fr>0.68: base+=1
