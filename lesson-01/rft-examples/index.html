@@ -26,19 +26,31 @@ body.free{cursor:default}
 .e-b{stroke:#c9963f;stroke-width:2.2;stroke-dasharray:2 7}
 .e-s{stroke:#8a94a6;stroke-width:1.5;stroke-dasharray:3 6;opacity:.8}
 .e-x{stroke:#b04452;stroke-width:2.2}
+.e-o{stroke:#d9828d;stroke-width:1.8;stroke-dasharray:6 7;opacity:.85}
+.e-r{stroke:#e8b44c;stroke-width:2.4;filter:drop-shadow(0 0 4px rgba(232,180,76,.55))}
+.badge{transition:opacity .8s ease}
+.badge.off{opacity:0}
+.badge circle{fill:#1a0f13;stroke:#d9828d;stroke-width:1.6}
+.badge text{fill:#ffd2d8;font-size:17px;font-weight:700;text-anchor:middle;dominant-baseline:central}
 .pulse{fill:none;stroke-linecap:round;stroke-width:4.2;pointer-events:none}
 .pulse.white{stroke:#fff;filter:drop-shadow(0 0 5px rgba(255,255,255,.9))}
 .pulse.red{stroke:#ff5a6a;filter:drop-shadow(0 0 6px rgba(255,90,106,.95))}
+.pulse.gold{stroke:#ffd27a;filter:drop-shadow(0 0 6px rgba(255,200,90,.95))}
 
 .node{position:absolute;transform:translate(-50%,-50%);padding:9px 17px;border-radius:999px;border:1.5px solid;
 font-size:17px;font-weight:680;letter-spacing:.015em;white-space:nowrap;line-height:1.15;
-transition:background .8s ease,border-color .8s ease,color .8s ease,opacity .7s ease,box-shadow .8s ease,filter .4s ease}
+transition:background .8s ease,border-color .8s ease,color .8s ease,opacity .7s ease,box-shadow .8s ease,filter .4s ease,transform 1.2s cubic-bezier(.3,.7,.2,1)}
 .node.off{opacity:0;pointer-events:none}
 .c-neutral{background:#0f131b;border-color:#3b4555;color:#e6eaf2}
 .c-warm{background:#2a2210;border-color:#d8ad4e;color:#ffe6a8}
 .c-mixed{background:#35191a;border-color:#c86c56;color:#ffd8cc}
 .c-red{background:#3f1218;border-color:#e05563;color:#ffd7db}
 .c-body{background:#21180e;border-color:#b8873f;color:#f3d3a0;border-style:dashed}
+.c-core{background:linear-gradient(135deg,#4a1219 0%,#4a1219 49%,#33270f 51%,#33270f 100%);border-color:#e05563 #e0b552 #e0b552 #e05563;color:#fff3e6;border-width:2px;box-shadow:0 0 26px rgba(232,140,90,.35)}
+.c-core.glow{box-shadow:0 0 0 2px rgba(255,210,150,.25),0 0 60px rgba(240,150,90,.75)}
+.node.front{z-index:2;filter:brightness(1.25)}
+#cam.front .node:not(.front):not(.off){opacity:.5}
+#cam.front .e:not(.front):not(.off){opacity:.3}
 .stim{white-space:normal;width:178px;text-align:center;font-size:14px;font-weight:640;line-height:1.2;padding:8px 10px;border-radius:14px;
 background:#121722;border-color:#5b6678;border-style:dashed;color:#dfe4ec}
 body.free .node:not(.off),body.free .exit.x-red{cursor:pointer}
@@ -49,14 +61,14 @@ body.free .node:not(.off):hover{filter:brightness(1.35)}
 #exitsHead{position:absolute;left:1267px;top:120px;font-size:12px;letter-spacing:.22em;color:#6c7687;transition:opacity .8s}
 .exit{position:absolute;left:1265px;transform:translateY(-50%);padding:8px 15px;border-radius:999px;border:1.5px solid;
 font-size:15px;font-weight:650;letter-spacing:.02em;white-space:nowrap;
-transition:background 1s ease,border-color 1s ease,color 1s ease,opacity .8s ease,box-shadow 2.2s ease,top 1s cubic-bezier(.3,.7,.2,1)}
+transition:background 1s ease,border-color 1s ease,color 1s ease,opacity .8s ease,box-shadow 2.2s ease}
 .x-off{opacity:0}
 .x-green{background:#0e2419;border-color:#4cc483;color:#c8f3da;box-shadow:0 0 18px rgba(76,196,131,.2)}
 .x-grey{background:#14171c;border-color:#4b525d;color:#9aa2ad;box-shadow:none}
 .x-dark{background:#0a0c10;border-color:#232830;color:#535b67;box-shadow:none}
 .x-red{background:#4a0f17;border-color:#ff5466;color:#ffe1e4;box-shadow:0 0 24px rgba(255,84,102,.42)}
 .x-red.strong{box-shadow:0 0 38px rgba(255,84,102,.68)}
-.x-red.burn{background:#7d1422;box-shadow:0 0 0 3px rgba(255,130,140,.35),0 0 74px rgba(255,70,90,1);transition:background .25s,box-shadow .25s,top 1s}
+.x-red.burn{background:#7d1422;box-shadow:0 0 0 3px rgba(255,130,140,.35),0 0 74px rgba(255,70,90,1);transition:background .25s,box-shadow .25s}
 
 #card{position:absolute;left:300px;width:1000px;top:22px;text-align:center;transition:opacity .5s}
 #eyebrow{font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:#7d8798;min-height:16px}
@@ -97,10 +109,8 @@ border:5px solid #1b1418;box-shadow:6px 6px 0 rgba(0,0,0,.45);opacity:0;transfor
 .tlHide{opacity:0}
 #tlLine{position:absolute;left:110px;width:1380px;top:848px;height:1px;background:#252c37}
 
-.wh{position:absolute;width:175px;font-style:italic;font-size:15px;line-height:1.3;color:#d08a93;opacity:0;transition:opacity 1.4s}
-.wh.on{opacity:.3}
-
-#cam.solo .node:not(.keep),#cam.solo .e,#cam.solo .exit,#cam.solo #exitsHead,#cam.solo .wh{opacity:0 !important}
+#cam.solo .node:not(.keep):not(.off),#cam.solo .e:not(.keep):not(.off),#cam.solo .badge:not(.off),#cam.solo .exit:not(.keep):not(.x-off),#cam.solo #exitsHead{opacity:.05 !important}
+#cam.solo .exit.keep{box-shadow:0 0 44px rgba(255,84,102,.8)}
 #stage.solo #tl{opacity:0}
 
 #q{position:absolute;left:300px;width:1000px;top:44px;text-align:center;font-size:34px;font-weight:680;letter-spacing:-.015em;opacity:0;transition:opacity .7s}
@@ -132,7 +142,6 @@ body.instant *{transition:none !important}
 <div id="stage">
   <div id="cam">
     <svg id="edges" viewBox="0 0 1600 900"></svg>
-    <div id="whs"></div>
     <div id="nodes"></div>
     <div id="exitsHead">ВЫХОДЫ</div>
     <div id="exits"></div>
@@ -148,36 +157,50 @@ body.instant *{transition:none !important}
 <script>
 (()=>{
 // ───────── Данные ─────────
-// Узлы сети: id → [подпись, x, y]  (координаты сцены 1600×900)
+// Узлы сети: id → [подпись, x, y]  (координаты сцены 1600×900; это «домашние» места — по шагам их двигает LAYOUT)
 const NODES={
-  nastya:['НАСТЯ',330,175], telo:['ТЕЛО',330,250], ya:['Я',330,325], eda:['ЕДА',330,400],
-  sladkoe:['СЛАДКОЕ',330,475], ocenki:['ОЦЕНКИ',330,555], oshibka:['ОШИБКА',330,630],
-  vstrecha:['ВСТРЕЧА',330,705], odin:['ОДИНОЧЕСТВО',330,778],
-  hudaya:['ХУДАЯ',565,190], brosayut:['БРОСАЮТ',565,255], polnota:['ПОЛНОТА',565,330], bh:['БЫТЬ ХОРОШЕЙ',565,555],
-  uvidyat:['УВИДЯТ ТЕЛО',565,690], pereed:['ПЕРЕЕДАНИЕ',700,780],
-  vybir:['ВЫБИРАЮТ',800,160], nevyb:['НЕ ВЫБРАЛИ',800,245], smeshno:['СМЕШНО',800,320],
-  obsuzh:['ОБСУЖДАЮТ',790,392], nekras:['НЕКРАСИВАЯ',800,462], kontrol:['КОНТРОЛЬ',800,540],
-  nesprav:['НЕ СПРАВИЛАСЬ',800,615], otverg:['ОТВЕРГНУТ',800,690],
-  hvalyat:['ХВАЛЯТ',1030,200], somnoy:['СО МНОЙ ЧТО-ТО НЕ ТАК',1035,380],
-  styd:['СТЫД',1060,575], poterya:['ПОТЕРЯ КОНТРОЛЯ',1040,665], golod:['ГОЛОД',1150,785],
-  // стимулы настоящего (финал)
-  st_wed:['Свадьба подруги',118,325], st_promo:['Повышение',118,555], st_boss:['«Здесь надо переделать»',118,630],
-  st_date:['«Давай встретимся?»',118,705], st_eve:['Вечер одной дома',118,778]
+  polnota:['ПОЛНОТА',500,330], smeshno:['СМЕШНО',650,250], obsuzh:['ОБСУЖДАЮТ',780,330], brosayut:['БРОСАЮТ',640,410],
+  nekras:['НЕКРАСИВАЯ',900,250],
+  eda:['ЕДА',700,480], sladkoe:['СЛАДКОЕ',430,620],
+  devochki:['ДЕВОЧКИ',300,260], uhozh:['УХОЖЕННАЯ',430,190],
+  ya:['Я',300,470], nevyb:['НЕ ВЫБРАЛИ',470,410], somnoy:['СО МНОЙ ЧТО-ТО НЕ ТАК',1040,390],
+  malchiki:['МАЛЬЧИКИ',600,170], vybir:['ВЫБИРАЮТ',760,170], nastya:['НАСТЯ',900,170], hudaya:['ХУДАЯ',1030,180], hvalyat:['ХВАЛЯТ',1060,260],
+  telo:['ТЕЛО',300,560], kontrol:['КОНТРОЛЬ',840,560], diety:['ДИЕТЫ',900,470],
+  ocenki:['ОЦЕНКИ',300,690], bp:['БЫТЬ ПРАВИЛЬНОЙ',500,690], oshibka:['ОШИБКА',300,760], nesprav:['НЕ СПРАВИЛАСЬ',520,760],
+  golod:['ГОЛОД',880,650], pereed:['ПЕРЕЕДАНИЕ',700,620], styd:['СТЫД',1060,600],
+  odin:['ОДИНОЧЕСТВО',720,750], mama:['МАМА',900,740], vstrecha:['ВСТРЕЧА',1080,700], uvidyat:['УВИДЯТ ТЕЛО',1000,760],
+  // стимулы настоящего (свободный режим)
+  st_wed:['Свадьба подруги',118,470], st_promo:['Повышение',118,690], st_boss:['«Здесь надо переделать»',118,760],
+  st_date:['«Давай встретимся?»',118,600], st_eve:['Вечер одной дома',118,540]
 };
 const STIM=['st_wed','st_promo','st_boss','st_date','st_eve'];
-// Выходы: id → [подпись, y]
-const EXIT_ORDER=[['risovat','РИСОВАТЬ'],['igrat','ИГРАТЬ С ДРУЗЬЯМИ'],['basseyn','БАССЕЙН'],['foto','ФОТОГРАФИРОВАТЬСЯ'],
-  ['hudet','ХУДЕТЬ'],['est','ЕСТЬ, ЧТО ХОЧЕТСЯ'],['vlyub','ВЛЮБЛЯТЬСЯ'],['sport','СПОРТ'],
+// Неподвижные узлы (всё остальное в сети живое: дрейфует и переезжает)
+const ANCHOR=new Set(['ya','somnoy',...STIM]);
+// Раскладки по событиям (подобраны скриптом art/layout.py так, чтобы ничего не наезжало)
+const LAYOUT=/*LAYOUT*/{
+  "1":{"polnota":[560,430],"smeshno":[760,340],"obsuzh":[800,440],"brosayut":[740,540]},
+  "2":{"polnota":[540,418],"smeshno":[783,361],"obsuzh":[798,442],"brosayut":[714,545],"eda":[433,607],"sladkoe":[403,504],"devochki":[316,289],"uhozh":[513,246],"nekras":[880,208]},
+  "3":{"polnota":[608,420],"smeshno":[778,361],"obsuzh":[839,441],"brosayut":[715,509],"eda":[433,601],"sladkoe":[403,501],"devochki":[330,297],"uhozh":[496,264],"nekras":[863,192],"ya":[275,369],"nevyb":[400,367],"somnoy":[1073,396]},
+  "4":{"polnota":[613,408],"smeshno":[692,274],"obsuzh":[804,420],"brosayut":[728,499],"eda":[471,592],"sladkoe":[408,498],"devochki":[328,292],"uhozh":[498,267],"nekras":[878,251],"ya":[275,369],"nevyb":[400,351],"somnoy":[1073,396],"malchiki":[564,194],"vybir":[827,174],"nastya":[977,175],"hudaya":[1078,241],"telo":[364,418]},
+  "5":{"polnota":[576,357],"smeshno":[673,265],"obsuzh":[889,452],"brosayut":[722,439],"eda":[549,558],"sladkoe":[413,522],"devochki":[335,296],"uhozh":[511,240],"nekras":[873,244],"ya":[275,369],"nevyb":[405,371],"somnoy":[1073,396],"malchiki":[567,185],"vybir":[810,177],"nastya":[969,180],"hudaya":[1078,235],"telo":[376,447],"kontrol":[878,584]},
+  "6":{"polnota":[595,362],"smeshno":[682,270],"obsuzh":[914,451],"brosayut":[730,434],"eda":[608,535],"sladkoe":[410,506],"devochki":[338,287],"uhozh":[509,244],"nekras":[869,251],"ya":[275,369],"nevyb":[402,378],"somnoy":[1073,396],"malchiki":[568,185],"vybir":[809,189],"nastya":[957,175],"hudaya":[1100,203],"telo":[351,445],"kontrol":[876,589],"hvalyat":[1144,276],"diety":[851,517]},
+  "7":{"polnota":[587,366],"smeshno":[673,261],"obsuzh":[926,457],"brosayut":[687,430],"eda":[634,494],"sladkoe":[389,521],"devochki":[337,284],"uhozh":[515,247],"nekras":[900,252],"ya":[275,369],"nevyb":[411,382],"somnoy":[1073,396],"malchiki":[571,185],"vybir":[810,186],"nastya":[961,177],"hudaya":[1087,212],"telo":[355,455],"kontrol":[925,665],"hvalyat":[1146,276],"diety":[811,513],"ocenki":[378,611],"bp":[449,674],"oshibka":[408,758],"nesprav":[611,762]},
+  "8":{"polnota":[581,366],"smeshno":[688,268],"obsuzh":[905,457],"brosayut":[689,430],"eda":[634,494],"sladkoe":[381,520],"devochki":[337,301],"uhozh":[528,241],"nekras":[883,241],"ya":[275,369],"nevyb":[411,382],"somnoy":[1073,396],"malchiki":[568,187],"vybir":[810,186],"nastya":[964,173],"hudaya":[1091,204],"telo":[366,445],"kontrol":[756,590],"hvalyat":[1142,266],"diety":[830,513],"ocenki":[374,580],"bp":[410,675],"oshibka":[408,759],"nesprav":[682,761],"golod":[895,674],"pereed":[545,601],"styd":[1113,621]},
+  "9":{"polnota":[596,353],"smeshno":[701,262],"obsuzh":[919,456],"brosayut":[701,426],"eda":[634,493],"sladkoe":[384,541],"devochki":[335,291],"uhozh":[541,233],"nekras":[895,251],"ya":[275,369],"nevyb":[421,374],"somnoy":[1073,396],"malchiki":[581,176],"vybir":[822,185],"nastya":[969,176],"hudaya":[1096,216],"telo":[371,461],"kontrol":[803,605],"hvalyat":[1145,278],"diety":[829,511],"ocenki":[377,597],"bp":[419,687],"oshibka":[388,761],"nesprav":[620,767],"golod":[907,681],"pereed":[541,622],"styd":[1118,626],"odin":[837,759],"mama":[1152,684]},
+  "10":{"polnota":[585,343],"smeshno":[671,252],"obsuzh":[806,340],"brosayut":[730,419],"eda":[699,485],"sladkoe":[401,502],"devochki":[325,292],"uhozh":[492,264],"nekras":[898,240],"ya":[275,369],"nevyb":[396,354],"somnoy":[1073,396],"malchiki":[564,192],"vybir":[811,185],"nastya":[961,172],"hudaya":[1089,213],"telo":[364,424],"kontrol":[869,586],"hvalyat":[1143,274],"diety":[841,482],"ocenki":[375,599],"bp":[451,667],"oshibka":[402,750],"nesprav":[580,729],"golod":[890,645],"pereed":[553,611],"styd":[1131,597],"odin":[829,770],"mama":[875,714],"vstrecha":[1093,683],"uvidyat":[1029,737]},
+  "11":{"polnota":[585,343],"smeshno":[671,252],"obsuzh":[806,340],"brosayut":[730,419],"eda":[699,485],"sladkoe":[401,502],"devochki":[325,292],"uhozh":[492,264],"nekras":[898,240],"ya":[275,369],"nevyb":[396,354],"somnoy":[1073,396],"malchiki":[564,192],"vybir":[811,185],"nastya":[961,172],"hudaya":[1089,213],"telo":[364,424],"kontrol":[869,586],"hvalyat":[1143,274],"diety":[841,482],"ocenki":[375,599],"bp":[451,667],"oshibka":[402,750],"nesprav":[580,729],"golod":[890,645],"pereed":[553,611],"styd":[1131,597],"odin":[829,770],"mama":[875,714],"vstrecha":[1093,683],"uvidyat":[1029,737]},
+  "core":{"polnota":[579,341],"smeshno":[678,240],"obsuzh":[808,342],"brosayut":[734,417],"eda":[699,485],"sladkoe":[396,487],"devochki":[378,197],"uhozh":[482,260],"nekras":[904,233],"ya":[275,369],"nevyb":[396,354],"somnoy":[1073,396],"malchiki":[562,179],"vybir":[790,173],"nastya":[964,171],"hudaya":[1143,209],"telo":[373,416],"kontrol":[869,586],"hvalyat":[1134,267],"diety":[840,481],"ocenki":[385,576],"bp":[443,670],"oshibka":[403,733],"nesprav":[579,726],"golod":[890,645],"pereed":[547,608],"styd":[1131,597],"odin":[804,767],"mama":[870,713],"vstrecha":[1086,671],"uvidyat":[1023,754]},
+  "free":{"polnota":[579,341],"smeshno":[678,240],"obsuzh":[808,342],"brosayut":[734,417],"eda":[699,485],"sladkoe":[396,487],"devochki":[378,197],"uhozh":[482,260],"nekras":[904,233],"ya":[275,369],"nevyb":[396,354],"somnoy":[1073,396],"malchiki":[562,179],"vybir":[790,173],"nastya":[964,171],"hudaya":[1143,209],"telo":[373,416],"kontrol":[869,586],"hvalyat":[1134,267],"diety":[840,481],"ocenki":[385,576],"bp":[443,670],"oshibka":[403,733],"nesprav":[579,726],"golod":[890,645],"pereed":[547,608],"styd":[1131,597],"odin":[804,767],"mama":[870,713],"vstrecha":[1086,671],"uvidyat":[1023,754],"st_wed":[118,369],"st_promo":[118,576],"st_boss":[118,733],"st_eve":[804,852],"st_date":[1180,852]}
+}/*END*/;
+// Выходы
+const EXIT_ORDER=[['risovat','РИСОВАТЬ'],['igrat','ИГРАТЬ С ДРУЗЬЯМИ'],['basseyn','БАССЕЙН'],['sport','СПОРТЗАЛ'],['foto','ФОТОГРАФИРОВАТЬСЯ'],
+  ['hudet','ХУДЕТЬ'],['est','ЕСТЬ, ЧТО ХОЧЕТСЯ'],['vlyub','ВЛЮБЛЯТЬСЯ'],
   ['mechtat','МЕЧТАТЬ'],['otdyh','ОТДЫХАТЬ'],['pryat','ПРЯТАТЬСЯ'],['podderzh','ПОПРОСИТЬ ПОДДЕРЖКИ']];
-// Выходы стоят плотно; красные вклиниваются между зелёными, не сдвигаясь после появления.
-const EXIT_Y0=165,EXIT_DY=55;
+// Выходы стоят плотно; красные вклиниваются между зелёными.
+const EXIT_Y0=165,EXIT_DY=55,EXIT_X=1272;
 const EXITS={};EXIT_ORDER.forEach(([id,t],i)=>EXITS[id]=[t,EXIT_Y0+i*EXIT_DY]);
-const RED_EXITS=['hudet','sport','pryat'];
-const EXIT_X=1272;
-// Изгиб отдельных связей (по умолчанию — небольшой, считается сам)
-const BEND={'ya>nevyb':30,'nesprav>somnoy':60,'hudet>golod':62,'golod>pereed':22,'odin>pereed':10,'otverg>pryat':30,'pereed>poterya':-10};
-// Шёпот культуры (левое поле, до финала)
-const WHISPERS=[]; // шёпот культуры убран по решению автора (4 окт 2026)
+// Изгибы отдельных связей по раскладкам (подобраны скриптом, чтобы линии не шли поверх слов)
+const BENDS=/*BENDS*/{"3":{"polnota>nekras":8,"nevyb>brosayut":32},"4":{"nevyb>brosayut":40,"nevyb>somnoy":16},"5":{"nevyb>somnoy":40,"hudaya>vybir":-16},"6":{"polnota>obsuzh":-32,"uhozh>obsuzh":16},"7":{"nevyb>somnoy":-160,"hudaya>vybir":-24,"polnota>eda":16,"nesprav>somnoy":96,"somnoy>eda":24},"8":{"polnota>obsuzh":-32,"nevyb>somnoy":-160,"ya>telo":0,"telo>polnota":24,"uhozh>bp":-32,"nesprav>somnoy":24,"somnoy>eda":40,"pereed>styd":32},"9":{"hvalyat>hudet":8,"nesprav>somnoy":120,"somnoy>eda":40,"mama>eda":0},"10":{"nevyb>somnoy":24,"smeshno>somnoy":-40,"polnota>eda":16,"hvalyat>hudet":8,"uhozh>bp":-16,"nesprav>somnoy":-24,"somnoy>eda":32,"nesprav>eda":32,"hudet>golod":16,"pereed>styd":-104,"styd>eda":-16,"mama>eda":-32,"mama>styd":-16},"11":{"nevyb>somnoy":24,"smeshno>somnoy":-40,"polnota>eda":16,"hvalyat>hudet":8,"uhozh>bp":-16,"nesprav>somnoy":-24,"somnoy>eda":32,"nesprav>eda":32,"hudet>golod":16,"pereed>styd":-104,"styd>eda":-16,"mama>eda":-32,"mama>styd":-16},"core":{"nevyb>somnoy":24,"hudaya>vybir":112,"somnoy>polnota":-32,"hvalyat>hudet":8,"nesprav>somnoy":-24,"somnoy>eda":32,"hudet>golod":16,"pereed>styd":-96,"styd>eda":-16,"mama>styd":-16,"uvidyat>nekras":-32},"free":{"nevyb>somnoy":24,"hudaya>vybir":112,"somnoy>polnota":-32,"hvalyat>hudet":8,"nesprav>somnoy":-24,"somnoy>eda":32,"hudet>golod":16,"pereed>styd":-96,"styd>eda":-16,"mama>styd":-16,"uvidyat>nekras":-32,"st_date>vstrecha":0}}/*ENDB*/;
 // Лента жизни
 const TL=[['6','Лена'],['6','Кухня'],['7','Конфета'],['12','Антон'],['13','Настя'],['14','Диета'],['14','Комплименты'],['16–17','ЕГЭ'],['17','Срыв'],['19','Своя квартира'],['20–24','«Встретимся?»'],['25','Кабинет']];
 
@@ -206,8 +229,8 @@ const SCENES={
     {t:'Ну что, сколько баллов на пробнике?',box:[112,6,128],dot:[196,64]},
     {t:'Мало… Я опять не справилась',box:[252,42,118],dot:[258,90]}]},
   sryv:{src:'assets/08-sryv.png',tl:8,b:[
-    {t:'Ещё одно — и всё',box:[150,8,100],dot:[236,88]},
-    {t:'Что я наделала… Завтра — спортзал',box:[240,44,136],dot:[240,90]}]},
+    {t:'Один маленький кусочек — и всё',box:[132,8,124],dot:[236,88]},
+    {t:'Я же так хорошо держалась… Со вчера ничего не ела',box:[262,36,118],dot:[244,90]}]},
   kvartira:{src:'assets/09-kvartira.png',tl:9,b:[
     {t:'Как ты там, доченька? Кушаешь нормально?',box:[188,10,150],dot:[177,112]},
     {t:'Всё хорошо, мам',box:[194,50,92],dot:[178,114]}]},
@@ -216,7 +239,7 @@ const SCENES={
     {t:'Он же меня увидит…',box:[150,40,110],dot:[152,124]}]},
   kabinet:{src:'assets/11-kabinet.png',tl:11,b:[
     {t:'С чем вы пришли?',box:[258,22,98],dot:[262,88]},
-    {t:'У меня проблема с едой',box:[34,20,118],dot:[150,88]}]}
+    {t:'Я не могу похудеть',box:[34,20,118],dot:[150,88]}]}
 };
 const IMG={x:80,y:30,k:1440/384};
 // Порядок кусочков коллажа (3×3, слева направо, сверху вниз) = выходы
@@ -224,19 +247,20 @@ const COLLAGE_EXITS=['risovat','igrat','basseyn','foto','est','vlyub','mechtat',
 
 // ───────── Шаги ─────────
 const steps=[];
-const st={collage:null,scene:null,thumbs:[],title:true,card:null,nodes:{},edges:{},exits:{},strong:false,wh:0,tl:-1,cam:'norm',q:'',free:false};
+const st={collage:null,scene:null,thumbs:[],title:true,card:null,nodes:{},edges:{},exits:{},strong:false,tl:-1,q:'',free:false,
+  lay:'0',edaK:1,front:[],solo:null};
 const MARK={};
 const S=(fx,mark)=>{if(mark)MARK[mark]=steps.length;steps.push({st:JSON.parse(JSON.stringify(st)),fx:fx||{}})};
 const n=(id,c)=>st.nodes[id]=c;
 const e=(a,b,t)=>st.edges[a+'>'+b]=t;
 const x=(id,s)=>st.exits[id]=s;
-function ev(tl,card,s2,s3,fx2,fx3){st.tl=tl;st.card=card;S();s2();S(fx2);s3();S(fx3)}
-// событие со сценой: сцена → облака по одному → сцена улетает на ленту + прямые связи → выведенные
-function evS(tl,scene,card,s2,s3,fx2,fx3){
+// событие со сценой: сцена → облака по одному → сцена улетает на ленту + первый шаг сети → остальные шаги сети
+function evS(tl,scene,card,fns,fxs){
+  fxs=fxs||[];
   st.tl=tl;st.scene={id:scene,b:0};S();
   SCENES[scene].b.forEach((_,k)=>{st.scene.b=k+1;S()});
-  st.scene=null;st.thumbs.push(scene);st.card=card;s2();S(Object.assign({fly:scene},fx2||{}));
-  s3();S(fx3);
+  st.scene=null;st.thumbs.push(scene);st.card=card;st.lay=String(tl);
+  fns.forEach((f,k)=>{f();S(k?(fxs[k]||{}):Object.assign({fly:scene},fxs[0]||{}))});
 }
 
 S(); // 0 — «Это Лена.»
@@ -244,52 +268,84 @@ S(); // 0 — «Это Лена.»
 st.title=false;st.tl=0;st.collage=0;S();
 COLLAGE_EXITS.forEach((id,k)=>{st.collage=k+1;x(id,'x-green');S()});
 st.collage=null;st.thumbs.push('lena');S({fly:'lena'},'start');
-evS(1,'kuhnya',['6 лет · Кухня','«Понятно, почему от неё муж ушёл»','Мама — подруге, глядя на фото знакомой. Обе смеются'],
- ()=>{n('polnota','c-neutral');n('smeshno','c-red');n('obsuzh','c-red');n('brosayut','c-red');e('polnota','smeshno','g');e('polnota','obsuzh','g');e('polnota','brosayut','g')},
- ()=>{n('polnota','c-red');n('somnoy','c-red');e('smeshno','somnoy','d');e('obsuzh','somnoy','d')},
- {},{flows:[['smeshno','polnota'],['obsuzh','polnota'],['brosayut','polnota']]});
-evS(2,'konfeta',['7 лет · Конфета','«Хватит ей сладкого. Девочка должна следить за собой»','Папа — маме, когда та протягивает Лене конфету'],
- ()=>{n('eda','c-warm');n('sladkoe','c-warm');n('nekras','c-red');e('sladkoe','polnota','g');e('polnota','nekras','g')},
- ()=>{n('sladkoe','c-red');n('eda','c-mixed');e('eda','polnota','d');e('nekras','somnoy','d');x('est','x-grey')},
- {},{flows:[['polnota','sladkoe'],['polnota','eda']]});
-evS(3,'anton',['12 лет · Антон','«Ты прикольная, но не в таком плане»','Ответ на её признание'],
- ()=>{n('ya','c-neutral');n('nevyb','c-red');e('ya','nevyb','g')},
- ()=>{e('nevyb','somnoy','d');e('brosayut','nevyb','d');x('vlyub','x-grey');st.wh=1});
-evS(4,'nastya',['13 лет · Антон и Настя','«Ну понятно, она же такая худенькая»','Одноклассница — Лене, глядя, как Антон уходит с Настей за руку'],
- ()=>{n('telo','c-neutral');n('nastya','c-neutral');n('hudaya','c-warm');n('vybir','c-warm');e('nastya','hudaya','g');e('nastya','vybir','g')},
- ()=>{e('hudaya','vybir','d');e('telo','polnota','d');e('telo','nevyb','d');n('telo','c-red');x('foto','x-grey');st.wh=2},
- {},{flows:[['polnota','telo'],['nevyb','telo']]});
-evS(5,'dieta',['14 лет · Диета','«Я после шести не ем»','Потом — без сладкого. Потом — считать калории'],
- ()=>{n('kontrol','c-warm');e('eda','kontrol','g')},
- ()=>{x('hudet','x-red');e('kontrol','hudet','x');e('vybir','hudet','d');e('somnoy','hudet','d');n('eda','c-red');x('est','x-dark');st.wh=3},
- {},{flows:[['kontrol','eda']]});
-evS(6,'komplimenty',['14 лет · Комплименты','«Ого, как ты похудела!»','Одноклассницы, мальчики. Мама: «Вот сейчас тебе очень хорошо»'],
+
+// 1. Кухня (6): полнота — над ней смеются, обсуждают, от неё уходят
+evS(1,'kuhnya',['6 лет · Кухня','«Понятно, почему от неё муж ушёл»','Мама — подруге, глядя на фото знакомой. Обе смеются'],[
+ ()=>{n('polnota','c-red');n('smeshno','c-red');n('obsuzh','c-red');n('brosayut','c-red');e('polnota','smeshno','g');e('polnota','obsuzh','g');e('polnota','brosayut','g')}],
+ [{tintFrom:{polnota:'c-neutral'},flows:[['smeshno','polnota'],['obsuzh','polnota'],['brosayut','polnota']]}]);
+
+// 2. Конфета (7): сладкое — еда; девочки должны быть ухоженными; полная, смешная, обсуждаемая ≠ ухоженная
+evS(2,'konfeta',['7 лет · Конфета','«Хватит ей сладкого. Девочка должна следить за собой»','Папа — маме, когда та протягивает Лене конфету'],[
+ ()=>{n('eda','c-warm');n('sladkoe','c-warm');e('eda','sladkoe','g');n('devochki','c-neutral');n('uhozh','c-warm');e('devochki','uhozh','g')},
+ ()=>{e('sladkoe','polnota','d');n('sladkoe','c-mixed');x('est','x-grey')},
+ ()=>{n('nekras','c-red');e('polnota','nekras','d');e('uhozh','polnota','o');e('uhozh','smeshno','o');e('uhozh','obsuzh','o')}],
+ [{},{flows:[['polnota','sladkoe']]},{}]);
+
+// 3. Антон (12): Я — девочка, и меня не выбрали
+evS(3,'anton',['12 лет · Антон','«Ты прикольная, но не в таком плане»','Ответ на её признание'],[
+ ()=>{n('ya','c-neutral');n('nevyb','c-red');e('ya','nevyb','g');e('ya','devochki','g')},
+ ()=>{e('nevyb','devochki','o');e('nevyb','brosayut','d');e('brosayut','smeshno','d');e('brosayut','obsuzh','d');x('vlyub','x-grey')},
+ ()=>{n('somnoy','c-red');e('nevyb','somnoy','d');e('smeshno','somnoy','d');e('obsuzh','somnoy','d')}],
+ [{},{flows:[['nevyb','brosayut'],['brosayut','smeshno'],['brosayut','obsuzh']]},{flows:[['nevyb','somnoy'],['smeshno','somnoy'],['obsuzh','somnoy']]}]);
+
+// 4. Антон и Настя (13): мальчики выбирают худых; она смотрит на своё тело и видит полноту
+evS(4,'nastya',['13 лет · Антон и Настя','«Ну понятно, она же такая худенькая»','Одноклассница — Лене, глядя, как Антон уходит с Настей за руку'],[
+ ()=>{n('malchiki','c-neutral');n('vybir','c-warm');n('nastya','c-neutral');n('hudaya','c-warm');e('malchiki','vybir','g');e('vybir','nastya','g');e('nastya','hudaya','g')},
+ ()=>{e('hudaya','vybir','d');e('malchiki','uhozh','d')},
+ ()=>{n('telo','c-red');e('ya','telo','g');e('telo','polnota','d');e('polnota','nevyb','d');x('foto','x-grey')}],
+ [{},{},{tintFrom:{telo:'c-neutral'},flows:[['polnota','telo'],['polnota','nevyb']]}]);
+
+// 5. Диета (14): полнота — от еды; контроль; загорается ХУДЕТЬ
+evS(5,'dieta',['14 лет · Диета','«Я после шести не ем»','Потом — без сладкого. Потом — считать калории'],[
+ ()=>{e('polnota','eda','d');n('eda','c-mixed');n('kontrol','c-warm');e('kontrol','eda','g')},
+ ()=>{e('somnoy','polnota','d');x('hudet','x-red');e('kontrol','hudet','x');e('somnoy','hudet','x');x('est','x-dark')}],
+ [{flows:[['polnota','eda']]},{flows:[['somnoy','polnota']]}]);
+
+// 6. Комплименты (14): худеть работает; время уходит на диеты вместо рисования
+evS(6,'komplimenty',['14 лет · Комплименты','«Ого, как ты похудела!»','Мама: «Вот сейчас тебе очень хорошо». Вечерами вместо рисования — статьи о диетах'],[
  ()=>{n('hvalyat','c-warm');e('hudaya','hvalyat','g');e('hvalyat','hudet','x')},
- ()=>{st.strong=true;x('risovat','x-grey');st.wh=4});
-evS(7,'ege',['16–17 лет · ЕГЭ','«Я опять не справилась»','Репетиторы, недосып, страх провалиться. Ничего не радует'],
- ()=>{n('ocenki','c-neutral');n('bh','c-warm');n('oshibka','c-red');n('nesprav','c-red');e('ocenki','bh','g');e('oshibka','nesprav','g')},
- ()=>{e('bh','kontrol','d');e('nesprav','somnoy','d');x('otdyh','x-grey');x('mechtat','x-grey');x('igrat','x-grey')});
-evS(8,'sryv',['17 лет · Срыв','«Что я наделала… Завтра — спортзал»','Дни почти без еды. Потом ночью — печенье, бутерброд, ещё… Остановиться не получается'],
- ()=>{n('golod','c-body');n('pereed','c-red');n('poterya','c-red');e('hudet','golod','b');e('golod','pereed','b');e('pereed','poterya','g')},
- ()=>{n('styd','c-red');e('poterya','styd','g');e('somnoy','styd','d');x('sport','x-red');e('styd','sport','x');e('styd','hudet','x');x('otdyh','x-dark');x('podderzh','x-grey')});
-evS(9,'kvartira',['19 лет · Своя квартира','«Всё хорошо, мам»','Вечером пусто. Еда — и на несколько минут тихо. Вес растёт'],
- ()=>{n('odin','c-red');e('odin','pereed','g')},
- ()=>{e('ya','polnota','d');n('ya','c-red');x('podderzh','x-dark');x('mechtat','x-dark');x('basseyn','x-grey');st.wh=5},
- {},{flows:[['polnota','ya']]});
-evS(10,'vstrecha',['20–24 года · «Давай встретимся?»','«Он же меня увидит…»','Она не ответила. Перестала фотографироваться и ходить в бассейн'],
- ()=>{n('vstrecha','c-neutral');n('uvidyat','c-red');n('otverg','c-red');e('vstrecha','uvidyat','g');e('uvidyat','otverg','g')},
- ()=>{x('pryat','x-red');e('otverg','pryat','x');e('styd','pryat','x');e('otverg','styd','d');n('vstrecha','c-red');
-      ['basseyn','foto','vlyub','igrat','risovat'].forEach(id=>x(id,'x-dark'))},
- {},{flows:[['uvidyat','vstrecha']]});
+ ()=>{st.strong=true;n('diety','c-warm');e('kontrol','diety','g');e('diety','eda','g');x('risovat','x-grey')}]);
+
+// 7. ЕГЭ (16–17): быть правильной; ошибка — со мной что-то не так; еда успокаивает
+evS(7,'ege',['16–17 лет · ЕГЭ','«Я опять не справилась»','Репетиторы, недосып, страх провалиться. Ничего не радует'],[
+ ()=>{n('ocenki','c-neutral');n('bp','c-warm');n('oshibka','c-red');n('nesprav','c-red');e('ocenki','bp','g');e('oshibka','nesprav','g')},
+ ()=>{e('uhozh','bp','d');e('bp','kontrol','d');e('nesprav','somnoy','d');x('otdyh','x-grey');x('mechtat','x-grey');x('igrat','x-grey')},
+ ()=>{n('eda','c-core');st.edaK=1.2;e('somnoy','eda','r');e('nesprav','eda','r')}],
+ [{},{},{gold:[['somnoy','eda'],['nesprav','eda']]}]);
+
+// 8. Срыв (17): голод и переедание выходят вперёд; стыд; загорается СПОРТЗАЛ
+evS(8,'sryv',['17 лет · Срыв','«Я же так хорошо держалась…»','Со вчерашнего дня почти ничего не ела. Ночью — печенье, бутерброд, ещё… Утром — в спортзал, хотя любит бассейн'],[
+ ()=>{st.edaK=1.3;n('golod','c-body');n('pereed','c-red');e('hudet','golod','b');e('golod','pereed','b');e('eda','pereed','g');st.front=['eda','golod','pereed']},
+ ()=>{n('styd','c-red');e('pereed','styd','g');e('somnoy','styd','d');e('styd','eda','r');st.front=['eda','golod','pereed','styd']},
+ ()=>{st.front=[];x('sport','x-red');e('styd','sport','x');e('styd','hudet','x');x('basseyn','x-grey');x('otdyh','x-dark');x('podderzh','x-grey')}],
+ [{flows:[['hudet','golod'],['golod','pereed']]},{gold:[['styd','eda']]},{}]);
+
+// 9. Своя квартира (19): одиночество — еда; мама заботится — и стыдно
+evS(9,'kvartira',['19 лет · Своя квартира','«Всё хорошо, мам»','Вечером пусто. Еда — и на несколько минут тихо. Потом стыдно, особенно перед мамой'],[
+ ()=>{n('odin','c-red');e('odin','eda','r');n('mama','c-neutral');e('mama','eda','g')},
+ ()=>{st.edaK=1.4;e('mama','styd','d');x('podderzh','x-dark');x('mechtat','x-dark')}],
+ [{gold:[['odin','eda']]},{}]);
+
+// 10. «Давай встретимся?» (20–24): увидят тело — некрасивая; загорается ПРЯТАТЬСЯ
+evS(10,'vstrecha',['20–24 года · «Давай встретимся?»','«Он же меня увидит…»','Она не ответила. Почти не выходит из дома. Перестала фотографироваться'],[
+ ()=>{n('vstrecha','c-neutral');n('uvidyat','c-red');e('vstrecha','uvidyat','g');e('uvidyat','nekras','d')},
+ ()=>{x('pryat','x-red');e('uvidyat','pryat','x');e('styd','pryat','x');n('vstrecha','c-red');
+      ['basseyn','foto','vlyub','igrat','risovat'].forEach(id=>x(id,'x-dark'))}],
+ [{},{}]);
 MARK.net=steps.length-1;
+
 // Финал
-st.tl=11;st.scene={id:'kabinet',b:0};S({},'cab');
+st.tl=11;st.scene={id:'kabinet',b:0};S();
 SCENES.kabinet.b.forEach((_,k)=>{st.scene.b=k+1;S()});
-st.scene=null;st.thumbs.push('kabinet');st.card=['25 лет · Кабинет','«У меня проблема с едой»',''];S({fly:'kabinet'});
-st.cam='eda';S();
-st.cam='norm';S();                                                                    // 34
-st.card=null;st.q='С чем мы будем работать?';st.wh=0;S();                             // 35
-st.free=true;STIM.forEach(id=>n(id,'stim'));
+st.scene=null;st.thumbs.push('kabinet');st.card=['25 лет · Кабинет','«Я не могу похудеть»',''];st.lay='11';S({fly:'kabinet'});
+// взгляд по запросу: видна только цель
+st.card=['Если поверить запросу','Цель — похудеть',''];st.solo=['hudet'];S();
+// если помогать худеть — круг замыкается
+st.card=['Если помогать ей худеть','Круг замыкается',''];st.solo=['hudet','golod','pereed','styd','eda'];S({loop:1});
+// как это видит психика: всё сходится на еде
+st.card=['Как это видит психика','Еда — центр проблемы и центр решения',''];st.solo=null;st.lay='core';st.edaK=1.7;S({converge:1});
+st.card=null;st.q='С чем мы будем работать?';S();
+st.free=true;STIM.forEach(id=>n(id,'stim'));st.lay='free';
 e('st_wed','ya','s');e('st_promo','ocenki','s');e('st_boss','oshibka','s');e('st_date','vstrecha','s');e('st_eve','odin','s');S({},'free');
 const MAX=steps.length-1;
 
@@ -297,7 +353,7 @@ const MAX=steps.length-1;
 const $=id=>document.getElementById(id);
 const stage=$('stage'),cam=$('cam'),svg=$('edges'),title=$('title');
 const NS='http://www.w3.org/2000/svg';
-const nodeEl={},exitEl={},edgeEl={},whEl=[],tlEls=[];
+const nodeEl={},exitEl={},edgeEl={},badgeEl={},tlEls=[];
 Object.entries(NODES).forEach(([id,[t,X,Y]])=>{
   const d=document.createElement('div');d.className='node off';d.dataset.id=id;d.textContent=t;
   d.style.left=X+'px';d.style.top=Y+'px';$('nodes').appendChild(d);nodeEl[id]=d;
@@ -306,7 +362,6 @@ Object.entries(EXITS).forEach(([id,[t,Y]])=>{
   const d=document.createElement('div');d.className='exit x-off';d.dataset.exit=id;d.textContent=t;d.style.top=Y+'px';
   $('exits').appendChild(d);exitEl[id]=d;
 });
-WHISPERS.forEach(([t,Y])=>{const d=document.createElement('div');d.className='wh';d.textContent=t;d.style.left='24px';d.style.top=Y+'px';$('whs').appendChild(d);whEl.push(d)});
 TL.forEach(([age,name],i)=>{
   const X=120+i*(1360/(TL.length-1));
   const dot=document.createElement('div');dot.className='tlDot';dot.style.left=X+'px';
@@ -349,22 +404,72 @@ function placeDots(id){   // «пузырьки» от облака к гово�
     });
   });
 }
-function pt(id){
-  if(NODES[id])return {x:NODES[id][1],y:NODES[id][2]};
-  return {x:EXIT_X+6,y:EXITS[id][1]};
-}
 function hash(s){let h=0;for(const c of s)h=(h*31+c.charCodeAt(0))|0;return h}
 const allEdges={};steps.forEach(s=>Object.assign(allEdges,s.st.edges));
 Object.entries(allEdges).forEach(([key,type])=>{
-  const [a,b]=key.split('>');const A=pt(a),B=pt(b);
-  const dx=B.x-A.x,dy=B.y-A.y,len=Math.hypot(dx,dy)||1;
-  let bend=BEND[key]!==undefined?BEND[key]:(hash(key)%2?1:-1)*Math.min(26,len*.07);
-  const cx=(A.x+B.x)/2-dy/len*bend,cy=(A.y+B.y)/2+dx/len*bend;
   const p=document.createElementNS(NS,'path');
-  p.setAttribute('d',`M${A.x} ${A.y} Q${cx} ${cy} ${B.x} ${B.y}`);
   p.setAttribute('class','e off e-'+type);p.dataset.key=key;
   svg.appendChild(p);edgeEl[key]=p;
+  if(type==='o'){
+    const g=document.createElementNS(NS,'g');g.setAttribute('class','badge off');
+    const c=document.createElementNS(NS,'circle');c.setAttribute('r','12');
+    const t=document.createElementNS(NS,'text');t.textContent='≠';
+    g.append(c,t);badgeEl[key]=g;
+  }
 });
+Object.values(badgeEl).forEach(g=>svg.appendChild(g));   // значки — поверх линий
+
+// ───────── Живая сеть: позиции, плавные переезды, лёгкий дрейф ─────────
+const TW=1500;
+const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+const tgt={},from={},base={},pos={};let t0=-1e9,layFrom='0',layTo='0',kNow=1;
+const DRIFT={};Object.keys(NODES).forEach((id,i)=>{const h=Math.abs(hash(id));DRIFT[id]=[.55+(h%7)*.07,.45+(h%5)*.08,h%628/100,(h>>3)%628/100]});
+function layoutOf(s){
+  const L=LAYOUT[s.lay]||{},o={};
+  Object.keys(NODES).forEach(id=>{const p=L[id];o[id]=p?{x:p[0],y:p[1]}:{x:NODES[id][1],y:NODES[id][2]}});
+  let vis=0;
+  EXIT_ORDER.forEach(([id])=>{const v=s.exits[id]||'x-off';o['x:'+id]={x:EXIT_X+6,y:v!=='x-off'?EXIT_Y0+(vis++)*EXIT_DY:EXITS[id][1]}});
+  return o;
+}
+function retarget(s,animate,old){
+  const L=layoutOf(s);
+  Object.keys(L).forEach(k=>{
+    const id=k.startsWith('x:')?k.slice(2):k;
+    const wasOn=old&&(k.startsWith('x:')?(old.exits[id]&&old.exits[id]!=='x-off'):old.nodes[id]);
+    from[k]=(animate&&wasOn&&base[k])?{...base[k]}:{...L[k]};
+    tgt[k]=L[k];
+  });
+  layFrom=animate?layTo:s.lay;layTo=s.lay;
+  t0=animate?performance.now():-1e9;
+}
+function endPt(id){return pos[id]||pos['x:'+id]}
+function edgeGeom(key){
+  const [a,b]=key.split('>');const A=endPt(a),B=endPt(b);
+  const dx=B.x-A.x,dy=B.y-A.y,len=Math.hypot(dx,dy)||1;
+  const d0=(hash(key)%2?1:-1)*Math.min(26,len*.07),bf=(BENDS[layFrom]||{})[key],bt=(BENDS[layTo]||{})[key];
+  const b0=bf!==undefined?bf:d0,b1=bt!==undefined?bt:d0,bend=b0+(b1-b0)*kNow;
+  const cx=(A.x+B.x)/2-dy/len*bend,cy=(A.y+B.y)/2+dx/len*bend;
+  return {d:`M${A.x.toFixed(1)} ${A.y.toFixed(1)} Q${cx.toFixed(1)} ${cy.toFixed(1)} ${B.x.toFixed(1)} ${B.y.toFixed(1)}`,mx:.25*A.x+.5*cx+.25*B.x,my:.25*A.y+.5*cy+.25*B.y};
+}
+let still=false;   // для проверок: выключает дрейф
+function frame(now){
+  const k=ease(Math.max(0,Math.min(1,(now-t0)/TW))),T=now/1000;kNow=k;
+  Object.keys(tgt).forEach(key=>{
+    const F=from[key],G=tgt[key];
+    const b={x:F.x+(G.x-F.x)*k,y:F.y+(G.y-F.y)*k};base[key]=b;
+    if(key.startsWith('x:')){pos[key]=b;const el=exitEl[key.slice(2)];const v=b.y.toFixed(1)+'px';if(el.style.top!==v)el.style.top=v;return}
+    let px=b.x,py=b.y;
+    if(!ANCHOR.has(key)&&!still){const [w1,w2,p1,p2]=DRIFT[key];px+=4*Math.sin(T*w1+p1);py+=3*Math.cos(T*w2+p2)}
+    pos[key]={x:px,y:py};
+    const el=nodeEl[key];el.style.left=px.toFixed(1)+'px';el.style.top=py.toFixed(1)+'px';
+  });
+  Object.entries(edgeEl).forEach(([key,p])=>{
+    if(p.classList.contains('off')&&!p._fading)return;
+    const g=edgeGeom(key);p.setAttribute('d',g.d);
+    if(badgeEl[key])badgeEl[key].setAttribute('transform',`translate(${g.mx.toFixed(1)} ${g.my.toFixed(1)})`);
+  });
+  requestAnimationFrame(frame);
+}
 
 // ───────── Отрисовка ─────────
 let state=0,prev=null,epoch=0;
@@ -382,34 +487,46 @@ function setCard(c){
 }
 function render(i,animate){
   state=Math.max(0,Math.min(MAX,i));
-  const s=steps[state].st,old=prev;
+  const s=steps[state].st,old=prev,fx=steps[state].fx;
   if(!animate)document.body.classList.add('instant');
   title.classList.toggle('hidden',!s.title);
   setCard(s.card);
+  retarget(s,animate,old);
+  const solo=s.solo?new Set(s.solo):null,front=new Set(s.front);
   // узлы
   Object.keys(NODES).forEach(id=>{
     const el=nodeEl[id],c=s.nodes[id];
     let cls='node '+(c?(c==='stim'?'stim':c):'off');
-    if(id==='eda')cls+=' keep';
+    if(solo&&solo.has(id))cls+=' keep';
+    if(front.has(id))cls+=' front';
+    if(id==='eda'&&fx.converge&&animate)later(()=>el.classList.add('glow'),2600);
+    else if(id==='eda'&&c==='c-core'&&s.edaK>=1.7)cls+=' glow';
+    const tint=animate&&fx.tintFrom&&fx.tintFrom[id];
     if(animate&&old&&old.nodes[id]&&c&&old.nodes[id]!==c)el.style.transitionDelay='.6s';else el.style.transitionDelay='';
-    el.className=cls;
+    el.className=tint?cls.replace(c,tint):cls;
+    if(tint)later(()=>{el.style.transitionDelay='';el.className=cls},700);
+    const sc=(id==='eda'?s.edaK:1)*(front.has(id)?1.12:1);
+    el.style.transform=`translate(-50%,-50%) scale(${sc})`;
   });
+  cam.classList.toggle('front',front.size>0);
   // связи
   Object.entries(edgeEl).forEach(([key,p])=>{
     const on=!!s.edges[key];const was=old&&old.edges[key];
+    const [a,b]=key.split('>');
     p.classList.toggle('off',!on);
-    if(animate&&on&&!was)drawIn(p);
+    p.classList.toggle('keep',!!(solo&&solo.has(a)&&solo.has(b)));
+    p.classList.toggle('front',front.has(a)&&front.has(b));
+    if(badgeEl[key])badgeEl[key].classList.toggle('off',!on);
+    if(on){const g=edgeGeom0(key);p.setAttribute('d',g.d);if(badgeEl[key])badgeEl[key].setAttribute('transform',`translate(${g.mx} ${g.my})`)}
+    if(animate&&on&&!was)drawIn(p,badgeEl[key]);
   });
   // выходы
-  let vis=0;
   EXIT_ORDER.forEach(([id])=>{
     const el=exitEl[id],v=s.exits[id]||'x-off';
-    if(v!=='x-off'){el.style.top=(EXIT_Y0+vis*EXIT_DY)+'px';vis++}
     const burn=el.classList.contains('burn')&&s.free;
-    el.className='exit '+v+(id==='hudet'&&s.strong?' strong':'')+(burn?' burn':'');
+    el.className='exit '+v+(id==='hudet'&&s.strong?' strong':'')+(burn?' burn':'')+(solo&&solo.has(id)?' keep':'');
   });
   $('exitsHead').style.opacity=Object.keys(s.exits).length?1:0;
-  whEl.forEach((w,k)=>w.classList.toggle('on',k<s.wh));
   // лента
   tlEls.forEach(([dot,a,nm],k)=>{
     const now=k===s.tl,past=k<s.tl;
@@ -417,13 +534,8 @@ function render(i,animate){
     a.className='tlAge'+(now?' now':'')+(k>s.tl?' tlHide':'');
     nm.className='tlName'+(now?' now':'')+(k>s.tl?' tlHide':'');
   });
-  $('tl').style.opacity=(s.title||s.cam==='eda')?0:1;
-  // камера
-  if(s.cam==='eda'){
-    const k=2.4,[,X,Y]=NODES.eda;
-    cam.style.transform=`translate(${800-k*X}px,${470-k*Y}px) scale(${k})`;
-    cam.classList.add('solo');stage.classList.add('solo');
-  }else{cam.style.transform='';cam.classList.remove('solo');stage.classList.remove('solo')}
+  $('tl').style.opacity=(s.title||solo||s.free)?0:1;
+  cam.classList.toggle('solo',!!solo);
   // коллаж-знакомство
   $('collage').classList.toggle('on',s.collage!==null&&s.collage!==undefined);
   coverEl.forEach((c,k)=>c.classList.toggle('open',s.collage!==null&&k<s.collage));
@@ -441,32 +553,40 @@ function render(i,animate){
     Object.values(bubEls).forEach(arr=>arr.forEach(B=>{B.el.classList.remove('on');B.dots.forEach(d=>d.classList.remove('on'))}));
   }
   Object.entries(thumbEl).forEach(([id,im])=>{
-    const on=s.thumbs.includes(id);im.classList.toggle('on',on&&!(animate&&steps[state].fx.fly===id));
+    const on=s.thumbs.includes(id);im.classList.toggle('on',on&&!(animate&&fx.fly===id));
     im.classList.toggle('now',SCENES[id].tl===s.tl);
   });
-  if(animate&&steps[state].fx.fly)flyToThumb(steps[state].fx.fly);
+  if(animate&&fx.fly)flyToThumb(fx.fly);
   $('q').textContent=s.q;$('q').classList.toggle('on',!!s.q);
   document.body.classList.toggle('free',s.free);
   document.querySelectorAll('#jumps button').forEach(b=>b.classList.toggle('on',MARK[b.dataset.mark]===state));
   if(!animate)requestAnimationFrame(()=>requestAnimationFrame(()=>document.body.classList.remove('instant')));
-  if(animate)runFx(steps[state].fx);
+  if(animate)runFx(fx);
   prev=s;
+}
+// геометрия связи по целевым местам (до того, как кадр анимации её обновит)
+function edgeGeom0(key){
+  const save={...pos};
+  Object.keys(from).forEach(k=>pos[k]=from[k]);
+  const g=edgeGeom(key);Object.keys(pos).forEach(k=>delete pos[k]);Object.assign(pos,save);
+  return {d:g.d,mx:g.mx.toFixed(1),my:g.my.toFixed(1)};
 }
 function flyToThumb(id){
   const sc=SCENES[id],f=$('flyImg'),th=thumbEl[id];
   const X=120+sc.tl*(1360/(TL.length-1));
-  const to={x:X-36,y:803,w:72,h:40.5},from=sc.rect||{x:IMG.x,y:IMG.y,w:1440,h:810};
+  const to={x:X-36,y:803,w:72,h:40.5},from={...(sc.rect||{x:IMG.x,y:IMG.y,w:1440,h:810})};
   f.src=sc.src;Object.assign(f.style,{display:'block',left:from.x+'px',top:from.y+'px',width:from.w+'px',height:from.h+'px'});
   const an=f.animate([{transform:'none',opacity:1},{transform:`translate(${to.x-from.x}px,${to.y-from.y}px) scale(${to.w/from.w},${to.h/from.h})`,opacity:1}],
     {duration:900,easing:'cubic-bezier(.45,.05,.25,1)'});
   an.onfinish=()=>{f.style.display='none';th.classList.add('on')};
   an.oncancel=()=>{f.style.display='none'};
 }
-function drawIn(p){
-  const L=p.getTotalLength();
-  if(p.classList.contains('e-d')||p.classList.contains('e-s')||p.classList.contains('e-b')){
+function drawIn(p,badge){
+  if(badge)badge.animate([{opacity:0},{opacity:1}],{duration:700,delay:700,fill:'backwards'});
+  if(/e-(d|s|b|o)\b/.test(p.getAttribute('class'))){
     p.animate([{opacity:0},{opacity:getComputedStyle(p).opacity}],{duration:900,delay:350,fill:'backwards',easing:'ease'});
   }else{
+    const L=p.getTotalLength();
     p.animate([{strokeDasharray:`${L} ${L}`,strokeDashoffset:L},{strokeDasharray:`${L} ${L}`,strokeDashoffset:0}],{duration:900,easing:'cubic-bezier(.3,.7,.2,1)'});
   }
 }
@@ -482,7 +602,28 @@ function pulse(a,b,color,dur){
   an.onfinish=an.oncancel=()=>q.remove();
 }
 function runFx(fx){
-  if(fx.flows)fx.flows.forEach(([a,b])=>pulse(a,b,'red',700));
+  if(fx.flows)fx.flows.forEach(([a,b])=>later(()=>pulse(a,b,'red',700),250));
+  if(fx.gold)fx.gold.forEach(([a,b])=>later(()=>pulse(a,b,'gold',800),300));
+  if(fx.loop)loopFx();
+  if(fx.converge)convergeFx();
+}
+// круг: худеть → голод → переедание → стыд → худеть (всё быстрее)
+function loopFx(){
+  const ring=[['hudet','golod'],['golod','pereed'],['pereed','styd'],['styd','hudet']];
+  let t=700;
+  for(let r=0;r<5;r++){
+    const d=Math.max(330,700-r*90);
+    ring.forEach(([a,b])=>{later(()=>{pulse(a,b,'red',d);flashNode(b,d-120)},t);t+=d*.85});
+  }
+}
+// всё сходится к еде: волны идут к ЕДЕ из самых дальних узлов
+function convergeFx(){
+  const s=steps[state].st,rev={};
+  Object.keys(s.edges).forEach(k=>{const [a,b]=k.split('>');(rev[b]=rev[b]||[]).push(a)});
+  const dist={eda:0};let level=['eda'],dmax=0;
+  while(level.length){const nx=[];level.forEach(v=>(rev[v]||[]).forEach(u=>{if(dist[u]===undefined){dist[u]=dist[v]+1;dmax=Math.max(dmax,dist[u]);nx.push(u)}}));level=nx}
+  Object.keys(s.edges).forEach(k=>{const [a,b]=k.split('>');
+    if(dist[a]!==undefined&&dist[b]!==undefined&&dist[b]===dist[a]-1)later(()=>pulse(a,b,'gold',560),1500+(dmax-dist[a])*480+((hash(k)>>>0)%5)*40)});
 }
 
 // ───────── Волна (свободный режим) ─────────
@@ -526,7 +667,7 @@ function stopAll(){epoch++;waveTimers.forEach(clearTimeout);waveTimers=[];
   Object.values(exitEl).forEach(el=>el.classList.remove('burn'));
   document.getAnimations().forEach(a=>{if(a.effect&&a.effect.target&&a.effect.target.closest&&a.effect.target.closest('#stage'))a.cancel()});
 }
-function forward(){if(state>=MAX)return;render(state+1,true)}
+function forward(){if(state>=MAX)return;epoch++;render(state+1,true)}
 function back(){if(state<=0)return;stopAll();render(state-1,false)}
 function jumpTo(k){stopAll();render(k,false)}
 document.querySelectorAll('#jumps button').forEach(b=>b.addEventListener('click',ev=>{ev.stopPropagation();jumpTo(MARK[b.dataset.mark]);b.blur()}));
@@ -545,8 +686,9 @@ document.addEventListener('keydown',ev=>{
   else if(ev.key==='ArrowLeft'){ev.preventDefault();back()}
 });
 addEventListener('resize',fit);
-fit();render(0,false);
-window.__lena={steps,go:jumpTo,wave,get state(){return state},MAX};
+fit();render(0,false);requestAnimationFrame(frame);
+window.__lena={steps,go:jumpTo,wave,get state(){return state},MAX,NODES,EXITS,EXIT_ORDER,MARK,
+  still(v){still=v},widths(){const o={};Object.entries(nodeEl).forEach(([id,el])=>o[id]=[el.offsetWidth,el.offsetHeight]);Object.entries(exitEl).forEach(([id,el])=>o['x:'+id]=[el.offsetWidth,el.offsetHeight]);return o}};
 })();
 </script>
 </body>
