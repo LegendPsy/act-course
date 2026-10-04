@@ -184,10 +184,10 @@ def seated(env,ch,cx,f,top,pants,hairr,style,hairsh,arm,expr='laugh'):
         ch.put(X(17),111,'skin',0.2); ch.put(X(17),112,'skin',0.2)           # большой палец
         return (X(19),112)
 
-def standing(env,ch,cx,f,top,pants,hairr,style,hairsh,expr,feet=176,arm='give'):
+def standing(env,ch,cx,f,top,pants,hairr,style,hairsh,expr,feet=176,arm='give',tall=100,skirt=False):
     """Взрослый стоит в профиль, чуть наклонён вперёд. feet — уровень стоп."""
     X=lambda d:cx+f*d; ps=PSH.get(pants,0)
-    hy=feet-100
+    hy=feet-tall
     for off,sh in ((-3,-0.9),(1,0)):
         ch.rect(min(X(-3+off),X(0+off)),hy+46,max(X(-3+off),X(0+off)),feet-1,pants,ps+sh)
         ch.rect(min(X(-4+off),X(4+off)),feet,max(X(-4+off),X(4+off)),feet+1,'hair',-0.3+sh)
@@ -197,9 +197,20 @@ def standing(env,ch,cx,f,top,pants,hairr,style,hairsh,expr,feet=176,arm='give'):
     for yy in range(hy+16,hy+42): ch.put(X(-6),yy,top,-0.8)
     ch.rect(min(X(1),X(3)),hy+8,max(X(1),X(3)),hy+11,'skin',-0.3)
     head(ch,X(3),hy,f,hairr,style,expr,hairsh=hairsh)
+    if skirt:
+        ch.poly([(X(-7),hy+40),(X(6),hy+40),(X(9),hy+56),(X(-10),hy+56)],pants,ps+0.3)
+        for k in range(-9,9,3): ch.put(X(k),hy+56,pants,ps-0.8)
     if arm=='give':
         ch.line(X(2),hy+14,X(8),hy+26,top,-0.3,3); ch.line(X(8),hy+26,X(19),hy+33,top,0.1,3)
         ch.ell(X(21),hy+33,2.2,2,'skin',0.6); return (X(22),hy+32)
+    if arm=='down':
+        ch.line(X(0),hy+14,X(1),hy+38,top,-0.2,3); ch.ell(X(1),hy+40,1.8,2,'skin',0.6); return (X(1),hy+40)
+    if arm=='hold':   # рука вперёд-вниз: держит за руку
+        ch.line(X(1),hy+14,X(5),hy+30,top,-0.2,3); ch.line(X(5),hy+30,X(11),hy+40,'skin',0.4,2); return (X(12),hy+41)
+    if arm=='back':   # рука назад-вниз: держит за руку того, кто сзади
+        ch.line(X(-1),hy+14,X(-5),hy+30,top,-0.2,3); ch.line(X(-5),hy+30,X(-11),hy+40,'skin',0.4,2); return (X(-12),hy+41)
+    if arm=='talk':   # жест у груди
+        ch.line(X(1),hy+14,X(6),hy+28,top,-0.2,3); ch.line(X(6),hy+28,X(10),hy+22,'skin',0.4,2); return (X(10),hy+21)
 
 def child_seated(env,ch,cx,f,top,hairr,hairsh,arm='reach',expr='up',hy=112):
     """Ребёнок 6–8 лет сидит в профиль; ноги не достают до пола."""
