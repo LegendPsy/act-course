@@ -5,7 +5,7 @@ FLOOR=168
 TX0,TX1,TY=106,206,134
 LX,LY=150,50
 
-def kitchen_env(env, day=False):
+def kitchen_env(env, day=False, table=True):
     random.seed(7)
     env.rect(0,0,W-1,FLOOR-1,'wall')
     env.rect(0,FLOOR-4,W-1,FLOOR-1,'wood',-1.2); env.rect(0,FLOOR-4,W-1,FLOOR-4,'wood',-0.4)
@@ -84,7 +84,7 @@ def kitchen_env(env, day=False):
     if day: env.rect(LX-12,49,LX+12,51,'white',0.5)
     else: env.rect(LX-12,49,LX+12,51,'bulb')
     # ножки стола
-    for lx in (118,190):
+    for lx in ((118,190) if table else ()):
         env.rect(lx,TY+6,lx+4,FLOOR+20,'wood',-0.4); env.rect(lx+4,TY+6,lx+4,FLOOR+20,'wood',-1.4)
 
 def table_top(front):
