@@ -602,8 +602,11 @@ function pulse(a,b,color,dur){
   an.onfinish=an.oncancel=()=>q.remove();
 }
 function runFx(fx){
-  if(fx.flows)fx.flows.forEach(([a,b])=>later(()=>pulse(a,b,'red',700),250));
-  if(fx.gold)fx.gold.forEach(([a,b])=>later(()=>pulse(a,b,'gold',800),300));
+  // ток по новой связи пробегает три раза
+  for(let r=0;r<3;r++){
+    if(fx.flows)fx.flows.forEach(([a,b])=>later(()=>pulse(a,b,'red',700),250+r*900));
+    if(fx.gold)fx.gold.forEach(([a,b])=>later(()=>pulse(a,b,'gold',800),300+r*1000));
+  }
   if(fx.loop)loopFx();
   if(fx.converge)convergeFx();
 }
