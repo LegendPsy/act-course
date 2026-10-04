@@ -123,7 +123,7 @@ body.instant *{transition:none !important}
 <div id="bg"></div>
 <a id="toMap" href="../" title="Вернуться к карте урока">Урок 1</a>
 <nav id="jumps" aria-label="Быстрые переходы">
-  <button data-mark="start" title="Лене 6 лет">Начало</button>
+  <button data-mark="start" title="Коллаж уже свернулся: девять зелёных выходов, дальше — «Кухня»">Начало</button>
   <button data-mark="net" title="Вся сеть к 24 годам">Вся сеть</button>
   <button data-mark="cab" title="Кабинет: «У меня проблема с едой»">Кабинет</button>
   <button data-mark="free" title="Свободный режим: клик по любому слову">Свободно</button>
@@ -242,9 +242,9 @@ function evS(tl,scene,card,s2,s3,fx2,fx3){
 
 S(); // 0 — «Это Лена.»
 // Знакомство: коллаж из 9 кусочков; каждый открывает зелёный выход
-st.title=false;st.tl=0;st.collage=0;S({},'start');
+st.title=false;st.tl=0;st.collage=0;S();
 COLLAGE_EXITS.forEach((id,k)=>{st.collage=k+1;x(id,'x-green');S()});
-st.collage=null;st.thumbs.push('lena');S({fly:'lena'});
+st.collage=null;st.thumbs.push('lena');S({fly:'lena'},'start');
 evS(1,'kuhnya',['6 лет · Кухня','«Понятно, почему от неё муж ушёл»','Мама — подруге, глядя на фото знакомой. Обе смеются'],
  ()=>{n('polnota','c-neutral');n('smeshno','c-red');n('obsuzh','c-red');n('brosayut','c-red');e('polnota','smeshno','g');e('polnota','obsuzh','g');e('polnota','brosayut','g')},
  ()=>{n('polnota','c-red');n('somnoy','c-red');e('smeshno','somnoy','d');e('obsuzh','somnoy','d')},
