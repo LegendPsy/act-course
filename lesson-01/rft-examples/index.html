@@ -196,7 +196,10 @@ const SCENES={
     {t:'Ты прикольная, но не в таком плане',box:[204,50,128],dot:[182,106]}]},
   nastya:{src:'assets/04-nastya.png',tl:4,b:[
     {t:'Видела? Антон теперь с Настей',box:[10,12,112],dot:[64,88]},
-    {t:'Ну понятно, она же такая худенькая',box:[130,28,132],dot:[70,88]}]}
+    {t:'Ну понятно, она же такая худенькая',box:[130,28,132],dot:[70,88]}]},
+  dieta:{src:'assets/05-dieta.png',tl:5,b:[
+    {t:'Ты чего не ешь?',box:[14,22,88],dot:[122,88]},
+    {t:'Я после шести не ем',box:[198,26,104],dot:[166,66]}]}
 };
 const IMG={x:80,y:30,k:1440/384};
 // Порядок кусочков коллажа (3×3, слева направо, сверху вниз) = выходы
@@ -239,7 +242,7 @@ evS(4,'nastya',['13 лет · Антон и Настя','«Ну понятно, 
  ()=>{n('telo','c-neutral');n('nastya','c-neutral');n('hudaya','c-warm');n('vybir','c-warm');e('nastya','hudaya','g');e('nastya','vybir','g')},
  ()=>{e('hudaya','vybir','d');e('telo','polnota','d');e('telo','nevyb','d');n('telo','c-red');x('foto','x-grey');st.wh=2},
  {},{flows:[['polnota','telo'],['nevyb','telo']]});
-ev(5,['14 лет · Диета','Не есть после шести. Без сладкого. Считать калории','Вес уходит'],
+evS(5,'dieta',['14 лет · Диета','«Я после шести не ем»','Потом — без сладкого. Потом — считать калории'],
  ()=>{n('kontrol','c-warm');e('eda','kontrol','g')},
  ()=>{x('hudet','x-red');e('kontrol','hudet','x');e('vybir','hudet','d');e('somnoy','hudet','d');n('eda','c-red');x('est','x-dark');st.wh=3},
  {},{flows:[['kontrol','eda']]});
