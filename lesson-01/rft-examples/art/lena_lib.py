@@ -159,10 +159,10 @@ def chair(env,cx,f,seat=153,back_top=110):
     env.rect(min(X(-11),X(8)),seat,max(X(-11),X(8)),seat+2,'wood',0.3); env.rect(min(X(-11),X(8)),seat,max(X(-11),X(8)),seat,'wood',1.2)
     env.rect(min(X(7),X(8)),seat+3,max(X(7),X(8)),FLOOR+16,'wood',-0.7)
 
-def seated(env,ch,cx,f,top,pants,hairr,style,hairsh,arm,expr='laugh'):
+def seated(env,ch,cx,f,top,pants,hairr,style,hairsh,arm,expr='laugh',with_chair=True):
     """Взрослый сидит в профиль. Возвращает точку кисти."""
     X=lambda d:cx+f*d; hy=100; ps=PSH.get(pants,0)
-    chair(env,cx,f)
+    if with_chair: chair(env,cx,f)
     for off,sh in ((-2,-0.9),(0,0)):
         ch.rect(min(X(17+off),X(20+off)),150,max(X(17+off),X(20+off)),FLOOR+10,pants,ps+sh)
         ch.rect(min(X(16+off),X(24+off)),FLOOR+11,max(X(16+off),X(24+off)),FLOOR+12,'hair',-0.3+sh)
